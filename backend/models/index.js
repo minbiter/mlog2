@@ -1,5 +1,6 @@
 require("dotenv").config();
 const mysql = require("mysql2");
+const User = require("./user");
 
 const env = process.env.NODE_ENV || "DEVELOPMENT";
 
@@ -30,7 +31,10 @@ const config = () => {
     }
   });
   // create tables
-  function createTable(connection) {}
+  function createTable(connection) {
+    User.init(connection);
+    console.log("(step3-1) user table 생성 완료");
+  }
 };
 
 module.exports = {
