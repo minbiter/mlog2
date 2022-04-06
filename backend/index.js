@@ -1,5 +1,8 @@
 const http = require("http");
 const app = require("./app");
+const db = require("./models");
+
+db.config();
 
 http
   .createServer(async (req, res) => {
