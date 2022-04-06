@@ -2,6 +2,7 @@ require("dotenv").config();
 const mysql = require("mysql2");
 const User = require("./user");
 const Diary = require("./diary");
+const Sentiment = require("./sentiment");
 
 const env = process.env.NODE_ENV || "DEVELOPMENT";
 
@@ -37,6 +38,8 @@ const config = () => {
     console.log("(step3-1) user table 생성 완료");
     Diary.init(connection);
     console.log("(step3-2) diary table 생성 완료");
+    Sentiment.init(connection);
+    console.log("(step3-3) sentiment table 생성 완료");
   }
 };
 
