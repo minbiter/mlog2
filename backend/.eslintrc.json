@@ -24,6 +24,11 @@
     "no-shadow": "off",
     "no-use-before-define": "off",
     "no-multi-str": "off",
-    "dot-notation": "off"
-  }
+    "dot-notation": "off",
+    "no-restricted-syntax": "off",
+    "guard-for-in": "off",
+    "no-return-await": "off",
+    "no-undef": "off"
+  },
+  "parser": "babel-parser"
 }
