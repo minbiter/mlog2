@@ -6,6 +6,7 @@ const DiaryEmotion = require("./diaryEmotion");
 const Music = require("./music");
 const DiaryMusic = require("./diaryMusic");
 const UserEmotion = require("./userEmotion");
+const Genre = require("./genre");
 
 const env = process.env.NODE_ENV || "DEVELOPMENT";
 
@@ -41,6 +42,8 @@ const config = async () => {
     console.log("(step3-5) diaryMusic table 생성 완료");
     await UserEmotion.init(connection);
     console.log("(step3-6) userEmotion table 생성 완료");
+    await Genre.init(connection);
+    console.log("(step3-7) genre table 생성 완료");
   }
 };
 

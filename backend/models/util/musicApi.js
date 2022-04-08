@@ -85,4 +85,5 @@ async function fetchMusic() {
 
 module.exports = {
   fetchMusic,
+  genreId,
 };
