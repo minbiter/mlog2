@@ -3,10 +3,10 @@ const mysql = require("mysql2/promise");
 const User = require("./user");
 const Diary = require("./diary");
 const DiaryEmotion = require("./diaryEmotion");
+const Genre = require("./genre");
 const Music = require("./music");
 const DiaryMusic = require("./diaryMusic");
 const UserEmotion = require("./userEmotion");
-const Genre = require("./genre");
 
 const env = process.env.NODE_ENV || "DEVELOPMENT";
 
@@ -36,14 +36,14 @@ const config = async () => {
     console.log("(step3-2) diary table 생성 완료");
     await DiaryEmotion.init(connection);
     console.log("(step3-3) diaryEmotion table 생성 완료");
-    await Music.init(connection);
-    console.log("(step3-4) music table 생성 완료");
-    await DiaryMusic.init(connection);
-    console.log("(step3-5) diaryMusic table 생성 완료");
-    await UserEmotion.init(connection);
-    console.log("(step3-6) userEmotion table 생성 완료");
     await Genre.init(connection);
-    console.log("(step3-7) genre table 생성 완료");
+    console.log("(step3-4) genre table 생성 완료");
+    await Music.init(connection);
+    console.log("(step3-5) music table 생성 완료");
+    await DiaryMusic.init(connection);
+    console.log("(step3-6) diaryMusic table 생성 완료");
+    await UserEmotion.init(connection);
+    console.log("(step3-7) userEmotion table 생성 완료");
   }
 };
 

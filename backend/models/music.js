@@ -15,10 +15,16 @@ async function init(connection) {
       id BIGINT NOT NULL,\
       title VARCHAR(60),\
       artist VARCHAR(60),\
-      genre VARCHAR(30),\
+      genreId INT,\
       img VARCHAR(255),\
       videoId VARCHAR(255),\
-      PRIMARY KEY (id)\
+      PRIMARY KEY (id),\
+      INDEX genreId_idx (genreId ASC) VISIBLE,\
+      CONSTRAINT fk_music_genre_genreId\
+        FOREIGN KEY (genreId)\
+        REFERENCES mlog.genre (id)\
+        ON UPDATE CASCADE\
+        ON DELETE CASCADE\
     )ENGINE=InnoDB;"
   );
   if (!rows.length) await InsertMusic(connection);

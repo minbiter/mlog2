@@ -3,7 +3,7 @@ async function init(connection) {
     "CREATE TABLE IF NOT EXISTS mlog.userEmotion (\
       id INT NOT NULL AUTO_INCREMENT,\
       uid INT,\
-      genre VARCHAR(30),\
+      genreId INT,\
       neutral INT NOT NULL DEFAULT 0,\
       positive INT NOT NULL DEFAULT 0,\
       negative INT NOT NULL DEFAULT 0, \
@@ -13,7 +13,13 @@ async function init(connection) {
         FOREIGN KEY (uid)\
         REFERENCES mlog.user (id)\
         ON UPDATE CASCADE\
-        ON DELETE SET NULL\
+        ON DELETE SET NULL,\
+      INDEX genreId_idx (genreId ASC) VISIBLE,\
+      CONSTRAINT fk_userEmotion_genre_genreId\
+        FOREIGN KEY (genreId)\
+        REFERENCES mlog.genre (id)\
+        ON UPDATE CASCADE\
+        ON DELETE CASCADE\
     )ENGINE=InnoDB;"
   );
 }

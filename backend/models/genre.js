@@ -22,7 +22,7 @@ async function init(connection) {
 async function InsertGenre(connection) {
   let query = "INSERT INTO mlog.genre VALUES ";
   for (const name in genreId) {
-    query += `(${genreId.name}, '${name}'),`;
+    query += `(${genreId[name]}, '${name}'),`;
   }
   await connection.execute(query.replace(/.$/, ";"));
 }
