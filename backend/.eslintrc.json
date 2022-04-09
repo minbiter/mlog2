@@ -20,6 +20,15 @@
     "func-names": "off",
     "no-plusplus": "off",
     "no-process-exit": "off",
-    "class-methods-use-this": "off"
-  }
+    "class-methods-use-this": "off",
+    "no-shadow": "off",
+    "no-use-before-define": "off",
+    "no-multi-str": "off",
+    "dot-notation": "off",
+    "no-restricted-syntax": "off",
+    "guard-for-in": "off",
+    "no-return-await": "off",
+    "no-undef": "off"
+  },
+  "parser": "babel-parser"
 }
