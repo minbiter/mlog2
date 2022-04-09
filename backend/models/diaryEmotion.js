@@ -1,5 +1,5 @@
 async function init(connection) {
-  const { err } = await connection.execute(
+  await connection.execute(
     "CREATE TABLE IF NOT EXISTS mlog.diaryEmotion (\
       id INT NOT NULL AUTO_INCREMENT,\
       diaryId INT,\
@@ -16,8 +16,6 @@ async function init(connection) {
         ON DELETE CASCADE\
     ) ENGINE=InnoDB;"
   );
-
-  if (err) throw err;
 }
 
 module.exports = {

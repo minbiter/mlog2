@@ -44,6 +44,7 @@ const config = async () => {
     console.log("(step3-6) diaryMusic table 생성 완료");
     await UserEmotion.init(connection);
     console.log("(step3-7) userEmotion table 생성 완료");
+    console.log("tables 생성 완료");
   }
 };
 
