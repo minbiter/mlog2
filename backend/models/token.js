@@ -24,7 +24,18 @@ async function insertToken(connection, data) {
   );
 }
 
+async function selectToken(connection, uid) {
+  const [rows] = await connection.execute("SELECT * FROM mlog.token WHERE uid=?;", [uid]);
+  return rows[0];
+}
+
+async function deleteToken(connection, uid) {
+  await connection.execute("DELETE FROM mlog.token WHERE uid=?", [uid]);
+}
+
 module.exports = {
   init,
   insertToken,
+  selectToken,
+  deleteToken,
 };

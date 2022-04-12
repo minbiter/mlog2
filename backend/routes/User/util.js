@@ -85,20 +85,27 @@ const isValidPasswordConfirm = (password, passwordConfirm) => {
   return [result, memo];
 };
 
-const createToken = (data) => {
+const createAccessToken = (data) => {
   // create json-web-token.(HMAC SHA256)
   const accessTokenExpire = new Date();
   accessTokenExpire.setDate(accessTokenExpire.getDate() + 1);
-  const refreshTokenExpire = new Date();
-  refreshTokenExpire.setDate(refreshTokenExpire.getDate() + 7);
+
   const accessToken = jwt.sign(
     {
       id: `${data.id}`,
-      email: `${data.email}`,
       exp: Math.floor(accessTokenExpire / 1000),
     },
     `${process.env.TOKEN_KEY}`
   );
+
+  return [accessToken, accessTokenExpire];
+};
+
+const createRefeshToken = (data) => {
+  // create json-web-token.(HMAC SHA256)
+  const refreshTokenExpire = new Date();
+  refreshTokenExpire.setDate(refreshTokenExpire.getDate() + 7);
+
   const refreshToken = jwt.sign(
     {
       id: `${data.id}`,
@@ -106,14 +113,15 @@ const createToken = (data) => {
     },
     `${process.env.TOKEN_KEY}`
   );
-  return [accessToken, accessTokenExpire, refreshToken, refreshTokenExpire];
-};
 
+  return [refreshToken, refreshTokenExpire];
+};
 module.exports = {
   isValidSignUp,
   isValidLogin,
   isValidEmail,
   isValidPassword,
   isValidPasswordConfirm,
-  createToken,
+  createAccessToken,
+  createRefeshToken,
 };

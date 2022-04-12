@@ -1,6 +1,6 @@
-const { isValidLogin, createToken } = require("./util");
+const { isValidLogin, createAccessToken, createRefeshToken } = require("./util");
 const { connect } = require("./../../models");
-const { insertToken } = require("./../../models/token");
+const { insertToken, deleteToken } = require("./../../models/token");
 
 const Login = async (req, res) => {
   let payload = "";
@@ -13,8 +13,10 @@ const Login = async (req, res) => {
 
     if (result) {
       // Create Token.
-      const [accessToken, accessTokenExpire, refreshToken, refreshTokenExpire] =
-        createToken(data);
+      const [accessToken, accessTokenExpire] = createAccessToken(data);
+      const [refreshToken, refreshTokenExpire] = createRefeshToken(data);
+      // DELETE user's Refresh Token.
+      await deleteToken(await connect(), data.id);
       // INSERT user's Refresh Token.
       await insertToken(await connect(), {
         uid: data.id,
