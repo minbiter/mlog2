@@ -7,16 +7,21 @@ const Genre = require("./genre");
 const Music = require("./music");
 const DiaryMusic = require("./diaryMusic");
 const UserEmotion = require("./userEmotion");
+const Token = require("./token");
 
 const env = process.env.NODE_ENV || "DEVELOPMENT";
 
-const config = async () => {
-  // mysql connect
-  const connection = await mysql.createConnection({
+const connect = async () => {
+  return await mysql.createConnection({
     host: "localhost",
     user: "root",
     password: process.env[`${env}_DB_PASSWORD`],
   });
+};
+
+const config = async () => {
+  // mysql connect
+  const connection = await connect();
   // connection success
   console.log("(step1) 연결 성공");
   console.log("(step2-1) SCHEMA 생성시작");
@@ -44,10 +49,13 @@ const config = async () => {
     console.log("(step3-6) diaryMusic table 생성 완료");
     await UserEmotion.init(connection);
     console.log("(step3-7) userEmotion table 생성 완료");
+    await Token.init(connection);
+    console.log("(step3-8) token table 생성 완료");
     console.log("tables 생성 완료");
   }
 };
 
 module.exports = {
   config,
+  connect,
 };
