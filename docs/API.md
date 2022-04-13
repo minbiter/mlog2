@@ -10,43 +10,49 @@
 - certification(ex. true or false)
 - parameter or querystring
 
-
-
 ## HTTP 응답 코드
 
 > HTTP RESPONSE CODE
 
-| 200  | OK: 정상                       |
-| ---- | ------------------------------ |
-| 400  | Bad Request : 파라미터 오류    |
-| 404  | Not Found : 존재하지 않는 요청 |
-| 50x  | Server error : 서버 오류       |
-
-
+| 200 | OK: 정상                       |
+| --- | ------------------------------ |
+| 400 | Bad Request : 파라미터 오류    |
+| 404 | Not Found : 존재하지 않는 요청 |
+| 50x | Server error : 서버 오류       |
 
 ## User
 
 사용자 관련 API
 
-
-
 ### /user
 
 > ENDPOINT
 
-| Method | function | Request Url | Authentication |
-| ------ | -------- | ----------- | -------------- |
-| `GET`  | login    | `/user`     | false          |
-| `post` | signup   | `/user`     | false          |
+| Method   | function | Request Url | Authentication |
+| -------- | -------- | ----------- | -------------- |
+| `POST`   | login    | `/user`     | false          |
+| `DELETE` | logout   | `/user`     | true           |
 
-> PARAMETERS
+> PARAMETERS (`POST`)
 
-| id       | 사용자 아이디   | string, Min Length: 5, Max Length: 50, Required(`GET`, `POST`) |
-| -------- | --------------- | ------------------------------------------------------------ |
-| pw       | 사용자 비밀번호 | string, Min Length: 8, Max Length: 50, Required(`GET`, `POST`) |
-| nickName | 사용자 닉네임   | string, Min Length: 2, Max Length: 10, Required(`post`)      |
+| email    | 사용자 이메일   | string, Max Length: 50, Required(`POST`)                |
+| -------- | --------------- | ------------------------------------------------------- |
+| password | 사용자 비밀번호 | string, Min Length: 8, Max Length: 28, Required(`POST`) |
 
+### /user/signup
 
+> ENDPOINT
+
+| Method | function | Request Url    | Authentication |
+| ------ | -------- | -------------- | -------------- |
+| `POST` | signup   | `/user/signup` | false          |
+
+> PARAMETERS (`POST`)
+
+| email           | 사용자 이메일        | string, Max Length: 50, Required(`POST`)                |
+| --------------- | -------------------- | ------------------------------------------------------- |
+| password        | 사용자 비밀번호      | string, Min Length: 8, Max Length: 28, Required(`POST`) |
+| passwordConfirm | 사용자 비밀번호 확인 | string, Min Length: 8, Max Length: 28, Required(`POST`) |
 
 ### /user/{userId}
 
@@ -54,18 +60,15 @@
 
 | Method   | function      | Request Url      | Authentication |
 | -------- | ------------- | ---------------- | -------------- |
-| `GET`    | logout        | `/user/{userId}` | true           |
 | `PATCH`  | editAccount   | `/user/{userId}` | true           |
 | `DELETE` | deleteAccount | `/user/{userId}` | true           |
 
-> PARAMETERS (`PATCH`)
+> PARAMETERS (`PATCH`, `DELETE`)
 
-| nickName | 사용자 닉네임   | string, Min Length: 2 Max Length: 10, Optional  |
-| -------- | --------------- | ----------------------------------------------- |
-| pw       | 사용자 비밀번호 | string, Min Length: 8, Max Length: 50, Optional |
-
-
-
+| password           | 사용자 비밀번호             | string, Min Length: 8, Max Length: 28, Required(`PATCH`, `DELETE`) |
+| ------------------ | --------------------------- | ------------------------------------------------------------------ |
+| newPassword        | 사용자 새로운 비밀번호      | string, Min Length: 8, Max Length: 28, Required(`PATCH`)           |
+| newPasswordConfirm | 사용자 새로운 비밀번호 확인 | string, Min Length: 8, Max Length: 28, Required(`PATCH`)           |
 
 ## Survey
 
@@ -83,18 +86,14 @@
 
 > PARAMETERS(`POST`, `PUT`)
 
-| neutral  | 중립 | array, Min Length: 1, Max Length: 3, Required  |
-| -------- | ---- | ---------------------------------------------- |
-| positive | 긍정 | array, Min Length: 1,  Max Length: 3, Required |
-| negative | 부정 | array, Min Length: 1,  Max Length: 3, Required |
-
-
+| neutral  | 중립 | array, Min Length: 1, Max Length: 3, Required |
+| -------- | ---- | --------------------------------------------- |
+| positive | 긍정 | array, Min Length: 1, Max Length: 3, Required |
+| negative | 부정 | array, Min Length: 1, Max Length: 3, Required |
 
 ## Diary
 
 Diary 관련 API
-
-
 
 ### /diary/{userId}?startDate=yyyymmdd&endDate=yyyymmdd
 
@@ -114,8 +113,6 @@ Diary 관련 API
 | --------- | ---------- | --------------------------- |
 | endDate   | end 날짜   | string, Length: 8, Optional |
 
-
-
 ### /diary/{userId}/chart?startDate=yyyymmdd&endDate=yyyymmdd
 
 범위 내의 작성된 diary의 긍정&부정&중립의 비율, 일기작성 수, 일기작성 비율을 불러온다.
@@ -133,8 +130,6 @@ Diary 관련 API
 | startDate | start 날짜 | string, Length: 8, Optional |
 | --------- | ---------- | --------------------------- |
 | endDate   | end 날짜   | string, Length: 8, Optional |
-
-
 
 ### /diary/{userId}/{yyyymmdd}
 
@@ -155,8 +150,6 @@ Diary 관련 API
 | ------- | --------- | -------------------------------- |
 | content | 일기 내용 | string, Required                 |
 
-
-
 ### /diary/{userId}/{yyyymmdd}/recommend
 
 해당 날짜의 추천된 음악 불러오기 or 선택된 음악 등록
@@ -168,19 +161,14 @@ Diary 관련 API
 | `GET`  | fetchRcdMusic | `/diary/{userId}/{yyyymmdd}/recommend` | true           |
 | `POST` | postMusic     | `/diary/{userId}/{yyyymmdd}/recommend` | true           |
 
-
 > PARAMETERS(`POST`)
 
 | musicId | 음악 아이디 | string, Required |
 | ------- | ----------- | ---------------- |
 
-
-
 ## Music
 
 Music 관련 API
-
-
 
 ### /music/{userId}/playlist?listId=xxx
 
@@ -196,7 +184,6 @@ Music 관련 API
 | `POST` | creatPlayList  | `music/{userId}/playlist` | true           |
 | `PUT`  | updatePlayList | `music/{userId}/playlist` | true           |
 
-
 > QUERY-STRING
 
 | listId | playlist 아이디 | string, Optional |
@@ -206,5 +193,3 @@ Music 관련 API
 
 | playList | playlist 아이디 | object[], Required |
 | -------- | --------------- | ------------------ |
-
-
