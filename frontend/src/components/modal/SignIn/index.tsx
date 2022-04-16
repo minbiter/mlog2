@@ -1,14 +1,22 @@
 import React, { useState } from "react";
-import { userLogin } from "api/userApi/";
+import { signInUser } from "api/userApi/";
 
-const Login = () => {
+const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const submitLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  const submitSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const response = await userLogin({ email, password });
-    console.log(response);
+    try {
+      const { data } = await signInUser({ email, password });
+      if (data.result) {
+        console.log("로그인 성공!");
+      } else {
+        alert(data.data.signin);
+      }
+    } catch (err) {
+      alert("서비스를 이용하실 수 없습니다.");
+    }
   };
 
   const changeEmail = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -20,7 +28,7 @@ const Login = () => {
   };
   return (
     <div>
-      <form onSubmit={submitLogin}>
+      <form onSubmit={submitSignIn}>
         <label htmlFor="email">
           <input
             id="email"
@@ -45,4 +53,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignIn;
