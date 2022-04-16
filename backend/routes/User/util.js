@@ -1,6 +1,5 @@
 const { connect } = require("./../../models");
 const { isExistEmail, isSamePassword } = require("./../../models/user");
-const jwt = require("jsonwebtoken");
 
 const isValidSignUp = async (email, password, passwordConfirm) => {
   let [emailResultOne, emailMemoOne] = isValidEmail(email);
@@ -24,7 +23,7 @@ const isValidSignUp = async (email, password, passwordConfirm) => {
   ];
 };
 
-const isValidLogin = async (email, password) => {
+const isValidSignIn = async (email, password) => {
   let [emailResultOne] = isValidEmail(email);
 
   let emailResultTwo = null;
@@ -46,7 +45,7 @@ const isValidLogin = async (email, password) => {
   if (emailResultOne && emailResultTwo && passwordResultOne && passwordResultTwo) {
     return [true, { ...passwordMemoTwo }];
   }
-  return [false, { login: "이메일 또는 비밀번호를 확인해주세요." }];
+  return [false, { signin: "이메일 또는 비밀번호를 확인해주세요." }];
 };
 
 const isValidEmail = (email) => {
@@ -85,43 +84,10 @@ const isValidPasswordConfirm = (password, passwordConfirm) => {
   return [result, memo];
 };
 
-const createAccessToken = (data) => {
-  // create json-web-token.(HMAC SHA256)
-  const accessTokenExpire = new Date();
-  accessTokenExpire.setDate(accessTokenExpire.getDate() + 1);
-
-  const accessToken = jwt.sign(
-    {
-      id: `${data.id}`,
-      exp: Math.floor(accessTokenExpire / 1000),
-    },
-    `${process.env.TOKEN_KEY}`
-  );
-
-  return [accessToken, accessTokenExpire];
-};
-
-const createRefeshToken = (data) => {
-  // create json-web-token.(HMAC SHA256)
-  const refreshTokenExpire = new Date();
-  refreshTokenExpire.setDate(refreshTokenExpire.getDate() + 7);
-
-  const refreshToken = jwt.sign(
-    {
-      id: `${data.id}`,
-      exp: Math.floor(refreshTokenExpire / 1000),
-    },
-    `${process.env.TOKEN_KEY}`
-  );
-
-  return [refreshToken, refreshTokenExpire];
-};
 module.exports = {
   isValidSignUp,
-  isValidLogin,
+  isValidSignIn,
   isValidEmail,
   isValidPassword,
   isValidPasswordConfirm,
-  createAccessToken,
-  createRefeshToken,
 };
