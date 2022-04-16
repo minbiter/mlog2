@@ -1,75 +1,87 @@
 const jwt = require("jsonwebtoken");
 const { connect } = require("./../../models");
 const { selectToken } = require("./../../models/token");
-const { createAccessToken } = require("./../User/util");
 
-// token 유효성 검사
-const tokenAuthentication = async (req, res) => {
-  const { access_token, refresh_token } = parseCookies(req.headers.cookie);
-  let result = false;
-  let data = {};
-  if (!(access_token || refresh_token)) {
-    // 1. access, refresh 둘다 없을 때.
-    // 다음 미들웨어로 못 넘김.
-    // { result: false, data: {token: 'TokenNotExistError'} }
-    res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
-    data.token = "TokenNotExistError";
+const authentication = (req, res) => {
+  const [result, data] = verifyAccessToken(req, res);
+  if (!result) {
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
     res.end(JSON.stringify({ result, data }));
-  } else if (access_token) {
-    // 2. access가 왔을 때
+    return result;
+  }
+  return result;
+};
+
+const createAccessToken = (data) => {
+  // create json-web-token.(HMAC SHA256)
+  const accessTokenExpire = new Date();
+  accessTokenExpire.setDate(accessTokenExpire.getDate() + 1);
+
+  const accessToken = jwt.sign(
+    {
+      id: `${data.id}`,
+      exp: Math.floor(accessTokenExpire / 1000),
+    },
+    `${process.env.TOKEN_KEY}`
+  );
+
+  return [accessToken, accessTokenExpire];
+};
+
+const createRefeshToken = (data) => {
+  // create json-web-token.(HMAC SHA256)
+  const refreshTokenExpire = new Date();
+  refreshTokenExpire.setDate(refreshTokenExpire.getDate() + 7);
+
+  const refreshToken = jwt.sign(
+    {
+      id: `${data.id}`,
+      exp: Math.floor(refreshTokenExpire / 1000),
+    },
+    `${process.env.TOKEN_KEY}`
+  );
+
+  return [refreshToken, refreshTokenExpire];
+};
+
+const verifyAccessToken = (req, res) => {
+  const accessToken = req.headers.authorization.split(" ")[1];
+  if (accessToken) {
     try {
-      // 2-1. access_token이 정상적이면, 다음 미들웨어로 넘김
-      jwt.verify(access_token, `${process.env.TOKEN_KEY}`);
+      const decoded = jwt.verify(accessToken, `${process.env.TOKEN_KEY}`);
+      return [true, { ...decoded }];
     } catch (err) {
-      // 2-2. access_token이 정상적이지 않으면,
-      res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
       if (err.name === "TokenExpiredError") {
-        // 2-2-1. TokenExpiredError.
-        // 다음 미들웨어로 못 넘어감.
-        // { result: false, data: {access_token: 'TokenExpiredError'} }
-        data.access_token = "TokenExpiredError";
-        res.end(JSON.stringify({ result, data }));
+        return [false, { accessToken: "TokenExpiredError" }];
       } else if (err.name === "JsonWebTokenError") {
-        // 2-2-2. JsonWebTokenError.
-        // 다음 미들웨어로 못 넘어감.
-        // { result: false, data: {access_token: 'JsonWebTokenError'} }
-        data.access_token = "JsonWebTokenError";
-        res.end(JSON.stringify({ result, data }));
+        return [false, { accessToken: "JsonWebTokenError" }];
       }
     }
-  } else if (refresh_token) {
-    // 3. refresh가 왔을 때
+  } else {
+    return [false, { accessToken: "TokenNotExistError" }];
+  }
+};
+
+const verifyRefreshToken = async (req, res) => {
+  const { refreshToken } = parseCookies(req.headers.cookie);
+  if (refreshToken) {
     try {
-      // 3-1. refresh_token이 정상적이면(db의 jwt와 비교)
-      const { uid } = jwt.verify(refresh_token, `${process.env.TOKEN_KEY}`);
-      const { jwt: db_token } = await selectToken(await connect(), uid);
-      if (db_token === refresh_token) {
-        // 헤더에 accessToken을 추가하고 다음 미들웨어 넘김
-        const [accessToken, accessTokenExpire] = createAccessToken({ uid });
-        res.setHeader(
-          "Set-Cookie",
-          `access_token=${accessToken}; Expires=${accessTokenExpire.toGMTString()}; HttpOnly; Path=/`
-        );
+      const decoded = jwt.verify(refreshToken, `${process.env.TOKEN_KEY}`);
+      const { jwt: db_token } = await selectToken(await connect(), decoded.id);
+      if (db_token === refreshToken) {
+        return [true, { ...decoded }];
       } else {
         throw { name: "JsonWebTokenError" };
       }
     } catch (err) {
-      // 3-2. refresh_token이 정상적이지 않으면,
-      res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
       if (err.name === "TokenExpiredError") {
-        // 3-2-1. TokenExpiredError.
-        // 다음 미들웨어로 못 넘어감.
-        // { result: false, data: {refreshToken: 'TokenExpiredError'} }
-        data.refresh_token = "TokenExpiredError";
-        res.end(JSON.stringify({ result, data }));
+        return [false, { refreshToken: "TokenExpiredError" }];
       } else if (err.name === "JsonWebTokenError") {
-        // 3-2-2. JsonWebTokenError.
-        // 다음 미들웨어로 못 넘어감.
-        // { result: false, data: {refreshToken: 'JsonWebTokenError'} }
-        data.refresh_token = "JsonWebTokenError";
-        res.end(JSON.stringify({ result, data }));
+        return [false, { refreshToken: "JsonWebTokenError" }];
       }
     }
+  } else {
+    return [false, { refreshToken: "TokenNotExistError" }];
   }
 };
 
@@ -84,5 +96,10 @@ const parseCookies = (cookie = "") => {
 };
 
 module.exports = {
-  tokenAuthentication,
+  authentication,
+  createAccessToken,
+  createRefeshToken,
+  verifyAccessToken,
+  verifyRefreshToken,
+  parseCookies,
 };
