@@ -1,4 +1,4 @@
-export interface SignInApi {
+export interface ISignInApi {
   (data: { email: string; password: string }): Promise<{
     data: {
       result: boolean;
@@ -12,7 +12,7 @@ export interface SignInApi {
   }>;
 }
 
-export interface SignUpApi {
+export interface ISignUpApi {
   (data: {
     email: string;
     password: string;
@@ -26,5 +26,11 @@ export interface SignUpApi {
         passwordConfirm?: string;
       };
     };
+  }>;
+}
+
+export interface IRefreshApi {
+  (): Promise<{
+    data: { result: boolean; data: { email?: string; accessToken?: string } };
   }>;
 }

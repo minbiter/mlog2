@@ -1,16 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { signInUser } from "api/userApi/";
+import { AuthContext } from "context/AuthProvider";
 
 const SignIn = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const { setAuth } = useContext(AuthContext);
   const submitSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       const { data } = await signInUser({ email, password });
       if (data.result) {
-        console.log("로그인 성공!");
+        setAuth({
+          email: data.data.email,
+          accessToken: data.data.accessToken,
+        });
       } else {
         alert(data.data.signin);
       }
