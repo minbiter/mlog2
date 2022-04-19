@@ -21,7 +21,6 @@ const Nav = () => {
     <>
       <Link to="/">Home</Link>
       <Link to="/main">Main</Link>
-      <Link to="/:id/test">test</Link>
       {auth.accessToken ? (
         auth.email
       ) : (
@@ -30,8 +29,13 @@ const Nav = () => {
           <button onClick={openSignUpModal}>Sign Up</button>
         </div>
       )}
-      {isClickedSignIn ? <SignIn /> : null}
-      {isClickedSignUp ? <SignUp /> : null}
+      {isClickedSignIn ? (
+        <SignIn
+          closeSignInModal={openSignInModal}
+          openSignUpModal={openSignUpModal}
+        />
+      ) : null}
+      {isClickedSignUp ? <SignUp closeSignUpModal={openSignUpModal} /> : null}
     </>
   );
 };

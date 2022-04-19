@@ -6,8 +6,9 @@ const Refresh = async (req, res) => {
     res.statusCode = 200;
     res.setHeader("Content-Type", "application/json; charset=utf-8");
     if (result) {
+      console.log(data);
       const [accessToken] = createAccessToken(data);
-      res.end(JSON.stringify({ result, data: { accessToken } }));
+      res.end(JSON.stringify({ result, data: { accessToken, email: data.email } }));
     } else {
       res.end(JSON.stringify({ result, data }));
     }
