@@ -36,7 +36,7 @@ async function selectDiary(connection, data) {
     [data.uid, data.diaryDate]
   );
   if (rows.length) {
-    return [true, rows[0]];
+    return [true, { diary: rows[0] }];
   }
   return [false, { diary: "해당 날짜의 일기가 존재하지 않습니다." }];
 }
