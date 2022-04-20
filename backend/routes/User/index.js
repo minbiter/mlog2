@@ -1,5 +1,6 @@
 const { SignIn } = require("./signin");
 const { SignUp } = require("./signup");
+const { SignOut } = require("./signout");
 
 const env = process.env.NODE_ENV || "DEVELOPMENT";
 
@@ -12,6 +13,7 @@ const User = async (req, res) => {
       SignIn(req, res);
     } else if (req.method === "DELETE") {
       console.log("SignOut: token 삭제");
+      SignOut(req, res);
     }
   } else if (url.pathname === "/user/signup") {
     // 회원가입
