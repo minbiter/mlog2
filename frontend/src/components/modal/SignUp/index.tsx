@@ -74,9 +74,9 @@ const SignUp = ({ closeSignUpModal }: ISignUpProps) => {
           >
             <path
               fill="#3E4042"
-              fill-rule="evenodd"
+              fillRule="evenodd"
               d="M.203.203c.27-.27.708-.27.979 0L6 5.02 10.818.203c.27-.27.709-.27.98 0 .27.27.27.708 0 .979L6.978 6l4.818 4.818c.27.27.27.709 0 .98-.27.27-.709.27-.979 0L6 6.978l-4.818 4.818c-.27.27-.709.27-.98 0-.27-.27-.27-.709 0-.979L5.022 6 .203 1.182c-.27-.27-.27-.709 0-.98z"
-              clip-rule="evenodd"
+              clipRule="evenodd"
             ></path>
           </svg>
           <div css={logoModal}>

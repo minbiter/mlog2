@@ -70,13 +70,14 @@ export const logoModal = css`
   margin-top: 12px;
   margin-bottom: 24px;
   & > img {
-    width: 50px;
-    height: 50px;
+    width: 35px;
+    height: 35px;
   }
   & > span {
-    height: 50px;
+    height: 40px;
+    line-height: 35px;
     margin-left: 6px;
-    font-size: 35px;
+    font-size: 30px;
     font-weight: 700;
     color: #4cdbce;
   }
