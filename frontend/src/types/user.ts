@@ -1,24 +1,36 @@
-export interface UserLoginRequestData {
-  email: string;
-  password: string;
-}
-
-export interface UserLoginResponseData {
-  result: boolean;
-  data: {
-    id?: number;
-    email?: string;
-    login?: string;
-  };
-}
-
-export interface LoginApi {
+export interface ISignInApi {
   (data: { email: string; password: string }): Promise<{
-    result: boolean;
     data: {
-      id?: number;
-      email?: string;
-      login?: string;
+      result: boolean;
+      data: {
+        id?: number;
+        email?: string;
+        signin?: string;
+        accessToken?: string;
+      };
     };
+  }>;
+}
+
+export interface ISignUpApi {
+  (data: {
+    email: string;
+    password: string;
+    passwordConfirm: string;
+  }): Promise<{
+    data: {
+      result: boolean;
+      data: {
+        email?: string;
+        password?: string;
+        passwordConfirm?: string;
+      };
+    };
+  }>;
+}
+
+export interface IRefreshApi {
+  (): Promise<{
+    data: { result: boolean; data: { email?: string; accessToken?: string } };
   }>;
 }

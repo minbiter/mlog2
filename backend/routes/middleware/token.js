@@ -20,6 +20,7 @@ const createAccessToken = (data) => {
   const accessToken = jwt.sign(
     {
       id: `${data.id}`,
+      email: `${data.email}`,
       exp: Math.floor(accessTokenExpire / 1000),
     },
     `${process.env.TOKEN_KEY}`
@@ -36,6 +37,7 @@ const createRefeshToken = (data) => {
   const refreshToken = jwt.sign(
     {
       id: `${data.id}`,
+      email: `${data.email}`,
       exp: Math.floor(refreshTokenExpire / 1000),
     },
     `${process.env.TOKEN_KEY}`

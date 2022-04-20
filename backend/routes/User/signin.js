@@ -11,7 +11,6 @@ const SignIn = async (req, res) => {
   req.on("end", async () => {
     const parsePayload = JSON.parse(payload);
     let [result, data] = await isValidSignIn(parsePayload.email, parsePayload.password);
-
     res.statusCode = 200;
     if (result) {
       // Create Token.

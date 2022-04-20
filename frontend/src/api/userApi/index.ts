@@ -1,6 +1,14 @@
 import instance from "api";
-import { LoginApi } from "types/user";
+import { ISignInApi, ISignUpApi, IRefreshApi } from "types/user";
 
-export const userLogin: LoginApi = async (data) => {
-  return await instance.post("/user", { email: data.email });
+export const signInUser: ISignInApi = async (data) => {
+  return await instance.post("/user", data, { withCredentials: true });
+};
+
+export const signUpUser: ISignUpApi = async (data) => {
+  return await instance.post("/user/signup", data, { withCredentials: true });
+};
+
+export const refreshUser: IRefreshApi = async () => {
+  return await instance.get("/refresh", { withCredentials: true });
 };
