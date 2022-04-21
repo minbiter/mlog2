@@ -1,5 +1,7 @@
-const { CreateDiary } = require("./createDiary");
-const { ReadDiary } = require("./readDiary");
+const { Create } = require("./create");
+const { Read } = require("./read");
+const { Update } = require("./update");
+const { Delete } = require("./delete");
 const { NotFound } = require("../NotFound");
 
 const env = process.env.NODE_ENV || "DEVELOPMENT";
@@ -10,10 +12,16 @@ const Diary = async (req, res) => {
   if (url.pathname.match(/^\/diary\/\d+\/\d{8}$/)) {
     if (req.method === "GET") {
       console.log("ReadDiary");
-      await ReadDiary(req, res);
+      await Read(req, res);
     } else if (req.method === "POST") {
       console.log("CreateDiary");
-      await CreateDiary(req, res);
+      await Create(req, res);
+    } else if (req.method === "PUT") {
+      console.log("UpdateDiary");
+      await Update(req, res);
+    } else if (req.method === "DELETE") {
+      console.log("DeleteDiary");
+      await Delete(req, res);
     }
   } else {
     NotFound(req, res);

@@ -2,7 +2,7 @@ const { authentication } = require("../middleware/token");
 const { connect } = require("../../models");
 const { selectDiary } = require("../../models/diary");
 
-const ReadDiary = async (req, res) => {
+const Read = async (req, res) => {
   const [resultAuth, dataAuth] = authentication(req, res);
   const diaryDate = req.url.match(/\d{8}$/)[0];
   const [resultSelectDiary, dataSelectDiary] = await selectDiary(await connect(), {
@@ -21,5 +21,5 @@ const ReadDiary = async (req, res) => {
 };
 
 module.exports = {
-  ReadDiary,
+  Read,
 };

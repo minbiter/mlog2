@@ -1,8 +1,9 @@
 const { authentication } = require("../middleware/token");
 const { connect } = require("../../models");
 const { selectDiary, insertDiary } = require("../../models/diary");
+const { isValidDiary } = require("./util");
 
-const CreateDiary = async (req, res) => {
+const Create = async (req, res) => {
   const [resultAuth, dataAuth] = authentication(req, res);
   const [resultValidDiary] = isValidDiary(req, res);
   const diaryDate = req.url.match(/\d{8}$/)[0];
@@ -19,7 +20,7 @@ const CreateDiary = async (req, res) => {
       req.on("end", async () => {
         const parsePayload = JSON.parse(payload);
         const data = {
-          id: dataAuth.id,
+          uid: dataAuth.id,
           diaryDate,
           title: parsePayload.title,
           content: parsePayload.content,
@@ -49,27 +50,6 @@ const CreateDiary = async (req, res) => {
   }
 };
 
-const isValidDiary = (req, res) => {
-  const diaryDate = req.url.match(/\d{8}$/)[0];
-  const currentDate = new Date();
-  const stringDate = `${currentDate.getFullYear()}${(
-    "0" +
-    (currentDate.getMonth() + 1)
-  ).slice(-2)}${("0" + currentDate.getDate()).slice(-2)}`;
-
-  if (parseInt(diaryDate) <= parseInt(stringDate)) return [true];
-  else {
-    res.setHeader("Content-Type", "application/json; charset=utf-8");
-    res.end(
-      JSON.stringify({
-        result: false,
-        data: { diary: "미래 일기는 작성할 수 없습니다." },
-      })
-    );
-    return [false, { diary: "미래 일기는 작성할 수 없습니다." }];
-  }
-};
-
 module.exports = {
-  CreateDiary,
+  Create,
 };
