@@ -7,9 +7,9 @@ const authentication = (req, res) => {
   if (!result) {
     res.setHeader("Content-Type", "application/json; charset=utf-8");
     res.end(JSON.stringify({ result, data }));
-    return result;
+    return [result, data];
   }
-  return result;
+  return [result, data];
 };
 
 const createAccessToken = (data) => {
