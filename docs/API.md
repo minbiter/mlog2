@@ -30,8 +30,8 @@
 
 | Method   | function | Request Url | Authentication |
 | -------- | -------- | ----------- | -------------- |
-| `POST`   | login    | `/user`     | false          |
-| `DELETE` | logout   | `/user`     | true           |
+| `POST`   | SignIn   | `/user`     | false          |
+| `DELETE` | SignOut  | `/user`     | true           |
 
 > PARAMETERS (`POST`)
 
@@ -45,7 +45,7 @@
 
 | Method | function | Request Url    | Authentication |
 | ------ | -------- | -------------- | -------------- |
-| `POST` | signup   | `/user/signup` | false          |
+| `POST` | SignUp   | `/user/signup` | false          |
 
 > PARAMETERS (`POST`)
 
@@ -137,18 +137,18 @@ Diary 관련 API
 
 > ENDPOINT
 
-| Method   | function    | Request Url                  | Authentication |
-| -------- | ----------- | ---------------------------- | -------------- |
-| `GET`    | fetchDiary  | `/diary/{userId}/{yyyymmdd}` | true           |
-| `POST`   | createDiary | `/diary/{userId}/{yyyymmdd}` | true           |
-| `PATCH`  | updateDiary | `/diary/{userId}/{yyyymmdd}` | true           |
-| `DELETE` | deleteDiary | `/diary/{userId}/{yyyymmdd}` | true           |
+| Method   | function | Request Url                  | Authentication |
+| -------- | -------- | ---------------------------- | -------------- |
+| `GET`    | Read     | `/diary/{userId}/{yyyymmdd}` | true           |
+| `POST`   | Create   | `/diary/{userId}/{yyyymmdd}` | true           |
+| `PUT`    | Update   | `/diary/{userId}/{yyyymmdd}` | true           |
+| `DELETE` | Delete   | `/diary/{userId}/{yyyymmdd}` | true           |
 
-> PARAMETERS(`POST`, `PATCH`)
+> PARAMETERS(`POST`, `PUT`)
 
-| title   | 일기 제목 | string, Max Length: 50, Required |
-| ------- | --------- | -------------------------------- |
-| content | 일기 내용 | string, Required                 |
+| title   | 일기 제목 | string, Max Length: 50, Required(`POST`), Optional(`PUT`) |
+| ------- | --------- | --------------------------------------------------------- |
+| content | 일기 내용 | string, Required(`POST`), Optional(`PUT`)                 |
 
 ### /diary/{userId}/{yyyymmdd}/recommend
 
