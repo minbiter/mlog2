@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState, useContext } from "react";
+import { useHistory } from "react-router-dom";
 import { signInUser } from "api/userApi/";
 import { AuthContext } from "context/AuthProvider";
 import {
@@ -22,6 +23,7 @@ const SignIn = ({ closeSignInModal, openSignUpModal }: ISignInProps) => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const { setAuth } = useContext(AuthContext);
+  let history = useHistory();
 
   const changeSignUp = () => {
     closeSignInModal();
@@ -37,6 +39,8 @@ const SignIn = ({ closeSignInModal, openSignUpModal }: ISignInProps) => {
           email: data.data.email,
           accessToken: data.data.accessToken,
         });
+        closeSignInModal();
+        history.push("/main");
       } else {
         alert(data.data.signin);
       }

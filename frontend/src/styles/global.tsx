@@ -152,6 +152,10 @@ export const defaultStyle = css`
     background: transparent;
     cursor: pointer;
   }
+  main {
+    margin-top: 60px;
+    max-width: 1440px;
+  }
 `;
 
 const GlobalStyle = () => {
