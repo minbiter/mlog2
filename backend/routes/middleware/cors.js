@@ -14,7 +14,7 @@ const cors = async (req, res) => {
     res.statusCode = 200;
     res.setHeader("Access-Control-Allow-Origin", process.env[`${env}_ACCESS_ORIGIN`]);
     res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    res.setHeader("Access-Control-Allow-Headers", ["Content-Type", "Authorization"]);
     res.setHeader("Access-Control-Max-Age", 86400);
     res.setHeader("Access-Control-Allow-Credentials", "true");
     res.end();

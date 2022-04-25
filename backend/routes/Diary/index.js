@@ -9,7 +9,7 @@ const env = process.env.NODE_ENV || "DEVELOPMENT";
 const Diary = async (req, res) => {
   const url = new URL(req.url, process.env[`${env}_URL`]);
   // Diary CRUD.
-  if (url.pathname.match(/^\/diary\/\d+\/\d{8}$/)) {
+  if (url.pathname.match(/^\/diary\/\d{8}$/)) {
     if (req.method === "GET") {
       console.log("ReadDiary");
       await Read(req, res);
