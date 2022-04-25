@@ -5,7 +5,6 @@ import Calendar from "./Calendar";
 import WriteDiary from "./WriteDiary";
 
 const MainService = () => {
-  console.log(useLocation());
   const searchDate = QueryString.parse(useLocation().search, {
     ignoreQueryPrefix: true,
   });

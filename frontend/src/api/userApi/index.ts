@@ -1,4 +1,4 @@
-import instance from "api";
+import { instance } from "api";
 import { ISignInApi, ISignUpApi, IRefreshApi } from "types/user";
 
 export const signInUser: ISignInApi = async (data) => {

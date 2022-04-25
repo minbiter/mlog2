@@ -87,8 +87,6 @@ const Calendar = ({ searchDate }: ICalendarProps) => {
     );
   };
 
-  console.log(clickedDate);
-
   const createTrTag = (trKey: string) => {
     return (
       <tr key={trKey}>

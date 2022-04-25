@@ -32,7 +32,6 @@ const SignUp = ({ closeSignUpModal, openSignInModal }: ISignUpProps) => {
     e.preventDefault();
     try {
       const { data } = await signUpUser({ email, password, passwordConfirm });
-      console.log(data);
       if (data.result) {
         alert("회원가입 완료됐습니다.");
         closeSignUpModal();

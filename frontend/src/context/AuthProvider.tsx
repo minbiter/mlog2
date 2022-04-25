@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import { refreshUser } from "api/userApi";
+import { instanceAuth } from "api";
 
 interface IAuth {
   accessToken?: string;
@@ -21,6 +22,9 @@ export const AuthProvider = ({ children }: React.PropsWithChildren<{}>) => {
       const { data } = await refreshUser();
       if (data.result) {
         setAuth({ email: data.data.email, accessToken: data.data.accessToken });
+        instanceAuth.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${data.data.accessToken}`;
       }
     };
     fetchAccessToken();
