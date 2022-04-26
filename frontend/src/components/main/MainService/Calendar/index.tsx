@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import {
   monthList,
   yearListFuc,
@@ -18,6 +19,8 @@ const Calendar = ({ searchDate }: ICalendarProps) => {
   const [month, setMonth] = useState(0);
   const [date, setDate] = useState(0);
   const [loading, setLoading] = useState(true);
+
+  const history = useHistory();
   const today = new Date();
   const yearList = yearListFuc();
   useEffect(() => {
@@ -39,11 +42,7 @@ const Calendar = ({ searchDate }: ICalendarProps) => {
   }, []);
 
   useEffect(() => {
-    window.history.replaceState(
-      null,
-      "",
-      `/main?date=${toStringDateFuc(year, month, date)}`
-    );
+    history.replace(`/main?date=${toStringDateFuc(year, month, date)}`);
   }, [year, month, date]);
 
   const changeYear = (e: React.ChangeEvent<HTMLSelectElement>) => {

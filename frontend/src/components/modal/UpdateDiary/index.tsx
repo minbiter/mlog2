@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
-import { createDiary } from "api/diaryApi";
-interface IWriteDiary {
-  searchDate: { diaryid?: string };
+import { useHistory, useParams } from "react-router-dom";
+import { updateDiaryApi } from "api/diaryApi";
+
+interface IUpdateDiaryParams {
+  date: string;
 }
 
-const WriteDiary = ({ searchDate }: IWriteDiary) => {
+const UpdateDiary = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+  const { date } = useParams<IUpdateDiaryParams>();
   const history = useHistory();
+
   useEffect(() => {
-    if (!searchDate.diaryid) {
+    if (!date) {
       history.push("/main");
     }
   }, []);
@@ -26,16 +29,15 @@ const WriteDiary = ({ searchDate }: IWriteDiary) => {
   const submitDiary = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      if (searchDate.diaryid) {
-        const { data } = await createDiary(searchDate.diaryid, {
-          title,
-          content,
-        });
-        if (data.result) {
-          alert("일기 작성이 완료되었습니다.");
-        } else {
-          alert(data.data.diary);
-        }
+      const { data } = await updateDiaryApi(date, {
+        title,
+        content,
+      });
+      if (data.result) {
+        alert(data.data.diary);
+        history.push(`/main/diary/${date}`);
+      } else {
+        alert(data.data.diary);
       }
     } catch (err) {
       alert("서비스를 이용하실 수 없습니다.");
@@ -46,15 +48,14 @@ const WriteDiary = ({ searchDate }: IWriteDiary) => {
     <div>
       <form onSubmit={submitDiary}>
         <p>
-          {searchDate.diaryid?.slice(0, 4)}년 {searchDate.diaryid?.slice(4, 6)}
-          월 {searchDate.diaryid?.slice(6)}일
+          {date.slice(0, 4)}년 {date.slice(4, 6)}월 {date.slice(6)}일
         </p>
         <input placeholder="제목" onChange={changeTitle} />
         <div contentEditable="true" onInput={changeContent}></div>
-        <button>기록하기</button>
+        <button>수정하기</button>
       </form>
     </div>
   );
 };
 
-export default WriteDiary;
+export default UpdateDiary;
