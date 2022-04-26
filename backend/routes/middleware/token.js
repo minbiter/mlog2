@@ -47,7 +47,12 @@ const createRefeshToken = (data) => {
 };
 
 const verifyAccessToken = (req, res) => {
-  const accessToken = req.headers.authorization.split(" ")[1];
+  let accessToken = null;
+  try {
+    accessToken = req.headers.authorization.split(" ")[1];
+  } catch (err) {
+    return [false, { accessToken: "JsonWebTokenError" }];
+  }
   if (accessToken) {
     try {
       const decoded = jwt.verify(accessToken, `${process.env.TOKEN_KEY}`);
