@@ -9,6 +9,7 @@ const DateDetail = ({ clickedDate }: IDateDetailProps) => {
   let history = useHistory();
   const clickDiaryWrite = (e: any) => {
     history.push(`/main/diary/new?date=${clickedDate}`);
+    history.push(`/main/diary?compose=new&diaryid=${clickedDate}`);
   };
   const clickDiaryRead = (e: any) => {};
   return (

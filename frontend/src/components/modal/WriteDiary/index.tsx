@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { createDiary } from "api/diaryApi";
 interface IWriteDiary {
-  searchDate: { date?: string };
+  searchDate: { diaryid?: string };
 }
 
 const WriteDiary = ({ searchDate }: IWriteDiary) => {
@@ -10,9 +10,7 @@ const WriteDiary = ({ searchDate }: IWriteDiary) => {
   const [content, setContent] = useState("");
   const history = useHistory();
   useEffect(() => {
-    if (!searchDate.date) {
-      // modal로 띄워주기 or /main으로 push
-      alert("날짜를 선택해주세요.");
+    if (!searchDate.diaryid) {
       history.push("/main");
     }
   }, []);
@@ -28,8 +26,11 @@ const WriteDiary = ({ searchDate }: IWriteDiary) => {
   const submitDiary = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      if (searchDate.date) {
-        const { data } = await createDiary(searchDate.date, { title, content });
+      if (searchDate.diaryid) {
+        const { data } = await createDiary(searchDate.diaryid, {
+          title,
+          content,
+        });
         console.log(data);
         if (data.result) {
           alert("일기 작성이 완료되었습니다.");
@@ -46,8 +47,8 @@ const WriteDiary = ({ searchDate }: IWriteDiary) => {
     <div>
       <form onSubmit={submitDiary}>
         <p>
-          {searchDate.date?.slice(0, 4)}년 {searchDate.date?.slice(4, 6)}월{" "}
-          {searchDate.date?.slice(6)}일
+          {searchDate.diaryid?.slice(0, 4)}년 {searchDate.diaryid?.slice(4, 6)}
+          월 {searchDate.diaryid?.slice(6)}일
         </p>
         <input placeholder="제목" onChange={changeTitle} />
         <div contentEditable="true" onInput={changeContent}></div>

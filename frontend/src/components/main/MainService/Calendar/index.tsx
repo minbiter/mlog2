@@ -1,11 +1,11 @@
-import React, { useState, useEffect, SyntheticEvent } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import {
   monthList,
   yearListFuc,
   dayList,
   trKeyList,
   tdKeyList,
+  toStringDateFuc,
 } from "utils/calendar/variable";
 import DateDetail from "../DateDetail";
 
@@ -17,7 +17,6 @@ const Calendar = ({ searchDate }: ICalendarProps) => {
   const [year, setYear] = useState(0);
   const [month, setMonth] = useState(0);
   const [date, setDate] = useState(0);
-  const [clickedDate, setClickedDate] = useState("");
   const [loading, setLoading] = useState(true);
   const today = new Date();
   const yearList = yearListFuc();
@@ -31,21 +30,21 @@ const Calendar = ({ searchDate }: ICalendarProps) => {
       setYear(parseInt(searchDate.date.slice(0, 4)));
       setMonth(parseInt(searchDate.date.slice(4, 6)) - 1);
       setDate(parseInt(searchDate.date.slice(6)));
-      setClickedDate(searchDate.date);
     } else {
       setYear(today.getFullYear());
       setMonth(today.getMonth());
       setDate(today.getDate());
-      setClickedDate(
-        `${today.getFullYear()}${("0" + (today.getMonth() + 1)).slice(-2)}${(
-          "0" + today.getDate()
-        ).slice(-2)}`
-      );
     }
     setLoading(false);
   }, []);
 
-  useEffect(() => {}, [year, month]);
+  useEffect(() => {
+    window.history.replaceState(
+      null,
+      "",
+      `/main?date=${toStringDateFuc(year, month, date)}`
+    );
+  }, [year, month, date]);
 
   const changeYear = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (
@@ -55,10 +54,12 @@ const Calendar = ({ searchDate }: ICalendarProps) => {
       setMonth(0);
     }
     setYear(parseInt(e.target.value));
+    setDate(1);
   };
 
   const changeMonth = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setMonth(parseInt(e.target.value) - 1);
+    setDate(1);
   };
 
   const prevMonth = () => {
@@ -68,6 +69,7 @@ const Calendar = ({ searchDate }: ICalendarProps) => {
     } else {
       setMonth((prev) => prev - 1);
     }
+    setDate(1);
   };
 
   const nextMonth = () => {
@@ -77,14 +79,11 @@ const Calendar = ({ searchDate }: ICalendarProps) => {
     } else {
       setMonth((prev) => prev + 1);
     }
+    setDate(1);
   };
 
   const clickDate = (e: any) => {
-    setClickedDate(
-      `${year}${("0" + (month + 1)).slice(-2)}${(
-        "0" + e.target.innerHTML
-      ).slice(-2)}`
-    );
+    setDate(e.target.innerText);
   };
 
   const createTrTag = (trKey: string) => {
@@ -104,16 +103,15 @@ const Calendar = ({ searchDate }: ICalendarProps) => {
     if (!dateCheck && tdKey === `1-${firstDate.getDay()}`) {
       dateCheck = true;
     }
-    return (
-      <td
-        key={tdKey}
-        onClick={
-          dateCheck && dateCount <= lastDate.getDate() ? clickDate : undefined
-        }
-      >
-        {dateCheck && dateCount <= lastDate.getDate() ? dateCount++ : null}
-      </td>
-    );
+    if (dateCheck && dateCount <= lastDate.getDate()) {
+      return (
+        <td key={tdKey} onClick={clickDate}>
+          {dateCount++}
+        </td>
+      );
+    } else {
+      return <td key={tdKey}></td>;
+    }
   };
 
   return (
@@ -165,7 +163,7 @@ const Calendar = ({ searchDate }: ICalendarProps) => {
             </thead>
             <tbody>{trKeyList.map((trKey) => createTrTag(trKey))}</tbody>
           </table>
-          <DateDetail clickedDate={clickedDate} />
+          <DateDetail clickedDate={toStringDateFuc(year, month, date)} />
         </div>
       )}
     </>

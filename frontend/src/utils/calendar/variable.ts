@@ -15,3 +15,17 @@ export const tdKeyList = [
   ["4-0", "4-1", "4-2", "4-3", "4-4", "4-5", "4-6"],
   ["5-0", "5-1", "5-2", "5-3", "5-4", "5-5", "5-6"],
 ];
+
+export const toStringDateFuc = (...args: number[] | Date[]): string => {
+  if (typeof args[0] !== "number") {
+    return `${args[0].getFullYear()}${("0" + (args[0].getMonth() + 1)).slice(
+      -2
+    )}${("0" + args[0].getDate()).slice(-2)}`;
+  }
+  if (typeof args[1] === "number") {
+    return `${args[0]}${("0" + (args[1] + 1)).slice(-2)}${("0" + args[2]).slice(
+      -2
+    )}`;
+  }
+  return ``;
+};
