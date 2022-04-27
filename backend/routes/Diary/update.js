@@ -7,12 +7,12 @@ const Update = async (req, res) => {
   const [resultAuth, dataAuth] = authentication(req, res);
   const [resultValidDiary] = isValidDiary(req, res);
   const diaryDate = req.url.match(/\d{8}$/)[0];
-  const [resultSelectDiary, dataSelectDiary] = await selectDiary(await connect(), {
-    uid: dataAuth.id,
-    diaryDate,
-  });
 
   if (resultAuth && resultValidDiary) {
+    const [resultSelectDiary, dataSelectDiary] = await selectDiary(await connect(), {
+      uid: dataAuth.id,
+      diaryDate,
+    });
     if (resultSelectDiary) {
       let payload = "";
 
