@@ -2,15 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { createDiary } from "api/diaryApi";
 interface IWriteDiary {
-  searchDate: { diaryid?: string };
+  queryParameter: { date?: string };
 }
 
-const WriteDiary = ({ searchDate }: IWriteDiary) => {
+const WriteDiary = ({ queryParameter }: IWriteDiary) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const history = useHistory();
   useEffect(() => {
-    if (!searchDate.diaryid) {
+    if (!queryParameter.date) {
       history.push("/main");
     }
   }, []);
@@ -26,13 +26,14 @@ const WriteDiary = ({ searchDate }: IWriteDiary) => {
   const submitDiary = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      if (searchDate.diaryid) {
-        const { data } = await createDiary(searchDate.diaryid, {
+      if (queryParameter.date) {
+        const { data } = await createDiary(queryParameter.date, {
           title,
           content,
         });
         if (data.result) {
           alert("일기 작성이 완료되었습니다.");
+          history.push(`/main/diary/${queryParameter.date}`);
         } else {
           alert(data.data.diary);
         }
@@ -46,8 +47,8 @@ const WriteDiary = ({ searchDate }: IWriteDiary) => {
     <div>
       <form onSubmit={submitDiary}>
         <p>
-          {searchDate.diaryid?.slice(0, 4)}년 {searchDate.diaryid?.slice(4, 6)}
-          월 {searchDate.diaryid?.slice(6)}일
+          {queryParameter.date?.slice(0, 4)}년{" "}
+          {queryParameter.date?.slice(4, 6)}월 {queryParameter.date?.slice(6)}일
         </p>
         <input placeholder="제목" onChange={changeTitle} />
         <div contentEditable="true" onInput={changeContent}></div>

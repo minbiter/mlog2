@@ -9,7 +9,7 @@ interface IDateDetailProps {
 const DateDetail = ({ clickedDate }: IDateDetailProps) => {
   let history = useHistory();
   const clickDiaryWrite = (e: any) => {
-    history.push(`/main/diary?compose=new&diaryid=${clickedDate}`);
+    history.push(`/main/diary?compose=new&date=${clickedDate}`);
   };
   const clickDiaryRead = (e: any) => {
     history.push(`/main/diary/${clickedDate}`);

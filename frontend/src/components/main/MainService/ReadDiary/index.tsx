@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams, useHistory } from "react-router-dom";
+import { AuthContext } from "context/AuthProvider";
 import { deleteDiaryApi, fetchDiaryApi } from "api/diaryApi";
 import WarningModal from "components/modal/WarningModal";
 interface IReadDiaryParams {
@@ -11,6 +12,7 @@ const ReadDiary = () => {
   const [content, setContent] = useState("");
   const [isDiary, setIsDiary] = useState(false);
   const [isClickedDelete, setIsClickedDelete] = useState(false);
+  const { auth } = useContext(AuthContext);
   const history = useHistory();
   const { date } = useParams<IReadDiaryParams>();
 
@@ -29,8 +31,8 @@ const ReadDiary = () => {
         alert("서비스를 이용하실 수 없습니다.");
       }
     };
-    fetchDiary();
-  }, []);
+    if (auth) fetchDiary();
+  }, [auth]);
 
   const openUpdateModal = () => {
     history.push(`/main/diary/${date}?compose=update`);

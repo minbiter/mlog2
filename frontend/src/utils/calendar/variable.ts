@@ -1,5 +1,5 @@
 export const monthList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-export const yearListFuc = () =>
+export const yearListFcn = () =>
   Array.from(
     { length: new Date().getFullYear() - 2017 + 1 },
     (v, i) => 2017 + i
@@ -16,7 +16,7 @@ export const tdKeyList = [
   ["5-0", "5-1", "5-2", "5-3", "5-4", "5-5", "5-6"],
 ];
 
-export const toStringDateFuc = (...args: number[] | Date[]): string => {
+export const toStringDateFcn = (...args: number[] | Date[]): string => {
   if (typeof args[0] !== "number") {
     return `${args[0].getFullYear()}${("0" + (args[0].getMonth() + 1)).slice(
       -2
