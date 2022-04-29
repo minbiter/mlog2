@@ -65,7 +65,7 @@ const ReadDiary = () => {
             <button onClick={openWarningModal}>삭제</button>
           </div>
           <p>{title}</p>
-          <p>{content}</p>
+          <p style={{ whiteSpace: "pre-wrap" }}>{content}</p>
           {isClickedDelete ? (
             <WarningModal
               msg="정말 삭제하시겠습니까?"

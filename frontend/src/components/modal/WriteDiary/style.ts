@@ -80,10 +80,11 @@ export const itemOfFormModal = css`
 `;
 
 export const textboxTag = css`
-  width: 100%;
   height: 350px;
   padding-top: 10px;
+  border-bottom: 1px solid #eff1f6;
   overflow: auto;
+  word-break: break-all;
   line-height: 1.5;
   &:focus {
     outline: none;

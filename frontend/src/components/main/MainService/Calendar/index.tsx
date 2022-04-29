@@ -117,13 +117,11 @@ const Calendar = ({ queryParameter }: ICalendarProps) => {
   const lastDate = new Date(calYear, calMonth + 1, 0);
   let dateCount = 1;
   let dateCheck = false;
-  console.log(lastDate);
   const createTdTag = (tdKey: string) => {
     if (!dateCheck && tdKey === `0-${firstDate.getDay()}`) {
       dateCheck = true;
     }
     if (dateCheck && dateCount <= lastDate.getDate()) {
-      console.log(dateCount);
       return (
         <div role="gridcell" css={gridCellTag} key={tdKey} onClick={clickDate}>
           {dateCount++}
