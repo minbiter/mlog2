@@ -1,3 +1,4 @@
+/** @jsxImportSource @emotion/react */
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import {
@@ -9,6 +10,19 @@ import {
   toStringDateFcn,
 } from "utils/calendar/variable";
 import DateDetail from "../DateDetail";
+import {
+  articleTag,
+  articleContainer,
+  yearSelect,
+  monthSelect,
+  prevButton,
+  nextButton,
+  gridTag,
+  rowGroupTag,
+  rowTag,
+  columnheaderTag,
+  gridCellTag,
+} from "./style";
 
 interface ICalendarProps {
   queryParameter: { date?: string };
@@ -93,9 +107,9 @@ const Calendar = ({ queryParameter }: ICalendarProps) => {
 
   const createTrTag = (trKey: string) => {
     return (
-      <tr key={trKey}>
+      <div role="row" css={rowTag} key={trKey}>
         {tdKeyList[parseInt(trKey)].map((tdKey) => createTdTag(tdKey))}
-      </tr>
+      </div>
     );
   };
 
@@ -103,19 +117,20 @@ const Calendar = ({ queryParameter }: ICalendarProps) => {
   const lastDate = new Date(calYear, calMonth + 1, 0);
   let dateCount = 1;
   let dateCheck = false;
-
+  console.log(lastDate);
   const createTdTag = (tdKey: string) => {
-    if (!dateCheck && tdKey === `1-${firstDate.getDay()}`) {
+    if (!dateCheck && tdKey === `0-${firstDate.getDay()}`) {
       dateCheck = true;
     }
     if (dateCheck && dateCount <= lastDate.getDate()) {
+      console.log(dateCount);
       return (
-        <td key={tdKey} onClick={clickDate}>
+        <div role="gridcell" css={gridCellTag} key={tdKey} onClick={clickDate}>
           {dateCount++}
-        </td>
+        </div>
       );
     } else {
-      return <td key={tdKey}></td>;
+      return <div role="gridcell" key={tdKey}></div>;
     }
   };
 
@@ -124,55 +139,82 @@ const Calendar = ({ queryParameter }: ICalendarProps) => {
       {loading ? (
         <p>loading</p>
       ) : (
-        <div>
-          <div>
-            <button
-              onClick={prevMonth}
-              disabled={calYear === 2017 && calMonth === 0}
-            >
-              좌
-            </button>
-            <select value={calYear} onChange={changeYear}>
-              {yearList.map((yearValue) => (
-                <option key={`option-${yearValue}년`} value={yearValue}>
-                  {yearValue}년
-                </option>
-              ))}
-            </select>
-            <select value={calMonth + 1} onChange={changeMonth}>
-              {monthList.map((monthValue) =>
-                calYear !== 2022 ? (
-                  <option key={`option-${monthValue}월`} value={monthValue}>
-                    {monthValue}월
+        <>
+          <article css={[articleTag, articleContainer]}>
+            <div>
+              <select value={calYear} onChange={changeYear} css={yearSelect}>
+                {yearList.map((yearValue) => (
+                  <option key={`option-${yearValue}년`} value={yearValue}>
+                    {yearValue}년
                   </option>
-                ) : monthValue <= today.getMonth() + 1 ? (
-                  <option key={`option-${monthValue}월`} value={monthValue}>
-                    {monthValue}월
-                  </option>
-                ) : null
-              )}
-            </select>
-            <button
-              onClick={nextMonth}
-              disabled={
-                calYear === today.getFullYear() && calMonth === today.getMonth()
-              }
-            >
-              우
-            </button>
-          </div>
-          <table>
-            <thead>
-              <tr>
-                {dayList.map((dayValue) => (
-                  <th key={`th-${dayValue}`}>{dayValue}</th>
                 ))}
-              </tr>
-            </thead>
-            <tbody>{trKeyList.map((trKey) => createTrTag(trKey))}</tbody>
-          </table>
+              </select>
+              <select
+                value={calMonth + 1}
+                onChange={changeMonth}
+                css={monthSelect}
+              >
+                {monthList.map((monthValue) =>
+                  calYear !== 2022 ? (
+                    <option key={`option-${monthValue}월`} value={monthValue}>
+                      {monthValue}월
+                    </option>
+                  ) : monthValue <= today.getMonth() + 1 ? (
+                    <option key={`option-${monthValue}월`} value={monthValue}>
+                      {monthValue}월
+                    </option>
+                  ) : null
+                )}
+              </select>
+            </div>
+            <div>
+              <button
+                onClick={prevMonth}
+                disabled={calYear === 2017 && calMonth === 0}
+                css={prevButton}
+              >
+                <img
+                  src="https://img.icons8.com/ios/15/000000/back--v1.png"
+                  alt="prev-button img"
+                />
+              </button>
+              <button
+                onClick={nextMonth}
+                disabled={
+                  calYear === today.getFullYear() &&
+                  calMonth === today.getMonth()
+                }
+                css={nextButton}
+              >
+                <img
+                  src="https://img.icons8.com/ios/15/000000/forward--v1.png"
+                  alt="next-button img"
+                />
+              </button>
+            </div>
+          </article>
+          <article css={articleTag}>
+            <div role="grid" css={gridTag}>
+              <div role="rowgroup" css={rowGroupTag}>
+                <div role="row" css={rowTag}>
+                  {dayList.map((dayValue) => (
+                    <div
+                      role="columnheader"
+                      css={columnheaderTag}
+                      key={`th-${dayValue}`}
+                    >
+                      {dayValue}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div role="rowgroup" css={rowGroupTag}>
+                {trKeyList.map((trKey) => createTrTag(trKey))}
+              </div>
+            </div>
+          </article>
           <DateDetail clickedDate={toStringDateFcn(year, month, date)} />
-        </div>
+        </>
       )}
     </>
   );

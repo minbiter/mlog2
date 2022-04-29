@@ -11,7 +11,7 @@ export const headerTag = css`
 export const navBar = css`
   height: 60px;
   padding: 0 20px;
-  box-shadow: 0 2px 4px 0 hsl(0deg 0% 81% / 50%);
+  border-bottom: 1px solid #eff1f6;
   display: flex;
   align-items: center;
   justify-content: space-between;

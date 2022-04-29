@@ -154,7 +154,7 @@ export const defaultStyle = css`
   }
   main {
     margin-top: 60px;
-    max-width: 1440px;
+    // max-width: 1440px;
   }
 `;
 
