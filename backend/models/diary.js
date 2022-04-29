@@ -3,7 +3,7 @@ async function init(connection) {
     "CREATE TABLE IF NOT EXISTS mlog.diary (\
       id INT NOT NULL AUTO_INCREMENT,\
       uid INT,\
-      diaryDate VARCHAR(10) NOT NULL,\
+      diaryDate INT NOT NULL,\
       title VARCHAR(255) NOT NULL,\
       content TEXT NOT NULL,\
       createdAt DATETIME NOT NULL,\
@@ -76,10 +76,26 @@ async function deleteDiary(connection, data) {
   return [true, { diary: "일기가 삭제되었습니다." }];
 }
 
+async function selectCanlendar(connection, data) {
+  const [rows] = await connection.execute(
+    "SELECT diaryDate FROM mlog.diary WHERE uid = ? AND diaryDate >= ? AND diaryDate <= ?",
+    [data.uid, data.startDate, data.endDate]
+  );
+  const customRows = {};
+  if (rows.length) {
+    rows.forEach((row) => {
+      customRows[`${row.diaryDate}`] = {};
+    });
+    return [true, { diary: customRows }];
+  }
+  return [false, { diary: "해당 날짜 범위의 일기가 존재하지 않습니다." }];
+}
+
 module.exports = {
   init,
   insertDiary,
   selectDiary,
   updateDiaryTitleContent,
   deleteDiary,
+  selectCanlendar,
 };

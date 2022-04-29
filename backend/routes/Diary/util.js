@@ -19,6 +19,35 @@ const isValidDiary = (req, res) => {
   }
 };
 
+const rangeDate = (startDate, endDate) => {
+  if (startDate && endDate) {
+    if (startDate > endDate) {
+      return [false];
+    }
+    return [true, parseInt(startDate), parseInt(endDate)];
+  } else if (!startDate && !endDate) {
+    const today = new Date();
+    let resultStartDate = new Date(today.getFullYear(), today.getMonth(), 1);
+    let resultEndDate = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    return [
+      true,
+      parseInt(
+        `${resultStartDate.getFullYear()}${("0" + (resultStartDate.getMonth() + 1)).slice(
+          -2
+        )}${("0" + resultStartDate.getDate()).slice(-2)}`
+      ),
+      parseInt(
+        `${resultEndDate.getFullYear()}${("0" + (resultEndDate.getMonth() + 1)).slice(
+          -2
+        )}${("0" + resultEndDate.getDate()).slice(-2)}`
+      ),
+    ];
+  } else {
+    return [false];
+  }
+};
+
 module.exports = {
   isValidDiary,
+  rangeDate,
 };

@@ -11,7 +11,7 @@ const Update = async (req, res) => {
   if (resultAuth && resultValidDiary) {
     const [resultSelectDiary, dataSelectDiary] = await selectDiary(await connect(), {
       uid: dataAuth.id,
-      diaryDate,
+      diaryDate: parseInt(diaryDate),
     });
     if (resultSelectDiary) {
       let payload = "";
@@ -24,7 +24,7 @@ const Update = async (req, res) => {
         const parsePayload = JSON.parse(payload);
         const data = {
           uid: dataAuth.id,
-          diaryDate,
+          diaryDate: parseInt(diaryDate),
           updatedAt: new Date(),
         };
         // Compare prev title & content

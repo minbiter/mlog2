@@ -10,7 +10,7 @@ const Create = async (req, res) => {
   if (resultAuth && resultValidDiary) {
     const [resultSelectDiary] = await selectDiary(await connect(), {
       uid: dataAuth.id,
-      diaryDate,
+      diaryDate: parseInt(diaryDate),
     });
     if (!resultSelectDiary) {
       let payload = "";
@@ -21,7 +21,7 @@ const Create = async (req, res) => {
         const parsePayload = JSON.parse(payload);
         const data = {
           uid: dataAuth.id,
-          diaryDate,
+          diaryDate: parseInt(diaryDate),
           title: parsePayload.title,
           content: parsePayload.content,
           createdAt: new Date(),

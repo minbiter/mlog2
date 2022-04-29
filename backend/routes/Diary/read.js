@@ -9,7 +9,7 @@ const Read = async (req, res) => {
   if (resultAuth) {
     const [resultSelectDiary, dataSelectDiary] = await selectDiary(await connect(), {
       uid: dataAuth.id,
-      diaryDate,
+      diaryDate: parseInt(diaryDate),
     });
     res.setHeader("Content-Type", "application/json; charset=utf-8");
     if (resultSelectDiary) {
