@@ -12,11 +12,19 @@ const Token = require("./token");
 const env = process.env.NODE_ENV || "DEVELOPMENT";
 
 const connect = async () => {
-  return await mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: process.env[`${env}_DB_PASSWORD`],
-  });
+  try {
+    return await mysql.createConnection({
+      host: "localhost",
+      user: "root",
+      password: process.env[`${env}_DB_PASSWORD`],
+    });
+  } catch (err) {
+    return await mysql.createConnection({
+      host: "localhost",
+      user: "root",
+      password: process.env[`${env}_DB_PASSWORD`],
+    });
+  }
 };
 
 const config = async () => {

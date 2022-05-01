@@ -19,9 +19,10 @@ import logoImg from "assets/logo.png";
 
 interface ISignUpProps {
   closeSignUpModal: () => void;
+  openSignInModal: () => void;
 }
 
-const SignUp = ({ closeSignUpModal }: ISignUpProps) => {
+const SignUp = ({ closeSignUpModal, openSignInModal }: ISignUpProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
@@ -31,9 +32,10 @@ const SignUp = ({ closeSignUpModal }: ISignUpProps) => {
     e.preventDefault();
     try {
       const { data } = await signUpUser({ email, password, passwordConfirm });
-      console.log(data);
       if (data.result) {
-        console.log("회원가입 성공!");
+        alert("회원가입 완료됐습니다.");
+        closeSignUpModal();
+        openSignInModal();
       } else {
         alert(data.data);
       }

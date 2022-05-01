@@ -7,12 +7,12 @@ const Update = async (req, res) => {
   const [resultAuth, dataAuth] = authentication(req, res);
   const [resultValidDiary] = isValidDiary(req, res);
   const diaryDate = req.url.match(/\d{8}$/)[0];
-  const [resultSelectDiary, dataSelectDiary] = await selectDiary(await connect(), {
-    uid: dataAuth.id,
-    diaryDate,
-  });
 
   if (resultAuth && resultValidDiary) {
+    const [resultSelectDiary, dataSelectDiary] = await selectDiary(await connect(), {
+      uid: dataAuth.id,
+      diaryDate: parseInt(diaryDate),
+    });
     if (resultSelectDiary) {
       let payload = "";
 
@@ -24,7 +24,7 @@ const Update = async (req, res) => {
         const parsePayload = JSON.parse(payload);
         const data = {
           uid: dataAuth.id,
-          diaryDate,
+          diaryDate: parseInt(diaryDate),
           updatedAt: new Date(),
         };
         // Compare prev title & content
