@@ -2,11 +2,8 @@ async function init(connection) {
   await connection.execute(
     "CREATE TABLE IF NOT EXISTS mlog.diaryEmotion (\
       id INT NOT NULL AUTO_INCREMENT,\
-      diaryId INT,\
-      topEmotion VARCHAR(10) NOT NULL,\
-      neutral INT NOT NULL DEFAULT 0,\
-      positive INT NOT NULL DEFAULT 0,\
-      negative INT NOT NULL DEFAULT 0,\
+      diaryId INT NOT NULL,\
+      emotion VARCHAR(10) NOT NULL,\
       PRIMARY KEY (id),\
       INDEX diaryId_idx (diaryId ASC) VISIBLE,\
       CONSTRAINT fk_diaryEmotion_diary_diaryId\
@@ -18,6 +15,18 @@ async function init(connection) {
   );
 }
 
+async function insertDiaryEmotion(connection, data) {
+  const [rows] = await connection.execute(
+    "INSERT INTO mlog.diaryEmotion (diaryId, emotion) VALUES (?, ?);",
+    [data.diaryId, data.emotion]
+  );
+  if (!rows.affectedRows) {
+    return [false, { diary: "일기 작성을 실패했습니다." }];
+  }
+  return [true, { diary: { diaryEmotionId: rows.insertId } }];
+}
+
 module.exports = {
   init,
+  insertDiaryEmotion,
 };

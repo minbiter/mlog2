@@ -25,7 +25,7 @@ async function insertDiary(connection, data) {
     [data.uid, data.diaryDate, data.title, data.content, data.createdAt, data.updatedAt]
   );
   if (!rows.affectedRows) {
-    return [false, { diary: "일기 작성의 실패했습니다." }];
+    return [false, { diary: "일기 작성을 실패했습니다." }];
   }
   return [true, { diary: { diaryId: rows.insertId } }];
 }

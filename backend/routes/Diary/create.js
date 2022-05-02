@@ -1,6 +1,8 @@
 const { authentication } = require("../middleware/token");
+const { diaryAnalysis } = require("../middleware/diaryAnalysis");
 const { connect } = require("../../models");
 const { selectDiary, insertDiary } = require("../../models/diary");
+const { insertDiaryEmotion } = require("../../models/diaryEmotion");
 const { isValidDiary } = require("./util");
 
 const Create = async (req, res) => {
@@ -19,23 +21,51 @@ const Create = async (req, res) => {
       });
       req.on("end", async () => {
         const parsePayload = JSON.parse(payload);
-        const data = {
-          uid: dataAuth.id,
-          diaryDate: parseInt(diaryDate),
-          title: parsePayload.title,
-          content: parsePayload.content,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
-        const [resultInsertDiary, dataInsertDiary] = await insertDiary(
-          await connect(),
-          data
+        const [resultDiaryAnalysis, dataDiaryAnalysis] = await diaryAnalysis(
+          parsePayload.content
         );
-        res.setHeader("Content-Type", "application/json; charset=utf-8");
-        if (resultInsertDiary) {
-          res.end(JSON.stringify({ result: true, data: dataInsertDiary }));
+        if (resultDiaryAnalysis) {
+          const queryDiary = {
+            uid: dataAuth.id,
+            diaryDate: parseInt(diaryDate),
+            title: parsePayload.title,
+            content: parsePayload.content,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          };
+          const [resultInsertDiary, dataInsertDiary] = await insertDiary(
+            await connect(),
+            queryDiary
+          );
+          res.setHeader("Content-Type", "application/json; charset=utf-8");
+          if (resultInsertDiary) {
+            const queryDiaryEmotion = {
+              diaryId: dataInsertDiary.diary.diaryId,
+              emotion: dataDiaryAnalysis,
+            };
+            const [resultInsertDiaryEmotion, dataInsertDiaryEmotion] =
+              await insertDiaryEmotion(await connect(), queryDiaryEmotion);
+            if (resultInsertDiaryEmotion) {
+              res.end(
+                JSON.stringify({
+                  result: true,
+                  data: {
+                    diary: {
+                      diaryId: dataInsertDiary.diary.diaryId,
+                      emotion: dataDiaryAnalysis,
+                    },
+                  },
+                })
+              );
+            } else {
+              res.end(JSON.stringify({ result: false, data: dataInsertDiaryEmotion }));
+            }
+          } else {
+            res.end(JSON.stringify({ result: false, data: dataInsertDiary }));
+          }
         } else {
-          res.end(JSON.stringify({ result: false, data: dataInsertDiary }));
+          res.setHeader("Content-Type", "application/json; charset=utf-8");
+          res.end(JSON.stringify({ result: false, data: dataDiaryAnalysis }));
         }
       });
     } else {
