@@ -78,13 +78,18 @@ async function deleteDiary(connection, data) {
 
 async function selectCanlendar(connection, data) {
   const [rows] = await connection.execute(
-    "SELECT diaryDate FROM mlog.diary WHERE uid = ? AND diaryDate >= ? AND diaryDate <= ?",
+    "SELECT D.diaryDate, E.emotion\
+    FROM mlog.diaryEmotion E\
+    JOIN mlog.diary D\
+    ON D.id = E.diaryId\
+    WHERE uid = ? AND diaryDate >= ? AND diaryDate <= ?",
     [data.uid, data.startDate, data.endDate]
   );
   const customRows = {};
   if (rows.length) {
     rows.forEach((row) => {
       customRows[`${row.diaryDate}`] = {};
+      customRows[`${row.diaryDate}`]["emotion"] = row.emotion;
     });
     return [true, { diary: customRows }];
   }
