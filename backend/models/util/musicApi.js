@@ -45,7 +45,7 @@ async function fetchMusic() {
     const videoIdPromiseAll = [];
     for (const music of musicListByGenre[i].data.data.trackList) {
       let videoIdURL = `https://www.googleapis.com/youtube/v3/search?key=${
-        process.env.YOUTUBE_KEY
+        process["env"][`YOUTUBE_KEY${i}`]
       }&q=${encodeURI(music.name)}${encodeURI(
         " " + music.artistList[0].name
       )}&maxResults=1&part=snippet`;
