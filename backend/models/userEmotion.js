@@ -39,7 +39,18 @@ async function insertUserEmotion(connection, data) {
   return [true, { survey: "설문 작성에 성공했습니다." }];
 }
 
+async function deleteUserEmotion(connection, data) {
+  const [rows] = await connection.execute("DELETE FROM mlog.userEmotion WHERE uid = ?;", [
+    data.uid,
+  ]);
+  if (!rows.affectedRows) {
+    return [false, { survey: "설문조사 초기화에 실패했습니다." }];
+  }
+  return [true, { survey: "설문조사가 초기화되었습니다." }];
+}
+
 module.exports = {
   init,
   insertUserEmotion,
+  deleteUserEmotion,
 };

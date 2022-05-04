@@ -12,7 +12,7 @@ async function init(connection) {
   await connection.execute(
     "\
     CREATE TABLE IF NOT EXISTS mlog.music (\
-      id BIGINT NOT NULL AUTO_INCREMENT,\
+      id BIGINT NOT NULL,\
       title VARCHAR(60),\
       artist VARCHAR(60),\
       genreId INT,\
@@ -33,9 +33,9 @@ async function init(connection) {
 // Insert musicData to musicTable.
 async function InsertMusic(connection) {
   const response = await fetchMusic();
-  let query = "INSERT INTO mlog.music VALUES ";
-  response.forEach(({ title, artist, genre, img, videoId }) => {
-    query += `('${title}', '${artist}', '${genre}', '${img}', '${videoId}'),`;
+  let query = "INSERT IGNORE INTO mlog.music VALUES ";
+  response.forEach(({ id, title, artist, genre, img, videoId }) => {
+    query += `(${id}, '${title}', '${artist}', '${genre}', '${img}', '${videoId}'),`;
   });
   console.log("music INSERT 중");
   await connection.execute(query.replace(/.$/, ";"));

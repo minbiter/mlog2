@@ -14,6 +14,7 @@ const Survey = async (req, res) => {
       await Create(req, res);
     } else if (req.method === "PUT") {
       console.log("Update: User Emotion 수정");
+      await Update(req, res);
     }
   }
 };
