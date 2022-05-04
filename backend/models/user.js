@@ -8,6 +8,7 @@ async function init(connection) {
       password VARCHAR(100),\
       provider VARCHAR(10) NOT NULL DEFAULT 'local',\
       snsId VARCHAR(50),\
+      isSurvey boolean DEFAULT false,\
       createdAt DATETIME NOT NULL DEFAULT now(),\
       updatedAt DATETIME NOT NULL DEFAULT now(),\
       deletedAt DATETIME,\
