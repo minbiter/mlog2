@@ -7,6 +7,7 @@ const Genre = require("./genre");
 const Music = require("./music");
 const DiaryMusic = require("./diaryMusic");
 const UserEmotion = require("./userEmotion");
+const SurveyMusic = require("./surveyMusic");
 const Token = require("./token");
 
 const env = process.env.NODE_ENV || "DEVELOPMENT";
@@ -59,6 +60,8 @@ const config = async () => {
     console.log("(step3-7) userEmotion table 생성 완료");
     await Token.init(connection);
     console.log("(step3-8) token table 생성 완료");
+    await SurveyMusic.init(connection);
+    console.log("(step3-8) surveyMusic table 생성 완료");
     console.log("tables 생성 완료");
   }
 };
