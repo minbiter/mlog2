@@ -9,6 +9,7 @@ const Survey = async (req, res) => {
   if (url.pathname === "/survey") {
     if (req.method === "GET") {
       console.log("Fetch: surveyList 불러오기");
+      await Fetch(req, res);
     } else if (req.method === "POST") {
       console.log("Create: User Emotion 생성");
       await Create(req, res);

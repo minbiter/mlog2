@@ -56,6 +56,24 @@ async function InsertSurveyMusic(connection) {
   connection.execute(query.replace(/.$/, ";"));
 }
 
+async function selectSurveyMusic(connection) {
+  const [rows] = await connection.execute(
+    "\
+    SELECT M.title, M.artist, M.img, M.videoId, M.genreId, G.name\
+    FROM mlog.music M\
+    JOIN mlog.surveyMusic SM\
+	  ON SM.musicId = M.id\
+    JOIN mlog.genre G\
+    ON G.id = SM.genreId;\
+  "
+  );
+  if (!rows.length) {
+    return [false, { surveyMusic: "설문조사 음악을 가져올 수 없습니다." }];
+  }
+  return [true, { surveyMusic: rows }];
+}
+
 module.exports = {
   init,
+  selectSurveyMusic,
 };
