@@ -41,7 +41,7 @@ const Create = async (req, res) => {
           if (resultInsertDiary) {
             const queryDiaryEmotion = {
               diaryId: dataInsertDiary.diary.diaryId,
-              emotion: dataDiaryAnalysis,
+              ...dataDiaryAnalysis,
             };
             const [resultInsertDiaryEmotion, dataInsertDiaryEmotion] =
               await insertDiaryEmotion(await connect(), queryDiaryEmotion);

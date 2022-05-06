@@ -78,7 +78,7 @@ async function deleteDiary(connection, data) {
 
 async function selectCanlendar(connection, data) {
   const [rows] = await connection.execute(
-    "SELECT D.diaryDate, E.emotion\
+    "SELECT D.diaryDate, E.topEmotion\
     FROM mlog.diaryEmotion E\
     JOIN mlog.diary D\
     ON D.id = E.diaryId\

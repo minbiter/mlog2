@@ -1,7 +1,9 @@
 const { authentication } = require("../middleware/token");
 const { isValidDiary } = require("./util");
+const { diaryAnalysis } = require("../middleware/diaryAnalysis");
 const { connect } = require("../../models");
 const { selectDiary, updateDiaryTitleContent } = require("../../models/diary");
+const { updateDiaryEmotion } = require("../../models/diaryEmotion");
 
 const Update = async (req, res) => {
   const [resultAuth, dataAuth] = authentication(req, res);
@@ -28,22 +30,30 @@ const Update = async (req, res) => {
           updatedAt: new Date(),
         };
         // Compare prev title & content
+        let resultDiaryAnalysis = null;
+        let dataDiaryAnalysis = null;
         if (parsePayload.title !== dataSelectDiary.title)
           data["title"] = parsePayload.title;
         if (parsePayload.content !== dataSelectDiary.content) {
           data["content"] = parsePayload.content;
-          // content가 변경되면 감정분석 다시 해야함.
-          // resultUpdate가 true시,
-          // 해당 일기의 diaryEmotion과 diaryMusic row 삭제.
+          [resultDiaryAnalysis, dataDiaryAnalysis] = await diaryAnalysis(
+            parsePayload.content
+          );
         }
-
+        let resultUpdateEmotion = true;
+        if (resultDiaryAnalysis) {
+          [resultUpdateEmotion] = await updateDiaryEmotion(await connect(), {
+            ...data,
+            ...dataDiaryAnalysis,
+          });
+        }
         const [resultUpdate, dataUpdate] = await updateDiaryTitleContent(
           await connect(),
           data
         );
 
         res.setHeader("Content-Type", "application/json; charset=utf-8");
-        if (resultUpdate) {
+        if (resultUpdate && resultUpdateEmotion) {
           res.end(JSON.stringify({ result: true, data: dataUpdate }));
         } else {
           res.end(JSON.stringify({ result: false, data: dataUpdate }));
