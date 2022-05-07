@@ -6,6 +6,7 @@ async function init(connection) {
       diaryDate INT NOT NULL,\
       title VARCHAR(255) NOT NULL,\
       content TEXT NOT NULL,\
+      isMusic boolean DEFAULT false,\
       createdAt DATETIME NOT NULL,\
       updatedAt DATETIME NOT NULL,\
       PRIMARY KEY (id),\
@@ -32,7 +33,7 @@ async function insertDiary(connection, data) {
 
 async function selectDiary(connection, data) {
   const [rows] = await connection.execute(
-    "SELECT id, uid, diaryDate, title, content FROM mlog.diary WHERE uid = ? AND diaryDate = ?;",
+    "SELECT id, uid, diaryDate, title, content, isMusic FROM mlog.diary WHERE uid = ? AND diaryDate = ?;",
     [data.uid, data.diaryDate]
   );
   if (rows.length) {

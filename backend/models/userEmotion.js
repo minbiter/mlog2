@@ -26,6 +26,20 @@ async function init(connection) {
   );
 }
 
+async function selectUserEmotion(connection, data) {
+  const [rows] = await connection.execute(
+    "SELECT * FROM mlog.userEmotion WHERE uid = ? AND genreId = ?;",
+    [data.uid, data.genreId]
+  );
+  if (rows.length) {
+    return [true, { userEmotion: rows[0] }];
+  }
+  return [
+    false,
+    { userEmotion: "해당 유저의 감정을 찾을 수 없습니다.(hint: 설문조사를 해주세요.)" },
+  ];
+}
+
 async function insertUserEmotion(connection, data) {
   let query =
     "INSERT INTO mlog.userEmotion (uid, genreId, topEmotion, neutral, positive, negative) VALUES ";
@@ -51,6 +65,7 @@ async function deleteUserEmotion(connection, data) {
 
 module.exports = {
   init,
+  selectUserEmotion,
   insertUserEmotion,
   deleteUserEmotion,
 };

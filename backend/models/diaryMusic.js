@@ -22,6 +22,32 @@ async function init(connection) {
   );
 }
 
+async function insertDiaryMusic(connection, data) {
+  const rowList = await Promise.all([
+    connection.execute("INSERT INTO mlog.diaryMusic (diaryId, musicId) VALUES (?, ?);", [
+      data.diaryId,
+      data.musicId,
+    ]),
+    connection.execute(
+      "UPDATE mlog.userEmotion SET count = ?, positive = ?, negative = ?, neutral = ? WHERE uid = ? AND genreId = ?;",
+      [data.count, data.positive, data.negative, data.neutral, data.uid, data.genreId]
+    ),
+    connection.execute(
+      "UPDATE mlog.diary SET isMusic = true WHERE uid = ? AND diaryDate = ?;",
+      [data.uid, data.diaryDate]
+    ),
+  ]);
+  if (
+    !rowList[0][0].affectedRows ||
+    !rowList[1][0].affectedRows ||
+    !rowList[2][0].affectedRows
+  ) {
+    return [false, { diaryMusic: "음악 선택에 실패했습니다." }];
+  }
+  return [true, { diaryMusic: "음악 선택이 완료되었습니다." }];
+}
+
 module.exports = {
   init,
+  insertDiaryMusic,
 };
