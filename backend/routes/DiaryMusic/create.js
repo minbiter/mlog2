@@ -1,10 +1,10 @@
 const { authentication } = require("../middleware/token");
+const { isValidDiary } = require("../Diary/util");
 const { connect } = require("../../models");
 const { selectDiary } = require("../../models/diary");
 const { selectDiaryEmotion } = require("../../models/diaryEmotion");
 const { selectUserEmotion } = require("../../models/userEmotion");
 const { insertDiaryMusic } = require("../../models/diaryMusic");
-const { isValidDiary } = require("../Diary/util");
 
 const Create = async (req, res) => {
   const [resultAuth, dataAuth] = authentication(req, res);

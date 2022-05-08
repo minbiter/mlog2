@@ -42,6 +42,17 @@ async function InsertMusic(connection) {
   console.log("music INSERT 완료");
 }
 
+async function selectRecommendMusic(connection, genreId) {
+  const [rows] = await connection.execute(
+    "\
+    SELECT * FROM mlog.music WHERE genreId = ? order by rand() limit 1;\
+  ",
+    [genreId]
+  );
+  return rows[0];
+}
+
 module.exports = {
   init,
+  selectRecommendMusic,
 };
