@@ -16,6 +16,15 @@ async function init(connection) {
     ) ENGINE=InnoDB;"
   );
 }
+async function selectUser(connection, data) {
+  const [rows] = await connection.execute("SELECT * from mlog.user WHERE id = ?", [
+    data.id,
+  ]);
+  if (rows.length) {
+    return [true, { user: rows[0] }];
+  }
+  return [false];
+}
 
 async function isExistEmail(connection, email) {
   let result = false;
@@ -53,9 +62,18 @@ async function isSamePassword(connection, data) {
   }
 }
 
+async function surveyComplete(connection, data) {
+  const [rows] = await connection.execute(
+    "UPDATE mlog.user SET isSurvey = 1 WHERE id = ?;",
+    [data.id]
+  );
+}
+
 module.exports = {
   init,
+  selectUser,
   isExistEmail,
   insertUser,
   isSamePassword,
+  surveyComplete,
 };

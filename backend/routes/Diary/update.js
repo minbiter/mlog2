@@ -3,7 +3,7 @@ const { isValidDiary } = require("./util");
 const { diaryAnalysis } = require("../middleware/diaryAnalysis");
 const { connect } = require("../../models");
 const { selectDiary, updateDiaryTitleContent } = require("../../models/diary");
-const { updateDiaryEmotion } = require("../../models/diaryEmotion");
+const { updateDiaryEmotion, selectDiaryEmotion } = require("../../models/diaryEmotion");
 
 const Update = async (req, res) => {
   const [resultAuth, dataAuth] = authentication(req, res);
@@ -32,9 +32,9 @@ const Update = async (req, res) => {
         // Compare prev title & content
         let resultDiaryAnalysis = null;
         let dataDiaryAnalysis = null;
-        if (parsePayload.title !== dataSelectDiary.title)
+        if (parsePayload.title !== dataSelectDiary.diary.title)
           data["title"] = parsePayload.title;
-        if (parsePayload.content !== dataSelectDiary.content) {
+        if (parsePayload.content !== dataSelectDiary.diary.content) {
           data["content"] = parsePayload.content;
           [resultDiaryAnalysis, dataDiaryAnalysis] = await diaryAnalysis(
             parsePayload.content
@@ -51,10 +51,28 @@ const Update = async (req, res) => {
           await connect(),
           data
         );
-
+        const [resultSelectDiaryEmotion, dataSelectDiaryEmotion] =
+          await selectDiaryEmotion(await connect(), {
+            diaryId: dataSelectDiary.diary.id,
+          });
         res.setHeader("Content-Type", "application/json; charset=utf-8");
         if (resultUpdate && resultUpdateEmotion) {
-          res.end(JSON.stringify({ result: true, data: dataUpdate }));
+          res.end(
+            JSON.stringify({
+              result: true,
+              data: {
+                diary: {
+                  diaryId: dataSelectDiaryEmotion.diaryEmotion.diaryId,
+                  emotion: {
+                    positive: dataSelectDiaryEmotion.diaryEmotion.positive,
+                    negative: dataSelectDiaryEmotion.diaryEmotion.negative,
+                    neutral: dataSelectDiaryEmotion.diaryEmotion.neutral,
+                    topEmotion: dataSelectDiaryEmotion.diaryEmotion.topEmotion,
+                  },
+                },
+              },
+            })
+          );
         } else {
           res.end(JSON.stringify({ result: false, data: dataUpdate }));
         }

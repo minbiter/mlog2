@@ -1,6 +1,7 @@
 const { authentication } = require("../middleware/token");
 const { isValidSurvey, createQuerySurveyList } = require("./util");
 const { connect } = require("../../models");
+const { surveyComplete } = require("../../models/user");
 const { insertUserEmotion } = require("../../models/userEmotion");
 
 const Create = async (req, res) => {
@@ -19,6 +20,7 @@ const Create = async (req, res) => {
           await connect(),
           querySurveyList
         );
+        await surveyComplete(await connect(), { id: dataAuth.id });
         res.setHeader("Content-Type", "application/json; charset=utf-8");
         if (resultInsertUserEmotion) {
           res.end(JSON.stringify({ result: true, data: dataInsertUserEmotion }));
