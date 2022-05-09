@@ -8,12 +8,22 @@ async function init(connection) {
       password VARCHAR(100),\
       provider VARCHAR(10) NOT NULL DEFAULT 'local',\
       snsId VARCHAR(50),\
+      isSurvey boolean DEFAULT false,\
       createdAt DATETIME NOT NULL DEFAULT now(),\
       updatedAt DATETIME NOT NULL DEFAULT now(),\
       deletedAt DATETIME,\
       PRIMARY KEY (id)\
     ) ENGINE=InnoDB;"
   );
+}
+async function selectUser(connection, data) {
+  const [rows] = await connection.execute("SELECT * from mlog.user WHERE id = ?", [
+    data.id,
+  ]);
+  if (rows.length) {
+    return [true, { user: rows[0] }];
+  }
+  return [false];
 }
 
 async function isExistEmail(connection, email) {
@@ -52,9 +62,18 @@ async function isSamePassword(connection, data) {
   }
 }
 
+async function surveyComplete(connection, data) {
+  const [rows] = await connection.execute(
+    "UPDATE mlog.user SET isSurvey = 1 WHERE id = ?;",
+    [data.id]
+  );
+}
+
 module.exports = {
   init,
+  selectUser,
   isExistEmail,
   insertUser,
   isSamePassword,
+  surveyComplete,
 };

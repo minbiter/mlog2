@@ -6,6 +6,7 @@ async function init(connection) {
       diaryDate INT NOT NULL,\
       title VARCHAR(255) NOT NULL,\
       content TEXT NOT NULL,\
+      isMusic boolean DEFAULT false,\
       createdAt DATETIME NOT NULL,\
       updatedAt DATETIME NOT NULL,\
       PRIMARY KEY (id),\
@@ -25,14 +26,14 @@ async function insertDiary(connection, data) {
     [data.uid, data.diaryDate, data.title, data.content, data.createdAt, data.updatedAt]
   );
   if (!rows.affectedRows) {
-    return [false, { diary: "일기 작성의 실패했습니다." }];
+    return [false, { diary: "일기 작성을 실패했습니다." }];
   }
   return [true, { diary: { diaryId: rows.insertId } }];
 }
 
 async function selectDiary(connection, data) {
   const [rows] = await connection.execute(
-    "SELECT id, uid, diaryDate, title, content FROM mlog.diary WHERE uid = ? AND diaryDate = ?;",
+    "SELECT id, uid, diaryDate, title, content, isMusic FROM mlog.diary WHERE uid = ? AND diaryDate = ?;",
     [data.uid, data.diaryDate]
   );
   if (rows.length) {
@@ -78,13 +79,19 @@ async function deleteDiary(connection, data) {
 
 async function selectCanlendar(connection, data) {
   const [rows] = await connection.execute(
-    "SELECT diaryDate FROM mlog.diary WHERE uid = ? AND diaryDate >= ? AND diaryDate <= ?",
+    "SELECT D.diaryDate, D.title, DE.topEmotion\
+    FROM mlog.diaryEmotion DE\
+    JOIN mlog.diary D\
+    ON D.id = DE.diaryId\
+    WHERE uid = ? AND diaryDate >= ? AND diaryDate <= ?",
     [data.uid, data.startDate, data.endDate]
   );
   const customRows = {};
   if (rows.length) {
     rows.forEach((row) => {
       customRows[`${row.diaryDate}`] = {};
+      customRows[`${row.diaryDate}`]["title"] = row.title;
+      customRows[`${row.diaryDate}`]["topEmotion"] = row.topEmotion;
     });
     return [true, { diary: customRows }];
   }

@@ -27,7 +27,7 @@ const SignIn = async (req, res) => {
       // Response msg included Refesh Token in Set-Cookie, Access Token in HTTP body.
       res.setHeader("Content-Type", "application/json; charset=utf-8");
       res.setHeader("Set-Cookie", [
-        `refreshToken=${refreshToken}; Expires=${refreshTokenExpire.toGMTString()}; HttpOnly; Path=/`,
+        `refreshToken=${refreshToken}; Expires=${refreshTokenExpire.toGMTString()}; HttpOnly; SameSite=Lax; Path=/`,
       ]);
       data.accessToken = accessToken;
       res.end(JSON.stringify({ result, data }));

@@ -25,7 +25,7 @@ const User = async (req, res) => {
     // 회원탈퇴 & 회원수정
     if (req.method === "DELETE") {
       console.log("DeleteAccount");
-    } else if (req.method === "FATCH") {
+    } else if (req.method === "PATCH") {
       console.log("EditAccount");
     }
   }

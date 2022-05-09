@@ -33,7 +33,7 @@ async function init(connection) {
 // Insert musicData to musicTable.
 async function InsertMusic(connection) {
   const response = await fetchMusic();
-  let query = "INSERT INTO mlog.music VALUES ";
+  let query = "INSERT IGNORE INTO mlog.music VALUES ";
   response.forEach(({ id, title, artist, genre, img, videoId }) => {
     query += `(${id}, '${title}', '${artist}', '${genre}', '${img}', '${videoId}'),`;
   });
@@ -42,6 +42,17 @@ async function InsertMusic(connection) {
   console.log("music INSERT 완료");
 }
 
+async function selectRecommendMusic(connection, genreId) {
+  const [rows] = await connection.execute(
+    "\
+    SELECT * FROM mlog.music WHERE genreId = ? order by rand() limit 1;\
+  ",
+    [genreId]
+  );
+  return rows[0];
+}
+
 module.exports = {
   init,
+  selectRecommendMusic,
 };

@@ -1,18 +1,32 @@
 const axios = require("axios");
 
+// const genreId = {
+//   ballad: 3550,
+//   pop: 3556,
+//   foreignPop: 3559,
+//   dance: 3551,
+//   foreignDance: 3562,
+//   rnb: 3553,
+//   foreignRnb: 3561,
+//   hiphop: 3552,
+//   foreignHiphop: 3560,
+//   trot: 3554,
+//   ost: 3565,
+//   classic: 3566,
+// };
 const genreId = {
-  ballad: 3550,
-  pop: 3556,
-  foreignPop: 3559,
-  dance: 3551,
-  foreignDance: 3562,
-  rnb: 3553,
-  foreignRnb: 3561,
-  hiphop: 3552,
-  foreignHiphop: 3560,
-  trot: 3554,
-  ost: 3565,
-  classic: 3566,
+  "국내 발라드": 3550,
+  "국내 팝/어쿠스틱": 3556,
+  "해외 팝": 3559,
+  "국내 댄스/일렉": 3551,
+  "해외 일렉트로닉": 3562,
+  "국내 알앤비": 3553,
+  "해외 알앤비": 3561,
+  "국내 힙합": 3552,
+  "해외 힙합": 3560,
+  트로트: 3554,
+  "OST/BGM": 3565,
+  클래식: 3566,
 };
 
 // Fetch musicList By Genre using Flo Api.
@@ -45,7 +59,7 @@ async function fetchMusic() {
     const videoIdPromiseAll = [];
     for (const music of musicListByGenre[i].data.data.trackList) {
       let videoIdURL = `https://www.googleapis.com/youtube/v3/search?key=${
-        process.env.YOUTUBE_KEY
+        process["env"][`YOUTUBE_KEY${i}`]
       }&q=${encodeURI(music.name)}${encodeURI(
         " " + music.artistList[0].name
       )}&maxResults=1&part=snippet`;
