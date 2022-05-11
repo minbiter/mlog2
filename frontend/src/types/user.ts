@@ -7,6 +7,7 @@ export interface ISignInApi {
         email?: string;
         signin?: string;
         accessToken?: string;
+        isSurvey?: number;
       };
     };
   }>;
@@ -31,6 +32,17 @@ export interface ISignUpApi {
 
 export interface IRefreshApi {
   (): Promise<{
-    data: { result: boolean; data: { email?: string; accessToken?: string } };
+    data: {
+      result: boolean;
+      data: { email?: string; accessToken?: string; isSurvey?: number };
+    };
+  }>;
+}
+
+export interface ISignOutApi {
+  (): Promise<{
+    data: {
+      result: boolean;
+    };
   }>;
 }

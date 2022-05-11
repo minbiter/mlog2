@@ -15,6 +15,7 @@ import {
   articleContainer,
   yearSelect,
   monthSelect,
+  monthContainer,
   prevButton,
   nextButton,
   gridTag,
@@ -165,30 +166,29 @@ const Calendar = ({ queryParameter }: ICalendarProps) => {
                 )}
               </select>
             </div>
-            <div>
+            <div css={monthContainer}>
               <button
                 onClick={prevMonth}
                 disabled={calYear === 2017 && calMonth === 0}
-                css={prevButton}
-              >
-                <img
-                  src="https://img.icons8.com/ios/15/000000/back--v1.png"
-                  alt="prev-button img"
-                />
-              </button>
+                css={
+                  calYear === 2017 && calMonth === 0
+                    ? prevButton(-62, -632)
+                    : prevButton(-122, -632)
+                }
+              ></button>
               <button
                 onClick={nextMonth}
                 disabled={
                   calYear === today.getFullYear() &&
                   calMonth === today.getMonth()
                 }
-                css={nextButton}
-              >
-                <img
-                  src="https://img.icons8.com/ios/15/000000/forward--v1.png"
-                  alt="next-button img"
-                />
-              </button>
+                css={
+                  calYear === today.getFullYear() &&
+                  calMonth === today.getMonth()
+                    ? nextButton(-152, -632)
+                    : nextButton(-212, -632)
+                }
+              ></button>
             </div>
           </article>
           <article css={articleTag}>

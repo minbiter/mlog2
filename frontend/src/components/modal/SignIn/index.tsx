@@ -38,6 +38,7 @@ const SignIn = ({ closeSignInModal, openSignUpModal }: ISignInProps) => {
         setAuth({
           email: data.data.email,
           accessToken: data.data.accessToken,
+          isSurvey: data.data.isSurvey,
         });
         closeSignInModal();
         history.push("/main");

@@ -4,19 +4,20 @@ export const mainContainer = css`
   // width: 1440px;
   // height: 100vh;
   display: flex;
-  background-color: #fdfcff;
+  // background-color: #fdfcff;
+  background-color: #eef2f7;
 `;
 
 export const serviceSection = css`
   width: 900px;
-  margin: 15px;
+  margin: 30px;
 `;
 
 export const musicSection = css`
   width: 576px;
   padding: 15px;
-  margin: 15px 15px 15px 0;
+  margin: 30px 30px 30px 0;
   background-color: #ffffff;
-  box-shadow: 0 3px 3px 0 rgb(0 0 0 / 5%), 0 5px 15px 0 rgb(0 0 0 / 5%);
+  // box-shadow: 0 3px 3px 0 rgb(0 0 0 / 5%), 0 5px 15px 0 rgb(0 0 0 / 5%);
   border-radius: 8px;
 `;
