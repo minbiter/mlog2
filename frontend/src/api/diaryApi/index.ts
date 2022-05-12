@@ -4,6 +4,7 @@ import {
   IFetchDiaryApi,
   IUpdateDiaryApi,
   IDeleteDiaryApi,
+  IFetchCalendarApi,
 } from "types/diary";
 
 export const createDiary: ICreateDiary = async (date, data) => {
@@ -24,4 +25,14 @@ export const updateDiaryApi: IUpdateDiaryApi = async (date, data) => {
 
 export const deleteDiaryApi: IDeleteDiaryApi = async (date) => {
   return await instanceAuth.delete(`/diary/${date}`, { withCredentials: true });
+};
+
+export const fetchCalendarApi: IFetchCalendarApi = async (
+  startDate,
+  endDate
+) => {
+  return await instanceAuth.get(
+    `/diary?startDate=${startDate}&endDate=${endDate}`,
+    { withCredentials: true }
+  );
 };

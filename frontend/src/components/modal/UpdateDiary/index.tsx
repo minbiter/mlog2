@@ -3,17 +3,16 @@ import { useHistory, useParams } from "react-router-dom";
 import { updateDiaryApi } from "api/diaryApi";
 
 interface IUpdateDiaryParams {
-  date: string;
+  queryParameter: { date?: string };
 }
 
-const UpdateDiary = () => {
+const UpdateDiary = ({ queryParameter }: IUpdateDiaryParams) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const { date } = useParams<IUpdateDiaryParams>();
   const history = useHistory();
 
   useEffect(() => {
-    if (!date) {
+    if (!queryParameter.date) {
       history.push("/main");
     }
   }, []);
@@ -29,15 +28,17 @@ const UpdateDiary = () => {
   const submitDiary = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const { data } = await updateDiaryApi(date, {
-        title,
-        content,
-      });
-      if (data.result) {
-        alert(data.data.diary);
-        history.push(`/main/diary/${date}`);
-      } else {
-        alert(data.data.diary);
+      if (queryParameter.date) {
+        const { data } = await updateDiaryApi(queryParameter.date, {
+          title,
+          content,
+        });
+        if (data.result) {
+          alert(data.data.diary);
+          history.push(`/main?date=${queryParameter.date}`);
+        } else {
+          alert(data.data.diary);
+        }
       }
     } catch (err) {
       alert("서비스를 이용하실 수 없습니다.");
@@ -48,7 +49,8 @@ const UpdateDiary = () => {
     <div>
       <form onSubmit={submitDiary}>
         <p>
-          {date.slice(0, 4)}년 {date.slice(4, 6)}월 {date.slice(6)}일
+          {queryParameter.date?.slice(0, 4)}년{" "}
+          {queryParameter.date?.slice(4, 6)}월 {queryParameter.date?.slice(6)}일
         </p>
         <input placeholder="제목" onChange={changeTitle} />
         <div contentEditable="true" onInput={changeContent}></div>

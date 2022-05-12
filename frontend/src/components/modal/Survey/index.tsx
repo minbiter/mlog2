@@ -38,13 +38,17 @@ const Survey = () => {
   const { auth, setAuth } = useContext(AuthContext);
 
   useEffect(() => {
+    let loading = true;
     const fetch = async () => {
       const { data } = await fetchSurveyMusicApi();
-      if (data.result) {
+      if (data.result && loading) {
         setSurveyMusic(data.data.surveyMusic);
       }
     };
     fetch();
+    return () => {
+      loading = false;
+    };
   }, []);
 
   const nextSurvey = async (e: React.FormEvent<HTMLFormElement>) => {

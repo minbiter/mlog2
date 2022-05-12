@@ -34,3 +34,9 @@ export interface IDeleteDiaryApi {
     data: { result: boolean; data: { diary: string } };
   }>;
 }
+
+export interface IFetchCalendarApi {
+  (startDate: string, endDate: string): Promise<{
+    data: { result: boolean; data: { diary: any } };
+  }>;
+}

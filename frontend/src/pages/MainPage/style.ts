@@ -8,12 +8,15 @@ export const mainContainer = css`
   background-color: #eef2f7;
 `;
 
-export const serviceSection = css`
+export const calendarSection = css`
   width: 900px;
-  margin: 30px;
+  margin: 20px 25px 25px 25px;
+  // display: flex;
+  & > article {
+  }
 `;
 
-export const musicSection = css`
+export const mainSection = css`
   width: 576px;
   padding: 15px;
   margin: 30px 30px 30px 0;

@@ -1,41 +1,42 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useParams, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { AuthContext } from "context/AuthProvider";
 import { deleteDiaryApi, fetchDiaryApi } from "api/diaryApi";
 import WarningModal from "components/modal/WarningModal";
 interface IReadDiaryParams {
-  date: string;
+  queryParameter: { date?: string };
 }
 
-const ReadDiary = () => {
+const ReadDiary = ({ queryParameter }: IReadDiaryParams) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [isDiary, setIsDiary] = useState(false);
   const [isClickedDelete, setIsClickedDelete] = useState(false);
   const { auth } = useContext(AuthContext);
   const history = useHistory();
-  const { date } = useParams<IReadDiaryParams>();
 
   useEffect(() => {
     const fetchDiary = async () => {
       try {
-        const { data } = await fetchDiaryApi(date);
-        if (data.result && typeof data.data.diary !== "string") {
-          setTitle(data.data.diary.title);
-          setContent(data.data.diary.content);
-          setIsDiary(true);
-        } else {
-          setIsDiary(false);
+        if (queryParameter.date) {
+          const { data } = await fetchDiaryApi(queryParameter.date);
+          if (data.result && typeof data.data.diary !== "string") {
+            setTitle(data.data.diary.title);
+            setContent(data.data.diary.content);
+            setIsDiary(true);
+          } else {
+            setIsDiary(false);
+          }
         }
       } catch (err) {
         alert("서비스를 이용하실 수 없습니다.");
       }
     };
     if (auth) fetchDiary();
-  }, [auth]);
+  }, [auth, queryParameter.date]);
 
   const openUpdateModal = () => {
-    history.push(`/main/diary/${date}?compose=update`);
+    history.push(`/main?date=${queryParameter.date}&compose=update`);
   };
 
   const openWarningModal = () => {
@@ -44,22 +45,28 @@ const ReadDiary = () => {
 
   const deleteDiary = async () => {
     try {
-      const { data } = await deleteDiaryApi(date);
-      if (data.result) {
-        alert(data.data.diary);
-        history.push(`/main?date=${date}`);
-      } else {
-        alert(data.data.diary);
-        openWarningModal();
+      if (queryParameter.date) {
+        const { data } = await deleteDiaryApi(queryParameter.date);
+        if (data.result) {
+          alert(data.data.diary);
+          history.push(`/main?date=${queryParameter.date}`);
+        } else {
+          alert(data.data.diary);
+          openWarningModal();
+        }
       }
     } catch {
       alert("서비스를 이용하실 수 없습니다.");
     }
   };
+
+  const openWriteModal = () => {
+    history.push(`/main?date=${queryParameter.date}&compose=new`);
+  };
   return (
     <>
       {isDiary ? (
-        <div>
+        <article>
           <div>
             <button onClick={openUpdateModal}>수정</button>
             <button onClick={openWarningModal}>삭제</button>
@@ -73,9 +80,12 @@ const ReadDiary = () => {
               callback={deleteDiary}
             />
           ) : null}
-        </div>
+        </article>
       ) : (
-        <p>작성된 일기가 없습니다.</p>
+        <article>
+          <p>작성된 일기가 없습니다.</p>
+          <button onClick={openWriteModal}>일기 작성</button>
+        </article>
       )}
     </>
   );

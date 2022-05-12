@@ -1,18 +1,18 @@
 /** @jsxImportSource @emotion/react */
 import React from "react";
+import MainCalendar from "components/main/MainCalendar";
 import MainService from "components/main/MainService";
-import MainMusic from "components/main/MainMusic";
-import { mainContainer, serviceSection, musicSection } from "./style";
+import { mainContainer, calendarSection, mainSection } from "./style";
 
 const MainPage = () => {
   return (
     <main>
       <div css={mainContainer}>
-        <section css={serviceSection}>
-          <MainService />
+        <section css={calendarSection}>
+          <MainCalendar />
         </section>
-        <section css={musicSection}>
-          <MainMusic />
+        <section css={mainSection}>
+          <MainService />
         </section>
       </div>
     </main>

@@ -86,16 +86,37 @@ export const columnheaderTag = css`
   color: #808080;
   margin-bottom: 5px;
 `;
-export const gridCellTag = css`
+export const gridCellTag = (date: string) => css`
+  position: relative;
   display: flex;
   padding: 10px;
   margin: 5px;
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  background-color: ${date === "today" ? "#d2e3fc" : null};
+  border-radius: ${date === "today" ? "50%" : null};
   font-weight: 500;
   &: hover {
     background-color: #bdc1c6;
     border-radius: 50%;
   }
+`;
+
+export const emotionSpan = (topEmotion: string) => css`
+  position: absolute;
+  top: 3px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background-color: ${topEmotion === "positive"
+    ? "blue"
+    : topEmotion === "negative"
+    ? "red"
+    : "#00c471"};
+`;
+
+export const selectedGridCellTag = css`
+  background-color: #94f0e8;
+  border-radius: 50%;
 `;

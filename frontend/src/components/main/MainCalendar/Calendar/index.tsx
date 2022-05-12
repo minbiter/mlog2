@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
+import { useRecoilState } from "recoil";
 import {
   monthList,
   yearListFcn,
@@ -9,7 +10,8 @@ import {
   tdKeyList,
   toStringDateFcn,
 } from "utils/calendar/variable";
-import DateDetail from "../DateDetail";
+import { fetchCalendarApi } from "api/diaryApi";
+import { calendarState } from "atoms/calendarState";
 import {
   articleTag,
   articleContainer,
@@ -23,7 +25,10 @@ import {
   rowTag,
   columnheaderTag,
   gridCellTag,
+  emotionSpan,
+  selectedGridCellTag,
 } from "./style";
+import { AuthContext } from "context/AuthProvider";
 
 interface ICalendarProps {
   queryParameter: { date?: string };
@@ -37,18 +42,24 @@ const Calendar = ({ queryParameter }: ICalendarProps) => {
   // calendarDate.
   const [calYear, setCalYear] = useState(0);
   const [calMonth, setCalMonth] = useState(0);
+  const [calendarDiary, setCalendarDiary] = useRecoilState(calendarState);
+  // const [calendarDiary, setCalendarDiary] = useState({} as any);
   // loading.
   const [loading, setLoading] = useState(true);
   // ...
   const history = useHistory();
   const today = new Date();
   const yearList = yearListFcn();
+  const { auth } = useContext(AuthContext);
   useEffect(() => {
     if (
       queryParameter.date &&
       queryParameter.date.match(/\d{8}/) &&
-      parseInt(queryParameter.date.slice(0, 4)) <= today.getFullYear() &&
-      parseInt(queryParameter.date.slice(4, 6)) - 1 <= today.getMonth()
+      parseInt(queryParameter.date) <=
+        parseInt(
+          toStringDateFcn(today.getFullYear(), today.getMonth() + 1, 0)
+        ) &&
+      parseInt(queryParameter.date) >= 20170101
     ) {
       setYear(parseInt(queryParameter.date.slice(0, 4)));
       setMonth(parseInt(queryParameter.date.slice(4, 6)) - 1);
@@ -64,6 +75,19 @@ const Calendar = ({ queryParameter }: ICalendarProps) => {
     }
     setLoading(false);
   }, []);
+
+  useEffect(() => {
+    const fetchCalendar = async () => {
+      const { data } = await fetchCalendarApi(
+        toStringDateFcn(calYear, calMonth, 1),
+        toStringDateFcn(calYear, calMonth, 32)
+      );
+      setCalendarDiary(data.data.diary);
+    };
+    if (calYear !== 0 && calMonth !== 0 && auth.accessToken) {
+      fetchCalendar();
+    }
+  }, [auth, calYear, calMonth]);
 
   const changeYear = (e: React.ChangeEvent<HTMLSelectElement>) => {
     if (
@@ -100,7 +124,7 @@ const Calendar = ({ queryParameter }: ICalendarProps) => {
   const clickDate = (e: any) => {
     setYear(calYear);
     setMonth(calMonth);
-    setDate(e.target.innerText);
+    setDate(parseInt(e.target.innerText));
     history.replace(
       `/main?date=${toStringDateFcn(calYear, calMonth, e.target.innerText)}`
     );
@@ -124,7 +148,33 @@ const Calendar = ({ queryParameter }: ICalendarProps) => {
     }
     if (dateCheck && dateCount <= lastDate.getDate()) {
       return (
-        <div role="gridcell" css={gridCellTag} key={tdKey} onClick={clickDate}>
+        <div
+          role="gridcell"
+          css={[
+            calYear === today.getFullYear() &&
+            calMonth === today.getMonth() &&
+            dateCount === today.getDate()
+              ? gridCellTag("today")
+              : gridCellTag(""),
+            year === calYear && month === calMonth && date === dateCount
+              ? selectedGridCellTag
+              : null,
+          ]}
+          key={tdKey}
+          onClick={clickDate}
+        >
+          <span
+            css={
+              calendarDiary.hasOwnProperty(
+                toStringDateFcn(calYear, calMonth, dateCount)
+              )
+                ? emotionSpan(
+                    calendarDiary[toStringDateFcn(calYear, calMonth, dateCount)]
+                      .topEmotion
+                  )
+                : null
+            }
+          ></span>
           {dateCount++}
         </div>
       );
@@ -211,7 +261,7 @@ const Calendar = ({ queryParameter }: ICalendarProps) => {
               </div>
             </div>
           </article>
-          <DateDetail clickedDate={toStringDateFcn(year, month, date)} />
+          {/* <DateDetail clickedDate={toStringDateFcn(year, month, date)} /> */}
         </>
       )}
     </>
