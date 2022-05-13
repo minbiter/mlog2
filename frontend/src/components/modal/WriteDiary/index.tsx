@@ -2,8 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
-import { calendarState } from "atoms/calendarState";
-import { createDiary, fetchCalendarApi } from "api/diaryApi";
+import { calendarState, diaryState } from "atoms/diary";
+import { createDiary, fetchCalendarApi, fetchDiaryApi } from "api/diaryApi";
 import {
   modal,
   dimmed,
@@ -20,6 +20,7 @@ const WriteDiary = ({ queryParameter }: IWriteDiaryParams) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const setCalendarDiary = useSetRecoilState(calendarState);
+  const setDiary = useSetRecoilState(diaryState);
   const history = useHistory();
   useEffect(() => {
     if (!queryParameter.date) {
@@ -45,16 +46,20 @@ const WriteDiary = ({ queryParameter }: IWriteDiaryParams) => {
         });
         if (data.result) {
           alert("일기 작성이 완료되었습니다.");
-          const fetchCalendar = async () => {
+          const fetchCalendarDiary = async () => {
             if (queryParameter.date) {
-              const { data } = await fetchCalendarApi(
-                queryParameter.date.slice(0, 6) + "01",
-                queryParameter.date.slice(0, 6) + "32"
-              );
-              setCalendarDiary(data.data.diary);
+              const [calendar, diary] = await Promise.all([
+                fetchCalendarApi(
+                  queryParameter.date.slice(0, 6) + "01",
+                  queryParameter.date.slice(0, 6) + "32"
+                ),
+                fetchDiaryApi(queryParameter.date),
+              ]);
+              setCalendarDiary(calendar.data.data.diary);
+              setDiary(diary.data.data.diary);
             }
           };
-          fetchCalendar();
+          fetchCalendarDiary();
           history.replace(`/main?date=${queryParameter.date}`);
         } else {
           alert(data.data.diary);

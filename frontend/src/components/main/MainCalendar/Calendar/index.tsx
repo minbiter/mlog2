@@ -11,7 +11,7 @@ import {
   toStringDateFcn,
 } from "utils/calendar/variable";
 import { fetchCalendarApi } from "api/diaryApi";
-import { calendarState } from "atoms/calendarState";
+import { calendarState } from "atoms/diary";
 import {
   articleTag,
   articleContainer,
@@ -43,7 +43,6 @@ const Calendar = ({ queryParameter }: ICalendarProps) => {
   const [calYear, setCalYear] = useState(0);
   const [calMonth, setCalMonth] = useState(0);
   const [calendarDiary, setCalendarDiary] = useRecoilState(calendarState);
-  // const [calendarDiary, setCalendarDiary] = useState({} as any);
   // loading.
   const [loading, setLoading] = useState(true);
   // ...

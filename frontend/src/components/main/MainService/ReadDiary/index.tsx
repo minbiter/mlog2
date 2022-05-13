@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { diaryState } from "atoms/diary";
 import { AuthContext } from "context/AuthProvider";
 import { deleteDiaryApi, fetchDiaryApi } from "api/diaryApi";
 import WarningModal from "components/modal/WarningModal";
@@ -8,12 +10,15 @@ interface IReadDiaryParams {
 }
 
 const ReadDiary = ({ queryParameter }: IReadDiaryParams) => {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const [{ title, content }, setDairy] = useRecoilState(diaryState);
   const [isDiary, setIsDiary] = useState(false);
   const [isClickedDelete, setIsClickedDelete] = useState(false);
   const { auth } = useContext(AuthContext);
   const history = useHistory();
+
+  useEffect(() => {
+    setIsDiary(true);
+  }, [title, content]);
 
   useEffect(() => {
     const fetchDiary = async () => {
@@ -21,8 +26,7 @@ const ReadDiary = ({ queryParameter }: IReadDiaryParams) => {
         if (queryParameter.date) {
           const { data } = await fetchDiaryApi(queryParameter.date);
           if (data.result && typeof data.data.diary !== "string") {
-            setTitle(data.data.diary.title);
-            setContent(data.data.diary.content);
+            setDairy(data.data.diary);
             setIsDiary(true);
           } else {
             setIsDiary(false);
