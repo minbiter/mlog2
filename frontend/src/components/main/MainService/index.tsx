@@ -1,11 +1,12 @@
 import React, { useContext } from "react";
 import { Route, useLocation } from "react-router-dom";
-import QueryString from "qs";
 import ReadDiary from "./ReadDiary";
 import WriteDiary from "../../modal/WriteDiary";
 import UpdateDiary from "components/modal/UpdateDiary";
-import { AuthContext } from "context/AuthProvider";
+import Music from "components/main/MainService/Music";
 import Survey from "components/modal/Survey";
+import QueryString from "qs";
+import { AuthContext } from "context/AuthProvider";
 import { toStringDateFcn } from "utils/calendar/variable";
 
 interface IQueryParameter {
@@ -65,6 +66,7 @@ const MainService = () => {
           ) : null
         }
       />
+      <Music />
       {auth.isSurvey ? null : <Survey />}
     </>
   );

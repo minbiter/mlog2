@@ -1,5 +1,9 @@
 const Music = () => {
-  return <></>;
+  return (
+    <article>
+      <p>Music</p>
+    </article>
+  );
 };
 
 export default Music;

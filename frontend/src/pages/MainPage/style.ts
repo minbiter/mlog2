@@ -1,26 +1,29 @@
 import { css } from "@emotion/react";
 
 export const mainContainer = css`
-  // width: 1440px;
-  // height: 100vh;
   display: flex;
-  // background-color: #fdfcff;
+  min-width: 1440px;
   background-color: #eef2f7;
 `;
 
 export const calendarSection = css`
-  width: 900px;
   margin: 20px 25px 25px 25px;
-  // display: flex;
   & > article {
   }
 `;
 
 export const mainSection = css`
-  width: 576px;
-  padding: 15px;
-  margin: 30px 30px 30px 0;
-  background-color: #ffffff;
-  // box-shadow: 0 3px 3px 0 rgb(0 0 0 / 5%), 0 5px 15px 0 rgb(0 0 0 / 5%);
+  display: flex;
+  flex-direction: column;
+  margin: 20px 25px 0 0;
   border-radius: 8px;
+  flex-grow: 1;
+  & > article {
+    height: 376px;
+    border-radius: 12px;
+    background-color: #ffffff;
+    margin-bottom: 15px;
+    // box-shadow: 0 3px 3px 0 rgb(0 0 0 / 5%), 0 5px 15px 0 rgb(0 0 0 / 5%);
+  }
 `;
+//
