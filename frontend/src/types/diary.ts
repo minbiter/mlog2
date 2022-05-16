@@ -17,6 +17,8 @@ export interface IFetchDiaryApi {
               diaryDate: string;
               title: string;
               content: string;
+              isMusic: number;
+              music: {};
             };
       };
     };

@@ -1,4 +1,5 @@
 import { css } from "@emotion/react";
+import buttonFile from "assets/buttonFile.png";
 
 export const modal = css`
   position: fixed;
@@ -21,7 +22,7 @@ export const dimmed = css`
 `;
 
 export const container = css`
-  z-index: 20;
+  z-index: 30;
   width: 360px;
   height: auto;
   padding: 24px;
@@ -37,9 +38,16 @@ export const hearderMsgContainer = css`
   margin-bottom: 10px;
   font-size: 17px;
   font-weight: 500;
-  & > p {
-    width: 100%;
-  }
+  width: 100%;
+`;
+
+export const msgHighlight = css`
+  background-color: #00c471;
+  border-radius: 6px;
+  padding: 2px 6px;
+  display: inline-block;
+  margin-bottom: 1px;
+  color: white;
 `;
 
 export const formModal = css`
@@ -110,7 +118,7 @@ export const selectedImg = css`
   cursor: pointer;
   top: 0;
   left: 0;
-  background-image: url(https://www.music-flo.com/img/sp_button@2x.97bb1f02.png);
+  background-image: url(${buttonFile});
   background-size: 714px 706px;
   background-position: -421px -230px;
   width: 41px;
@@ -122,7 +130,7 @@ export const runBtn = css`
   cursor: pointer;
   bottom: 25px;
   right: 5px;
-  background-image: url(https://www.music-flo.com/img/sp_button@2x.97bb1f02.png);
+  background-image: url(${buttonFile});
   background-size: 714px 706px;
   background-position: -364px -426px;
   width: 40px;
@@ -136,7 +144,7 @@ export const stopBtn = css`
   cursor: pointer;
   bottom: 25px;
   right: 5px;
-  background-image: url(https://www.music-flo.com/img/sp_button@2x.97bb1f02.png);
+  background-image: url(${buttonFile});
   background-size: 714px 706px;
   background-position: -274px -426px;
   width: 40px;

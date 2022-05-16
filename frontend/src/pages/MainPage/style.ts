@@ -19,6 +19,11 @@ export const mainSection = css`
   border-radius: 8px;
   flex-grow: 1;
   & > article {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
     height: 376px;
     border-radius: 12px;
     background-color: #ffffff;

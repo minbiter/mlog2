@@ -9,6 +9,7 @@ import {
   container,
   formModal,
   hearderMsgContainer,
+  msgHighlight,
   musicContainer,
   musicItem,
   selectedImg,
@@ -26,13 +27,14 @@ interface ISurveyMusic {
 }
 
 const headerMsgList = ["평소에", "신날 때", "우울할 때"];
-
 const Survey = () => {
   const [surveyNum, setSurveyNum] = useState(0);
   const [surveyMusic, setSurveyMusic] = useState([] as ISurveyMusic[]);
-  const [surveyResult, setSurveyResult] = useState([[], [], []] as Array<
-    Array<number>
-  >);
+  const [surveyResult, setSurveyResult] = useState<Array<Array<number>>>([
+    [],
+    [],
+    [],
+  ]);
   const [listenVideoId, setListenVideoId] = useState("");
   const ulEl = useRef<HTMLUListElement>(null);
   const { auth, setAuth } = useContext(AuthContext);
@@ -163,7 +165,7 @@ const Survey = () => {
       <div css={container}>
         <form css={formModal} onSubmit={nextSurvey}>
           <div css={hearderMsgContainer}>
-            <p>{headerMsgList[surveyNum]}</p>
+            <span css={msgHighlight}>{headerMsgList[surveyNum]}</span>
             <p>어떤 분위기의 음악을</p>
             <p>들으시나요 (최소 3가지)</p>
           </div>

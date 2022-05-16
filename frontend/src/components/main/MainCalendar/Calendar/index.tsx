@@ -1,7 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
-import { useRecoilState } from "recoil";
 import {
   monthList,
   yearListFcn,
@@ -10,8 +9,13 @@ import {
   tdKeyList,
   toStringDateFcn,
 } from "utils/calendar/variable";
-import { fetchCalendarApi } from "api/diaryApi";
-import { calendarState } from "atoms/diary";
+import {
+  useSetRecoilState,
+  useRecoilValueLoadable,
+  useRecoilValue,
+} from "recoil";
+import { calendarRangeState, getCalendar } from "atoms/diary";
+import LoadingSpinner from "components/LoadingSpinner";
 import {
   articleTag,
   articleContainer,
@@ -29,6 +33,7 @@ import {
   selectedGridCellTag,
 } from "./style";
 import { AuthContext } from "context/AuthProvider";
+import { diaryContent } from "components/main/MainService/ReadDiary/style";
 
 interface ICalendarProps {
   queryParameter: { date?: string };
@@ -40,16 +45,16 @@ const Calendar = ({ queryParameter }: ICalendarProps) => {
   const [month, setMonth] = useState(0);
   const [date, setDate] = useState(0);
   // calendarDate.
-  const [calYear, setCalYear] = useState(0);
-  const [calMonth, setCalMonth] = useState(0);
-  const [calendarDiary, setCalendarDiary] = useRecoilState(calendarState);
-  // loading.
-  const [loading, setLoading] = useState(true);
+  const [calYear, setCalYear] = useState(-1);
+  const [calMonth, setCalMonth] = useState(-1);
+  const calendarDiary = useRecoilValueLoadable(getCalendar);
+  const setCalendarRange = useSetRecoilState(calendarRangeState);
   // ...
-  const history = useHistory();
   const today = new Date();
+  const history = useHistory();
   const yearList = yearListFcn();
   const { auth } = useContext(AuthContext);
+
   useEffect(() => {
     if (
       queryParameter.date &&
@@ -72,19 +77,14 @@ const Calendar = ({ queryParameter }: ICalendarProps) => {
       setCalYear(today.getFullYear());
       setCalMonth(today.getMonth());
     }
-    setLoading(false);
   }, []);
 
   useEffect(() => {
-    const fetchCalendar = async () => {
-      const { data } = await fetchCalendarApi(
-        toStringDateFcn(calYear, calMonth, 1),
-        toStringDateFcn(calYear, calMonth, 32)
-      );
-      setCalendarDiary(data.data.diary);
-    };
-    if (calYear !== 0 && calMonth !== 0 && auth.accessToken) {
-      fetchCalendar();
+    if (calYear !== -1 && calMonth !== -1 && auth.accessToken) {
+      setCalendarRange({
+        startDate: toStringDateFcn(calYear, calMonth, 1),
+        endDate: toStringDateFcn(calYear, calMonth, 32),
+      });
     }
   }, [auth, calYear, calMonth]);
 
@@ -164,12 +164,13 @@ const Calendar = ({ queryParameter }: ICalendarProps) => {
         >
           <span
             css={
-              calendarDiary.hasOwnProperty(
+              calendarDiary.contents?.hasOwnProperty(
                 toStringDateFcn(calYear, calMonth, dateCount)
               )
                 ? emotionSpan(
-                    calendarDiary[toStringDateFcn(calYear, calMonth, dateCount)]
-                      .topEmotion
+                    calendarDiary.contents[
+                      toStringDateFcn(calYear, calMonth, dateCount)
+                    ].topEmotion
                   )
                 : null
             }
@@ -184,85 +185,76 @@ const Calendar = ({ queryParameter }: ICalendarProps) => {
 
   return (
     <>
-      {loading ? (
-        <p>loading</p>
-      ) : (
-        <>
-          <article css={[articleTag, articleContainer]}>
-            <div>
-              <select value={calYear} onChange={changeYear} css={yearSelect}>
-                {yearList.map((yearValue) => (
-                  <option key={`option-${yearValue}년`} value={yearValue}>
-                    {yearValue}년
-                  </option>
-                ))}
-              </select>
-              <select
-                value={calMonth + 1}
-                onChange={changeMonth}
-                css={monthSelect}
-              >
-                {monthList.map((monthValue) =>
-                  calYear !== 2022 ? (
-                    <option key={`option-${monthValue}월`} value={monthValue}>
-                      {monthValue}월
-                    </option>
-                  ) : monthValue <= today.getMonth() + 1 ? (
-                    <option key={`option-${monthValue}월`} value={monthValue}>
-                      {monthValue}월
-                    </option>
-                  ) : null
-                )}
-              </select>
-            </div>
-            <div css={monthContainer}>
-              <button
-                onClick={prevMonth}
-                disabled={calYear === 2017 && calMonth === 0}
-                css={
-                  calYear === 2017 && calMonth === 0
-                    ? prevButton(-62, -632)
-                    : prevButton(-122, -632)
-                }
-              ></button>
-              <button
-                onClick={nextMonth}
-                disabled={
-                  calYear === today.getFullYear() &&
-                  calMonth === today.getMonth()
-                }
-                css={
-                  calYear === today.getFullYear() &&
-                  calMonth === today.getMonth()
-                    ? nextButton(-152, -632)
-                    : nextButton(-212, -632)
-                }
-              ></button>
-            </div>
-          </article>
-          <article css={articleTag}>
-            <div role="grid" css={gridTag}>
-              <div role="rowgroup" css={rowGroupTag}>
-                <div role="row" css={rowTag}>
-                  {dayList.map((dayValue) => (
-                    <div
-                      role="columnheader"
-                      css={columnheaderTag}
-                      key={`th-${dayValue}`}
-                    >
-                      {dayValue}
-                    </div>
-                  ))}
+      <article css={[articleTag, articleContainer]}>
+        <div>
+          <select value={calYear} onChange={changeYear} css={yearSelect}>
+            {yearList.map((yearValue) => (
+              <option key={`option-${yearValue}년`} value={yearValue}>
+                {yearValue}년
+              </option>
+            ))}
+          </select>
+          <select value={calMonth + 1} onChange={changeMonth} css={monthSelect}>
+            {monthList.map((monthValue) =>
+              calYear !== 2022 ? (
+                <option key={`option-${monthValue}월`} value={monthValue}>
+                  {monthValue}월
+                </option>
+              ) : monthValue <= today.getMonth() + 1 ? (
+                <option key={`option-${monthValue}월`} value={monthValue}>
+                  {monthValue}월
+                </option>
+              ) : null
+            )}
+          </select>
+        </div>
+        <div css={monthContainer}>
+          <button
+            onClick={prevMonth}
+            disabled={calYear === 2017 && calMonth === 0}
+            css={
+              calYear === 2017 && calMonth === 0
+                ? prevButton(-62, -632)
+                : prevButton(-122, -632)
+            }
+          ></button>
+          <button
+            onClick={nextMonth}
+            disabled={
+              calYear === today.getFullYear() && calMonth === today.getMonth()
+            }
+            css={
+              calYear === today.getFullYear() && calMonth === today.getMonth()
+                ? nextButton(-152, -632)
+                : nextButton(-212, -632)
+            }
+          ></button>
+        </div>
+      </article>
+      <article css={articleTag}>
+        <div role="grid" css={gridTag}>
+          <div role="rowgroup" css={rowGroupTag}>
+            <div role="row" css={rowTag}>
+              {dayList.map((dayValue) => (
+                <div
+                  role="columnheader"
+                  css={columnheaderTag}
+                  key={`th-${dayValue}`}
+                >
+                  {dayValue}
                 </div>
-              </div>
-              <div role="rowgroup" css={rowGroupTag}>
-                {trKeyList.map((trKey) => createTrTag(trKey))}
-              </div>
+              ))}
             </div>
-          </article>
-          {/* <DateDetail clickedDate={toStringDateFcn(year, month, date)} /> */}
-        </>
-      )}
+          </div>
+          <div role="rowgroup" css={rowGroupTag}>
+            {trKeyList.map((trKey) => createTrTag(trKey))}
+          </div>
+        </div>
+        {calendarDiary.state === "loading" ||
+        (calendarDiary.state === "hasValue" && !calendarDiary.contents) ? (
+          <LoadingSpinner />
+        ) : null}
+      </article>
     </>
   );
 };

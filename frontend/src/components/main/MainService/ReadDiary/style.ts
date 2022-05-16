@@ -35,8 +35,9 @@ export const headerNoMusic = css`
     font-weight: 500;
     padding: 5px 10px;
     border-radius: 5px;
+    border: 1px solid #e4e2e2;
     &: hover {
-      background-color: #9bbbea;
+      border: 1px solid #2962ff;
     }
   }
 `;
@@ -71,6 +72,7 @@ export const headerToolDelete = css`
   }
 `;
 export const bodyContainer = css`
+  width: 100%;
   height: 309px;
   padding: 15px;
   display: flex;
@@ -94,6 +96,7 @@ export const diaryContent = css`
   word-break: break-all;
   line-height: 1.5;
   overflow: auto;
+  font-size: 14px;
   &::-webkit-scrollbar {
     width: 5px;
   }

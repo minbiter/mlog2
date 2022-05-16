@@ -1,11 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { diaryState } from "atoms/diary";
+import { useRecoilValueLoadable, useSetRecoilState } from "recoil";
+import { calendarRangeState, diaryState, getDiary } from "atoms/diary";
 import { AuthContext } from "context/AuthProvider";
-import { deleteDiaryApi, fetchDiaryApi } from "api/diaryApi";
+import { deleteDiaryApi } from "api/diaryApi";
 import WarningModal from "components/modal/WarningModal";
+import LoadingSpinner from "components/LoadingSpinner";
 import {
   headerContainer,
   headerDateMusic,
@@ -26,35 +27,17 @@ interface IReadDiaryParams {
 }
 
 const ReadDiary = ({ queryParameter }: IReadDiaryParams) => {
-  const [{ title, content, isMusic, music }, setDairy] =
-    useRecoilState(diaryState);
-  const [isDiary, setIsDiary] = useState(false);
+  const diary = useRecoilValueLoadable(getDiary);
+  const setDiary = useSetRecoilState(diaryState);
+  const setCalendarDiary = useSetRecoilState(calendarRangeState);
   const [isClickedDelete, setIsClickedDelete] = useState(false);
   const { auth } = useContext(AuthContext);
   const history = useHistory();
 
   useEffect(() => {
-    setIsDiary(true);
-  }, [title, content]);
-
-  useEffect(() => {
-    const fetchDiary = async () => {
-      try {
-        if (queryParameter.date) {
-          const { data } = await fetchDiaryApi(queryParameter.date);
-          if (data.result && typeof data.data.diary !== "string") {
-            console.log(data.data.diary);
-            setDairy(data.data.diary);
-            setIsDiary(true);
-          } else {
-            setIsDiary(false);
-          }
-        }
-      } catch (err) {
-        alert("서비스를 이용하실 수 없습니다.");
-      }
-    };
-    if (auth) fetchDiary();
+    if (queryParameter.date && auth.accessToken) {
+      setDiary({ date: queryParameter.date });
+    }
   }, [auth, queryParameter.date]);
 
   const openUpdateModal = () => {
@@ -70,7 +53,13 @@ const ReadDiary = ({ queryParameter }: IReadDiaryParams) => {
       if (queryParameter.date) {
         const { data } = await deleteDiaryApi(queryParameter.date);
         if (data.result) {
-          alert(data.data.diary);
+          setDiary({ date: queryParameter.date });
+          setCalendarDiary({
+            startDate: `${queryParameter.date.slice(0, 6)}01`,
+            endDate: `${queryParameter.date.slice(0, 6)}32`,
+          });
+          // LoadingSpinner
+          openWarningModal();
           history.push(`/main?date=${queryParameter.date}`);
         } else {
           alert(data.data.diary);
@@ -85,64 +74,73 @@ const ReadDiary = ({ queryParameter }: IReadDiaryParams) => {
   const openWriteModal = () => {
     history.push(`/main?date=${queryParameter.date}&compose=new`);
   };
+
   return (
-    <>
-      {isDiary ? (
-        <article>
-          <section css={headerContainer}>
-            <div css={headerDateMusic}>
-              <p>
-                {queryParameter.date?.slice(0, 4)}년{" "}
-                {queryParameter.date?.slice(4, 6)}월{" "}
-                {queryParameter.date?.slice(6, 8)}일
-              </p>
-              {isMusic ? (
-                <div css={headerMusic}>
-                  {music.title}-{music.artist}
-                </div>
-              ) : (
-                <div css={headerNoMusic}>
-                  <p>음악을 선택해주세요.</p>
-                  <button>선택하기</button>
-                </div>
-              )}
-            </div>
-            <div css={headerContainerTool}>
-              <button css={headerToolEdit} onClick={openUpdateModal}></button>
-              <button
-                css={headerToolDelete}
-                onClick={openWarningModal}
-              ></button>
-            </div>
-          </section>
-          <section css={bodyContainer}>
-            <div css={bodyDiary}>
-              <p css={diaryTitle}>{title}</p>
-              <div css={diaryContent}>
-                {content?.split("\n").map((row: string, i: number) => (
-                  <div key={`content-${i}`}>{row}</div>
-                ))}
+    <article>
+      {diary.state === "hasValue" && diary.contents ? (
+        diary.contents.title ? (
+          <>
+            <section css={headerContainer}>
+              <div css={headerDateMusic}>
+                <p>
+                  {queryParameter.date?.slice(0, 4)}년{" "}
+                  {queryParameter.date?.slice(4, 6)}월{" "}
+                  {queryParameter.date?.slice(6, 8)}일
+                </p>
+                {diary.contents.isMusic ? (
+                  <div css={headerMusic}>
+                    {diary.contents.music.title}-{diary.contents.music.artist}
+                  </div>
+                ) : (
+                  <div css={headerNoMusic}>
+                    <p>음악을 선택해주세요.</p>
+                    <button>선택하기</button>
+                  </div>
+                )}
               </div>
-            </div>
-            <div css={bodyAnalysis}>
-              <p>AI분석</p>
-            </div>
-          </section>
-          {isClickedDelete ? (
-            <WarningModal
-              msg="정말 삭제하시겠습니까?"
-              closeWarningModal={openWarningModal}
-              callback={deleteDiary}
-            />
-          ) : null}
-        </article>
+              <div css={headerContainerTool}>
+                <button css={headerToolEdit} onClick={openUpdateModal}></button>
+                <button
+                  css={headerToolDelete}
+                  onClick={openWarningModal}
+                ></button>
+              </div>
+            </section>
+            <section css={bodyContainer}>
+              <div css={bodyDiary}>
+                <p css={diaryTitle}>{diary.contents.title}</p>
+                <div css={diaryContent}>
+                  {diary.contents.content
+                    ?.split("\n")
+                    .map((row: string, i: number) => (
+                      <div key={`content-${i}`}>{row}</div>
+                    ))}
+                </div>
+              </div>
+              <div css={bodyAnalysis}>
+                <p>AI분석</p>
+              </div>
+            </section>
+            {isClickedDelete ? (
+              <WarningModal
+                msg="정말 삭제하시겠습니까?"
+                closeWarningModal={openWarningModal}
+                callback={deleteDiary}
+                closeMsg="취소하기"
+                callbackMsg="삭제하기"
+              />
+            ) : null}
+          </>
+        ) : (
+          <>
+            <p>작성된 일기가 없습니다.</p>
+            <button onClick={openWriteModal}>일기 작성</button>
+          </>
+        )
       ) : (
-        <article>
-          <p>작성된 일기가 없습니다.</p>
-          <button onClick={openWriteModal}>일기 작성</button>
-        </article>
+        <LoadingSpinner />
       )}
-    </>
+    </article>
   );
 };
 

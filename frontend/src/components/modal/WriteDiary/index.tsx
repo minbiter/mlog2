@@ -2,8 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
-import { calendarState, diaryState } from "atoms/diary";
-import { createDiary, fetchCalendarApi, fetchDiaryApi } from "api/diaryApi";
+import { calendarRangeState, diaryState } from "atoms/diary";
+import { createDiary } from "api/diaryApi";
 import {
   modal,
   dimmed,
@@ -19,7 +19,7 @@ interface IWriteDiaryParams {
 const WriteDiary = ({ queryParameter }: IWriteDiaryParams) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const setCalendarDiary = useSetRecoilState(calendarState);
+  const setCalendarDiary = useSetRecoilState(calendarRangeState);
   const setDiary = useSetRecoilState(diaryState);
   const history = useHistory();
   useEffect(() => {
@@ -32,8 +32,8 @@ const WriteDiary = ({ queryParameter }: IWriteDiaryParams) => {
     setTitle(e.target.value);
   };
 
-  const changeContent = (e: React.ChangeEvent<HTMLDivElement>) => {
-    setContent(e.target.innerText);
+  const changeContent = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setContent(e.target.value);
   };
 
   const submitDiary = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -46,20 +46,13 @@ const WriteDiary = ({ queryParameter }: IWriteDiaryParams) => {
         });
         if (data.result) {
           alert("일기 작성이 완료되었습니다.");
-          const fetchCalendarDiary = async () => {
-            if (queryParameter.date) {
-              const [calendar, diary] = await Promise.all([
-                fetchCalendarApi(
-                  queryParameter.date.slice(0, 6) + "01",
-                  queryParameter.date.slice(0, 6) + "32"
-                ),
-                fetchDiaryApi(queryParameter.date),
-              ]);
-              setCalendarDiary(calendar.data.data.diary);
-              setDiary(diary.data.data.diary);
-            }
-          };
-          fetchCalendarDiary();
+
+          setCalendarDiary({
+            startDate: `${queryParameter.date.slice(0, 6)}01`,
+            endDate: `${queryParameter.date.slice(0, 6)}32`,
+          });
+          setDiary({ date: queryParameter.date });
+
           history.replace(`/main?date=${queryParameter.date}`);
         } else {
           alert(data.data.diary);
@@ -108,14 +101,12 @@ const WriteDiary = ({ queryParameter }: IWriteDiaryParams) => {
             />
           </div>
           <div css={itemOfFormModal}>
-            <div
-              role="textbox"
+            <textarea
               css={textboxTag}
-              contentEditable="true"
               aria-multiline="true"
               spellCheck="false"
-              onInput={changeContent}
-            ></div>
+              onChange={changeContent}
+            ></textarea>
           </div>
           <button>기록하기</button>
         </form>

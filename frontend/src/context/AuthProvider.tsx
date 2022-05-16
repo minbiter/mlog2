@@ -1,4 +1,4 @@
-import React, { createContext, useState, useLayoutEffect } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import { refreshUser } from "api/userApi";
 import { instanceAuth } from "api";
 
@@ -16,9 +16,9 @@ interface IAuthContext {
 export const AuthContext = createContext<IAuthContext>({} as IAuthContext);
 
 export const AuthProvider = ({ children }: React.PropsWithChildren<{}>) => {
-  const [auth, setAuth] = useState({});
+  const [auth, setAuth] = useState<IAuth>({});
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const fetchAccessToken = async () => {
       const { data } = await refreshUser();
       if (data.result) {
@@ -34,6 +34,17 @@ export const AuthProvider = ({ children }: React.PropsWithChildren<{}>) => {
     };
     fetchAccessToken();
   }, []);
+
+  useEffect(() => {
+    if (auth.accessToken) {
+      instanceAuth.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${auth.accessToken}`;
+    } else {
+      delete instanceAuth.defaults.headers.common["Authorization"];
+    }
+  }, [auth]);
+
   return (
     <AuthContext.Provider value={{ auth, setAuth }}>
       {children}

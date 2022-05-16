@@ -4,10 +4,14 @@ const articleWidth = 380;
 
 export const articleTag = css`
   width: ${articleWidth}px;
+  position: relative;
   padding: 15px;
   margin-bottom: 15px;
   background-color: #ffffff;
   border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const articleContainer = css`
