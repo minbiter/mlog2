@@ -22,7 +22,7 @@ export const dimmed = css`
 `;
 
 export const msgItem = css`
-  margin-bottom: 40px;
+  margin-bottom: 25px;
   color: #484848;
 `;
 
@@ -36,6 +36,7 @@ export const container = css`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 `;
 
 export const callbackBtn = css`

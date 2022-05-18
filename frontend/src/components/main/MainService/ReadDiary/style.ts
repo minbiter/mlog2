@@ -18,7 +18,37 @@ export const headerDateMusic = css`
     font-weight: 600;
   }
 `;
-export const headerMusic = css``;
+export const headerMusic = css`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  & > img {
+    width: 55px;
+    height: 55px;
+    border-radius: 10px;
+    margin-right: 10px;
+  }
+  &: hover {
+    opacity: 0.6;
+    filter: alpha(opacity=60); /* For IE8 and earlier */
+  }
+`;
+export const musicInfo = css`
+  max-width: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  & > p {
+    font-size: 14px;
+  }
+`;
+export const musicTitle = css`
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 4px;
+`;
+export const musicArtist = css``;
+
 export const headerNoMusic = css`
   // margin-left: 30px;
   display: flex;
@@ -108,4 +138,26 @@ export const diaryContent = css`
 `;
 export const bodyAnalysis = css`
   width: 50%;
+`;
+
+export const bodyNoDiary = css`
+  display: flex;
+  flex-direction: column;
+  & > p {
+    font-size: 17px;
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+  & > button {
+    align-self: center;
+    font-size: 16px;
+    background-color: #d2e3fc;
+    font-weight: 500;
+    padding: 6px 15px;
+    border-radius: 5px;
+    border: 1px solid #e4e2e2;
+    &: hover {
+      border: 1px solid #2962ff;
+    }
+  }
 `;

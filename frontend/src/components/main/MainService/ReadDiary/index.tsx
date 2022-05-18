@@ -6,11 +6,15 @@ import { calendarRangeState, diaryState, getDiary } from "atoms/diary";
 import { AuthContext } from "context/AuthProvider";
 import { deleteDiaryApi } from "api/diaryApi";
 import WarningModal from "components/modal/WarningModal";
+import Recommend from "components/modal/Recommend";
 import LoadingSpinner from "components/LoadingSpinner";
 import {
   headerContainer,
   headerDateMusic,
   headerMusic,
+  musicInfo,
+  musicTitle,
+  musicArtist,
   headerNoMusic,
   headerContainerTool,
   headerToolEdit,
@@ -20,6 +24,7 @@ import {
   diaryTitle,
   diaryContent,
   bodyAnalysis,
+  bodyNoDiary,
 } from "./style";
 
 interface IReadDiaryParams {
@@ -31,6 +36,8 @@ const ReadDiary = ({ queryParameter }: IReadDiaryParams) => {
   const setDiary = useSetRecoilState(diaryState);
   const setCalendarDiary = useSetRecoilState(calendarRangeState);
   const [isClickedDelete, setIsClickedDelete] = useState(false);
+  const [isOpenRecommend, setIsOpenRecommend] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
   const { auth } = useContext(AuthContext);
   const history = useHistory();
 
@@ -51,14 +58,15 @@ const ReadDiary = ({ queryParameter }: IReadDiaryParams) => {
   const deleteDiary = async () => {
     try {
       if (queryParameter.date) {
+        setSubmitLoading(true);
         const { data } = await deleteDiaryApi(queryParameter.date);
+        setSubmitLoading(false);
         if (data.result) {
           setDiary({ date: queryParameter.date });
           setCalendarDiary({
             startDate: `${queryParameter.date.slice(0, 6)}01`,
             endDate: `${queryParameter.date.slice(0, 6)}32`,
           });
-          // LoadingSpinner
           openWarningModal();
           history.push(`/main?date=${queryParameter.date}`);
         } else {
@@ -75,8 +83,18 @@ const ReadDiary = ({ queryParameter }: IReadDiaryParams) => {
     history.push(`/main?date=${queryParameter.date}&compose=new`);
   };
 
+  const openRecommend = () => {
+    setIsOpenRecommend((prev) => !prev);
+  };
+
   return (
     <article>
+      {isOpenRecommend ? (
+        <Recommend
+          date={queryParameter.date as string}
+          closeRecommend={openRecommend}
+        />
+      ) : null}
       {diary.state === "hasValue" && diary.contents ? (
         diary.contents.title ? (
           <>
@@ -89,12 +107,19 @@ const ReadDiary = ({ queryParameter }: IReadDiaryParams) => {
                 </p>
                 {diary.contents.isMusic ? (
                   <div css={headerMusic}>
-                    {diary.contents.music.title}-{diary.contents.music.artist}
+                    <img
+                      src={diary.contents.music.img}
+                      alt={diary.contents.music.title}
+                    />
+                    <div css={musicInfo}>
+                      <p css={musicTitle}>{diary.contents.music.title}</p>
+                      <p css={musicArtist}>{diary.contents.music.artist}</p>
+                    </div>
                   </div>
                 ) : (
                   <div css={headerNoMusic}>
                     <p>음악을 선택해주세요.</p>
-                    <button>선택하기</button>
+                    <button onClick={openRecommend}>선택하기</button>
                   </div>
                 )}
               </div>
@@ -128,14 +153,15 @@ const ReadDiary = ({ queryParameter }: IReadDiaryParams) => {
                 callback={deleteDiary}
                 closeMsg="취소하기"
                 callbackMsg="삭제하기"
+                submitLoading={submitLoading}
               />
             ) : null}
           </>
         ) : (
-          <>
+          <section css={bodyNoDiary}>
             <p>작성된 일기가 없습니다.</p>
             <button onClick={openWriteModal}>일기 작성</button>
-          </>
+          </section>
         )
       ) : (
         <LoadingSpinner />

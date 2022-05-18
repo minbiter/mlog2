@@ -9,11 +9,7 @@ import {
   tdKeyList,
   toStringDateFcn,
 } from "utils/calendar/variable";
-import {
-  useSetRecoilState,
-  useRecoilValueLoadable,
-  useRecoilValue,
-} from "recoil";
+import { useSetRecoilState, useRecoilValueLoadable } from "recoil";
 import { calendarRangeState, getCalendar } from "atoms/diary";
 import LoadingSpinner from "components/LoadingSpinner";
 import {
@@ -33,7 +29,6 @@ import {
   selectedGridCellTag,
 } from "./style";
 import { AuthContext } from "context/AuthProvider";
-import { diaryContent } from "components/main/MainService/ReadDiary/style";
 
 interface ICalendarProps {
   queryParameter: { date?: string };

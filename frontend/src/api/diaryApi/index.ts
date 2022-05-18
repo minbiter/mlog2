@@ -5,6 +5,8 @@ import {
   IUpdateDiaryApi,
   IDeleteDiaryApi,
   IFetchCalendarApi,
+  IFetchRcdMusic,
+  IPostDiaryMusic,
 } from "types/diary";
 
 export const createDiary: ICreateDiary = async (date, data) => {
@@ -35,4 +37,16 @@ export const fetchCalendarApi: IFetchCalendarApi = async (
     `/diary?startDate=${startDate}&endDate=${endDate}`,
     { withCredentials: true }
   );
+};
+
+export const fetchRcdMusic: IFetchRcdMusic = async (date) => {
+  return await instanceAuth.get(`/diary-music/${date}`, {
+    withCredentials: true,
+  });
+};
+
+export const postDiaryMusic: IPostDiaryMusic = async (date, data) => {
+  return await instanceAuth.post(`/diary-music/${date}`, data, {
+    withCredentials: true,
+  });
 };

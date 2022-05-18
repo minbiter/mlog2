@@ -1,6 +1,7 @@
 import { css } from "@emotion/react";
 
 export const loader = css`
+  z-index: 100;
   position: absolute;
   border-radius: 50%;
   width: 40px;
