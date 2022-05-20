@@ -10,6 +10,7 @@ export const defaultStyle = css`
     letter-spacing: -0.3px;
   }
   body {
+    overflow-y: scroll;
     -webkit-font-smoothing: antialiased;
   }
   html,

@@ -1,5 +1,7 @@
 import { css } from "@emotion/react";
 import buttonFile from "assets/buttonFile.png";
+import runWhitePng from "assets/runWhiteBtn.png";
+import pauseWhitePng from "assets/pauseWhiteBtn.png";
 
 export const modal = css`
   position: fixed;
@@ -68,7 +70,7 @@ export const formModal = css`
 `;
 
 export const musicContainer = css`
-  height: 500px;
+  height: 450px;
   overflow-y: scroll;
   display: flex;
   flex-direction: row;
@@ -130,23 +132,60 @@ export const runBtn = css`
   cursor: pointer;
   bottom: 25px;
   right: 5px;
-  background-image: url(${buttonFile});
-  background-size: 714px 706px;
-  background-position: -364px -426px;
-  width: 40px;
-  height: 40px;
+  background-image: url(${runWhitePng});
+  width: 30px;
+  height: 30px;
+  transform: scale(0.9);
   &:hover {
-    background-position: -305px -225px;
+    transform: scale(1);
   }
 `;
-export const stopBtn = css`
+export const pauseBtn = css`
   position: absolute;
   cursor: pointer;
   bottom: 25px;
   right: 5px;
-  background-image: url(${buttonFile});
-  background-size: 714px 706px;
-  background-position: -274px -426px;
-  width: 40px;
-  height: 40px;
+  background-image: url(${pauseWhitePng});
+  width: 30px;
+  height: 30px;
+  transform: scale(1.1);
+  &: hover {
+    transform: scale(1.2);
+  }
+`;
+
+export const musicController = css`
+  width: 100%;
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const playedControl = css`
+  width: 100%;
+  height: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  -webkit-appearance: none;
+  background: transparent;
+
+  &:focus {
+    outline: none;
+  }
+
+  &::-webkit-slider-runnable-track {
+    background: #e5e4e3;
+    border-radius: 2px;
+  }
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    background: #3f3fff;
+    cursor: pointer;
+    box-shadow: -100vw 0 0 100vw #3f3fff;
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+  }
 `;

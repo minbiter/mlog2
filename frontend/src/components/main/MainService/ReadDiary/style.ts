@@ -13,8 +13,10 @@ export const headerDateMusic = css`
     width: 230px;
     display: flex;
     align-items: center;
-    padding: 15px 15px 15px 17px;
-    font-size: 22px;
+    // padding: 15px 15px 15px 17px;
+    padding: 15px 15px 15px 35px;
+    // font-size: 22px;
+    font-size: 18px;
     font-weight: 600;
   }
 `;
@@ -34,7 +36,7 @@ export const headerMusic = css`
   }
 `;
 export const musicInfo = css`
-  max-width: 180px;
+  // max-width: 180px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -72,7 +74,7 @@ export const headerNoMusic = css`
   }
 `;
 export const headerContainerTool = css`
-  padding: 15px;
+  padding: 15px 25px 15px 15px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -109,17 +111,23 @@ export const bodyContainer = css`
 `;
 export const bodyDiary = css`
   width: 50%;
+  padding-left: 20px;
+  padding-right: 20px;
   display: flex;
   flex-direction: column;
+  align-items: center;
 `;
 export const diaryTitle = css`
+  align-self: flex-start;
   font-size: 18px;
   font-weight: 500;
-  padding: 0 0 8px 4px;
+  padding: 0 0 8px 0;
 `;
 export const diaryContent = css`
+  width: 100%;
   height: 100%;
   padding: 2px 2px 2px 4px;
+  margin-right: 8px;
   background-color: #eef2f7;
   border: 1px solid #e4e2e2;
   border-radius: 12px;
@@ -138,6 +146,12 @@ export const diaryContent = css`
 `;
 export const bodyAnalysis = css`
   width: 50%;
+  padding-left: 20px;
+  padding-right: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  // justify-content: center;
 `;
 
 export const bodyNoDiary = css`

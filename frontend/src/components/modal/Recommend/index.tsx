@@ -145,13 +145,13 @@ const Recommend = ({ date, closeRecommend }: IRecommendParams) => {
   const handlePlayPause = (videoId: string) => {
     console.log(`${videoId}`);
     if (targetVideoId === videoId && playing) {
-      console.log("똑같은 음악 일시중지");
+      // console.log("똑같은 음악 일시중지");
       setPlaying(false);
     } else if (targetVideoId === videoId && !playing) {
-      console.log("똑같은 음악 지금시점부터 다시 재생");
+      // console.log("똑같은 음악 지금시점부터 다시 재생");
       setPlaying(true);
     } else {
-      console.log("다른 음악 재생");
+      // console.log("다른 음악 재생");
       setPlayed(0);
       setTargetVideoId(videoId);
       setPlaying(true);

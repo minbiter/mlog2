@@ -8,6 +8,7 @@ import { deleteDiaryApi } from "api/diaryApi";
 import WarningModal from "components/modal/WarningModal";
 import Recommend from "components/modal/Recommend";
 import LoadingSpinner from "components/LoadingSpinner";
+import DiaryAnalysis from "./DiaryAnalysis";
 import {
   headerContainer,
   headerDateMusic,
@@ -133,7 +134,11 @@ const ReadDiary = ({ queryParameter }: IReadDiaryParams) => {
             </section>
             <section css={bodyContainer}>
               <div css={bodyDiary}>
-                <p css={diaryTitle}>{diary.contents.title}</p>
+                <p css={diaryTitle}>
+                  {diary.contents.title.length < 60
+                    ? diary.contents.title
+                    : `${diary.contents.title.slice(0, 60)}...`}
+                </p>
                 <div css={diaryContent}>
                   {diary.contents.content
                     ?.split("\n")
@@ -143,7 +148,14 @@ const ReadDiary = ({ queryParameter }: IReadDiaryParams) => {
                 </div>
               </div>
               <div css={bodyAnalysis}>
-                <p>AI분석</p>
+                <DiaryAnalysis
+                  topEmotion={diary.contents.topEmotion}
+                  emotionData={[
+                    diary.contents.positive,
+                    diary.contents.negative,
+                    diary.contents.neutral,
+                  ]}
+                />
               </div>
             </section>
             {isClickedDelete ? (

@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
+import Chart from "react-apexcharts";
 import {
   monthList,
   yearListFcn,
@@ -27,8 +28,19 @@ import {
   gridCellTag,
   emotionSpan,
   selectedGridCellTag,
+  calendarAnalysis,
+  analysisTitle,
+  noAnalysis,
 } from "./style";
 import { AuthContext } from "context/AuthProvider";
+
+const options: any = {
+  legend: {
+    position: "bottom",
+  },
+  labels: ["긍정", "부정", "중립"],
+  colors: ["#2196F3", "#F44336", "#00C471"],
+};
 
 interface ICalendarProps {
   queryParameter: { date?: string };
@@ -249,6 +261,29 @@ const Calendar = ({ queryParameter }: ICalendarProps) => {
         (calendarDiary.state === "hasValue" && !calendarDiary.contents) ? (
           <LoadingSpinner />
         ) : null}
+      </article>
+      <article css={articleTag}>
+        <div css={calendarAnalysis}>
+          <p css={analysisTitle}>이 달의 감정비율</p>
+          {calendarDiary.state === "loading" ||
+          (calendarDiary.state === "hasValue" &&
+            !calendarDiary.contents) ? null : calendarDiary.contents?.hasOwnProperty(
+              "positiveCnt"
+            ) ? (
+            <Chart
+              options={options}
+              series={[
+                calendarDiary.contents.positiveCnt,
+                calendarDiary.contents.negativeCnt,
+                calendarDiary.contents.neutralCnt,
+              ]}
+              type="donut"
+              width="250"
+            />
+          ) : (
+            <p css={noAnalysis}>작성된 일기가 없습니다.</p>
+          )}
+        </div>
       </article>
     </>
   );

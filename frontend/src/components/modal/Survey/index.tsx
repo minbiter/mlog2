@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState, useEffect, useRef, useContext } from "react";
 import ReactPlayer from "react-player/youtube";
+import Duration from "utils/music/Duration";
 import { AuthContext } from "context/AuthProvider";
 import { fetchSurveyMusicApi, postSurveyApi } from "api/musicApi";
 import {
@@ -14,7 +15,9 @@ import {
   musicItem,
   selectedImg,
   runBtn,
-  stopBtn,
+  pauseBtn,
+  musicController,
+  playedControl,
 } from "./style";
 
 interface ISurveyMusic {
@@ -38,6 +41,19 @@ const Survey = () => {
   const [listenVideoId, setListenVideoId] = useState("");
   const ulEl = useRef<HTMLUListElement>(null);
   const { auth, setAuth } = useContext(AuthContext);
+
+  // ReactPlayer
+  const player = useRef<ReactPlayer>(null);
+  // targetted Music
+  const [targetVideoId, setTargetVideoId] = useState<string>("");
+  // Music Play or Pause
+  const [playing, setPlaying] = useState(false);
+  // Music Max Time
+  const [duration, setDuration] = useState<number>(0);
+  // Music Current Time(duration * played)
+  const [played, setPlayed] = useState<number>(0);
+  // Music isSeeking
+  const [seeking, setSeeking] = useState(false);
 
   useEffect(() => {
     let loading = true;
@@ -148,15 +164,62 @@ const Survey = () => {
     }
   };
 
-  const listenMusic = (
-    videoId: string,
-    e: React.MouseEvent<HTMLDivElement>
-  ) => {
-    if (listenVideoId === videoId) {
-      setListenVideoId("");
+  const renderPlayPauseButton = (videoId: string) => {
+    return (
+      <div
+        onClick={() => handlePlayPause(videoId)}
+        css={playing && videoId === targetVideoId ? pauseBtn : runBtn}
+      ></div>
+    );
+  };
+
+  const handlePlayPause = (videoId: string) => {
+    console.log(`${videoId}`);
+    if (targetVideoId === videoId && playing) {
+      setPlaying(false);
+    } else if (targetVideoId === videoId && !playing) {
+      setPlaying(true);
     } else {
-      setListenVideoId(videoId);
+      setPlayed(0);
+      setTargetVideoId(videoId);
+      setPlaying(true);
     }
+  };
+
+  // Duration에 적용
+  const handleProgress = (state: any) => {
+    if (!seeking) {
+      setPlayed(state.played);
+    }
+  };
+
+  // handleProgress을 위한 함수
+  const handleSeekMouseDown = (e: React.MouseEvent<HTMLInputElement>) => {
+    setSeeking(true);
+  };
+
+  // ReactPlayer에 적용.
+  const handleSeekMouseUp = (e: React.MouseEvent<HTMLInputElement>) => {
+    setSeeking(false);
+    player?.current?.seekTo(parseFloat(e.currentTarget.value));
+  };
+
+  // 변화를 감지하여 <Duration />에 적용.
+  const handleSeekChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPlayed(parseFloat(e.target.value));
+  };
+
+  // Duration의 time rerendering을 위한 것임.
+  const handleDuration = (duration: number) => {
+    setDuration(duration);
+  };
+
+  // 음악이 끝나면 초기화
+  const handleEnded = () => {
+    setPlayed(0);
+    setDuration(0);
+    setTargetVideoId("");
+    setPlaying(false);
   };
 
   return (
@@ -185,24 +248,37 @@ const Survey = () => {
                     <div css={selectedImg}></div>
                   ) : null}
                 </label>
-                <div
-                  onClick={(e) => {
-                    listenMusic(music.videoId, e);
-                  }}
-                  css={music.videoId === listenVideoId ? stopBtn : runBtn}
-                ></div>
-                {listenVideoId === music.videoId ? (
-                  <ReactPlayer
-                    url={`https://www.youtube.com/watch?v=${music.videoId}`}
-                    playing={true}
-                    width="0px"
-                    height="0px"
-                  />
-                ) : null}
+                {renderPlayPauseButton(music.videoId)}
                 <span>{music.name}</span>
               </li>
             ))}
           </ul>
+          <div css={musicController}>
+            <ReactPlayer
+              ref={player}
+              width="0%"
+              height="0%"
+              url={`https://www.youtube.com/watch?v=${targetVideoId}`}
+              playing={playing}
+              onDuration={handleDuration}
+              onProgress={handleProgress}
+              onEnded={handleEnded}
+            />
+            <Duration seconds={duration * played} />
+
+            <input
+              type="range"
+              min={0}
+              max={0.999999}
+              step="any"
+              value={played}
+              onMouseDown={handleSeekMouseDown}
+              onChange={handleSeekChange}
+              onMouseUp={handleSeekMouseUp}
+              css={playedControl}
+            />
+            <Duration seconds={duration} />
+          </div>
           <button>
             {surveyNum === 2 ? <>제출하기</> : <>{surveyNum + 1}/3</>}
           </button>

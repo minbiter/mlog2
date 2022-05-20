@@ -114,13 +114,36 @@ export const emotionSpan = (topEmotion: string) => css`
   height: 5px;
   border-radius: 50%;
   background-color: ${topEmotion === "positive"
-    ? "blue"
+    ? "#2196F3"
     : topEmotion === "negative"
-    ? "red"
+    ? "#F44336"
     : "#00c471"};
 `;
 
 export const selectedGridCellTag = css`
   background-color: #94f0e8;
   border-radius: 50%;
+`;
+
+export const calendarAnalysis = css`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+export const analysisTitle = css`
+  align-self: flex-start;
+  font-weight: 500;
+  font-size: 18px;
+  margin-left: 10px;
+  margin-bottom: 5px;
+`;
+
+export const noAnalysis = css`
+  margin-top: 8px;
+  align-self: flex-start;
+  margin-left: 10px;
+  font-size: 14px;
+  color: #808080;
 `;
