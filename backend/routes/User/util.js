@@ -6,7 +6,7 @@ const isValidSignUp = async (email, password, passwordConfirm) => {
   let emailResultTwo = null;
   let emailMemoTwo = null;
   if (emailResultOne) {
-    [emailResultTwo, emailMemoTwo] = await isExistEmail(await connect(), email);
+    [emailResultTwo, emailMemoTwo] = await isExistEmail(connect(), email);
   }
   let [passwordResult, passwordMemo] = isValidPassword(password);
   let [passwordConfirmResult, passwordConfirmMemo] = isValidPasswordConfirm(
@@ -28,7 +28,7 @@ const isValidSignIn = async (email, password) => {
 
   let emailResultTwo = null;
   if (emailResultOne) {
-    [emailResultTwo] = await isExistEmail(await connect(), email);
+    [emailResultTwo] = await isExistEmail(connect(), email);
   }
 
   let [passwordResultOne] = isValidPassword(password);
@@ -36,7 +36,7 @@ const isValidSignIn = async (email, password) => {
   let passwordResultTwo = null;
   let passwordMemoTwo = null;
   if (emailResultTwo) {
-    [passwordResultTwo, passwordMemoTwo] = await isSamePassword(await connect(), {
+    [passwordResultTwo, passwordMemoTwo] = await isSamePassword(connect(), {
       email,
       password,
     });

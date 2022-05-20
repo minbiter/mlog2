@@ -23,7 +23,7 @@ const Calendar = async (req, res) => {
         endDate,
       };
       const [resultSelectCalendar, dataSelectCalendar] = await selectCanlendar(
-        await connect(),
+        connect(),
         data
       );
       res.setHeader("Content-Type", "application/json; charset=utf-8");

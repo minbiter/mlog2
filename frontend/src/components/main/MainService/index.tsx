@@ -1,30 +1,55 @@
 import React from "react";
 import { Route, useLocation } from "react-router-dom";
-import QueryString from "qs";
-import Calendar from "./Calendar";
+import ReadDiary from "./ReadDiary";
 import WriteDiary from "../../modal/WriteDiary";
 import UpdateDiary from "components/modal/UpdateDiary";
+import Music from "components/main/MainService/Music";
+import QueryString from "qs";
+import { toStringDateFcn } from "utils/calendar/variable";
+
+interface IQueryParameter {
+  date?: string;
+  compose?: string;
+}
 
 const MainService = () => {
   const location = useLocation();
-  const queryParameter = QueryString.parse(useLocation().search, {
+  const queryParameter: IQueryParameter = QueryString.parse(location.search, {
     ignoreQueryPrefix: true,
   });
 
-  if (!queryParameter.date) {
-    queryParameter.date = location.pathname
-      .split("/")
-      .find((v) => v.match(/\d{8}/));
+  const today = new Date();
+  if (
+    !(
+      queryParameter.date &&
+      queryParameter.date.match(/\d{8}/) &&
+      parseInt(queryParameter.date) <=
+        parseInt(
+          toStringDateFcn(today.getFullYear(), today.getMonth() + 1, 0)
+        ) &&
+      parseInt(queryParameter.date) >= 20170101
+    )
+  ) {
+    queryParameter.date = toStringDateFcn(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    );
   }
 
   return (
     <>
       <Route
         path="/main"
-        render={() => <Calendar queryParameter={queryParameter} />}
+        render={() =>
+          queryParameter.hasOwnProperty("date") ? (
+            <ReadDiary queryParameter={queryParameter} />
+          ) : null
+        }
       />
+      <Music />
       <Route
-        path="/main/diary"
+        path="/main"
         render={() =>
           queryParameter.compose === "new" ? (
             <WriteDiary queryParameter={queryParameter} />
@@ -32,9 +57,11 @@ const MainService = () => {
         }
       />
       <Route
-        path="/main/diary/:date"
+        path="/main"
         render={() =>
-          queryParameter.compose === "update" ? <UpdateDiary /> : null
+          queryParameter.compose === "update" ? (
+            <UpdateDiary queryParameter={queryParameter} />
+          ) : null
         }
       />
     </>

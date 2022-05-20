@@ -1,5 +1,5 @@
 const { authentication } = require("../middleware/token");
-const { isValidDiary } = require("./util");
+const { isValidDate, isValidDiary } = require("./util");
 const { diaryAnalysis } = require("../middleware/diaryAnalysis");
 const { connect } = require("../../models");
 const { selectDiary, updateDiaryTitleContent } = require("../../models/diary");
@@ -7,11 +7,11 @@ const { updateDiaryEmotion, selectDiaryEmotion } = require("../../models/diaryEm
 
 const Update = async (req, res) => {
   const [resultAuth, dataAuth] = authentication(req, res);
-  const [resultValidDiary] = isValidDiary(req, res);
+  const [resultValidDiary] = isValidDate(req, res);
   const diaryDate = req.url.match(/\d{8}$/)[0];
 
   if (resultAuth && resultValidDiary) {
-    const [resultSelectDiary, dataSelectDiary] = await selectDiary(await connect(), {
+    const [resultSelectDiary, dataSelectDiary] = await selectDiary(connect(), {
       uid: dataAuth.id,
       diaryDate: parseInt(diaryDate),
     });
@@ -24,57 +24,60 @@ const Update = async (req, res) => {
 
       req.on("end", async () => {
         const parsePayload = JSON.parse(payload);
-        const data = {
-          uid: dataAuth.id,
-          diaryDate: parseInt(diaryDate),
-          updatedAt: new Date(),
-        };
-        // Compare prev title & content
-        let resultDiaryAnalysis = null;
-        let dataDiaryAnalysis = null;
-        if (parsePayload.title !== dataSelectDiary.diary.title)
-          data["title"] = parsePayload.title;
-        if (parsePayload.content !== dataSelectDiary.diary.content) {
-          data["content"] = parsePayload.content;
-          [resultDiaryAnalysis, dataDiaryAnalysis] = await diaryAnalysis(
-            parsePayload.content
+        const resultValid = isValidDiary(res, parsePayload.title, parsePayload.content);
+        if (resultValid) {
+          const data = {
+            uid: dataAuth.id,
+            diaryDate: parseInt(diaryDate),
+            updatedAt: new Date(),
+          };
+          // Compare prev title & content
+          let resultDiaryAnalysis = null;
+          let dataDiaryAnalysis = null;
+          if (parsePayload.title !== dataSelectDiary.diary.title)
+            data["title"] = parsePayload.title;
+          if (parsePayload.content !== dataSelectDiary.diary.content) {
+            data["content"] = parsePayload.content;
+            [resultDiaryAnalysis, dataDiaryAnalysis] = await diaryAnalysis(
+              parsePayload.content
+            );
+          }
+          let resultUpdateEmotion = true;
+          if (resultDiaryAnalysis) {
+            [resultUpdateEmotion] = await updateDiaryEmotion(connect(), {
+              ...data,
+              ...dataDiaryAnalysis,
+            });
+          }
+          const [resultUpdate, dataUpdate] = await updateDiaryTitleContent(
+            connect(),
+            data
           );
-        }
-        let resultUpdateEmotion = true;
-        if (resultDiaryAnalysis) {
-          [resultUpdateEmotion] = await updateDiaryEmotion(await connect(), {
-            ...data,
-            ...dataDiaryAnalysis,
-          });
-        }
-        const [resultUpdate, dataUpdate] = await updateDiaryTitleContent(
-          await connect(),
-          data
-        );
-        const [resultSelectDiaryEmotion, dataSelectDiaryEmotion] =
-          await selectDiaryEmotion(await connect(), {
-            diaryId: dataSelectDiary.diary.id,
-          });
-        res.setHeader("Content-Type", "application/json; charset=utf-8");
-        if (resultUpdate && resultUpdateEmotion) {
-          res.end(
-            JSON.stringify({
-              result: true,
-              data: {
-                diary: {
-                  diaryId: dataSelectDiaryEmotion.diaryEmotion.diaryId,
-                  emotion: {
-                    positive: dataSelectDiaryEmotion.diaryEmotion.positive,
-                    negative: dataSelectDiaryEmotion.diaryEmotion.negative,
-                    neutral: dataSelectDiaryEmotion.diaryEmotion.neutral,
-                    topEmotion: dataSelectDiaryEmotion.diaryEmotion.topEmotion,
+          const [resultSelectDiaryEmotion, dataSelectDiaryEmotion] =
+            await selectDiaryEmotion(connect(), {
+              diaryId: dataSelectDiary.diary.id,
+            });
+          res.setHeader("Content-Type", "application/json; charset=utf-8");
+          if (resultUpdate && resultUpdateEmotion) {
+            res.end(
+              JSON.stringify({
+                result: true,
+                data: {
+                  diary: {
+                    diaryId: dataSelectDiaryEmotion.diaryEmotion.diaryId,
+                    emotion: {
+                      positive: dataSelectDiaryEmotion.diaryEmotion.positive,
+                      negative: dataSelectDiaryEmotion.diaryEmotion.negative,
+                      neutral: dataSelectDiaryEmotion.diaryEmotion.neutral,
+                      topEmotion: dataSelectDiaryEmotion.diaryEmotion.topEmotion,
+                    },
                   },
                 },
-              },
-            })
-          );
-        } else {
-          res.end(JSON.stringify({ result: false, data: dataUpdate }));
+              })
+            );
+          } else {
+            res.end(JSON.stringify({ result: false, data: dataUpdate }));
+          }
         }
       });
     } else {

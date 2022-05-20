@@ -12,25 +12,19 @@ const Token = require("./token");
 
 const env = process.env.NODE_ENV || "DEVELOPMENT";
 
-const connect = async () => {
-  try {
-    return await mysql.createConnection({
-      host: "localhost",
-      user: "root",
-      password: process.env[`${env}_DB_PASSWORD`],
-    });
-  } catch (err) {
-    return await mysql.createConnection({
-      host: "localhost",
-      user: "root",
-      password: process.env[`${env}_DB_PASSWORD`],
-    });
-  }
+const pool = mysql.createPool({
+  host: "localhost",
+  user: "root",
+  password: process.env[`${env}_DB_PASSWORD`],
+});
+
+const connect = () => {
+  return pool;
 };
 
 const config = async () => {
   // mysql connect
-  const connection = await connect();
+  const connection = connect();
   // connection success
   console.log("(step1) 연결 성공");
   console.log("(step2-1) SCHEMA 생성시작");

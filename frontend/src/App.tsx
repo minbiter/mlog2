@@ -4,22 +4,25 @@ import { AuthProvider } from "context/AuthProvider";
 import Nav from "components/Nav";
 import HomePage from "pages/HomePage";
 import MainPage from "pages/MainPage";
+import { RecoilRoot } from "recoil";
 
 function App() {
   return (
-    <Router>
-      <AuthProvider>
-        <Nav />
-        <Switch>
-          <Route path="/main">
-            <MainPage />
-          </Route>
-          <Route exact path="/">
-            <HomePage />
-          </Route>
-        </Switch>
-      </AuthProvider>
-    </Router>
+    <RecoilRoot>
+      <Router>
+        <AuthProvider>
+          <Nav />
+          <Switch>
+            <Route path="/main">
+              <MainPage />
+            </Route>
+            <Route exact path="/">
+              <HomePage />
+            </Route>
+          </Switch>
+        </AuthProvider>
+      </Router>
+    </RecoilRoot>
   );
 }
 

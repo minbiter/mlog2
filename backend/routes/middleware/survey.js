@@ -1,7 +1,7 @@
 const { selectUser } = require("../../models/user");
 const { connect } = require("../../models");
 const isSurvey = async (req, res, id) => {
-  const [resultSelectUser, dataSelectUser] = await selectUser(await connect(), { id });
+  const [resultSelectUser, dataSelectUser] = await selectUser(connect(), { id });
   if (resultSelectUser && dataSelectUser.user.isSurvey) {
     return true;
   } else {

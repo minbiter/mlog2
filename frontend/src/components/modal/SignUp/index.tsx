@@ -37,7 +37,13 @@ const SignUp = ({ closeSignUpModal, openSignInModal }: ISignUpProps) => {
         closeSignUpModal();
         openSignInModal();
       } else {
-        alert(data.data);
+        alert(
+          `${data.data.email ? data.data.email : ""}${
+            data.data?.password ? `\n${data.data?.password}` : ""
+          }${
+            data.data?.passwordConfirm ? `\n${data.data?.passwordConfirm}` : ""
+          }`
+        );
       }
     } catch (err) {
       alert("서비스를 이용하실 수 없습니다.");

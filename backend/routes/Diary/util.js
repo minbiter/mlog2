@@ -1,4 +1,4 @@
-const isValidDiary = (req, res) => {
+const isValidDate = (req, res) => {
   const diaryDate = req.url.match(/\d{8}$/)[0];
   const currentDate = new Date();
   const stringDate = `${currentDate.getFullYear()}${(
@@ -17,6 +17,18 @@ const isValidDiary = (req, res) => {
     );
     return [false, { diary: "미래 일기는 작성할 수 없습니다." }];
   }
+};
+
+const isValidDiary = (res, title, content) => {
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  if (!title) {
+    res.end(JSON.stringify({ result: false, data: { diary: "제목을 입력해주세요." } }));
+    return false;
+  } else if (!content) {
+    res.end(JSON.stringify({ result: false, data: { diary: "내용을 입력해주세요." } }));
+    return false;
+  }
+  return true;
 };
 
 const rangeDate = (startDate, endDate) => {
@@ -48,6 +60,7 @@ const rangeDate = (startDate, endDate) => {
 };
 
 module.exports = {
+  isValidDate,
   isValidDiary,
   rangeDate,
 };

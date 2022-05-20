@@ -17,9 +17,9 @@ const SignIn = async (req, res) => {
       const [accessToken] = createAccessToken(data);
       const [refreshToken, refreshTokenExpire] = createRefeshToken(data);
       // DELETE user's Refresh Token.
-      await deleteToken(await connect(), data.id);
+      await deleteToken(connect(), data.id);
       // INSERT user's Refresh Token.
-      await insertToken(await connect(), {
+      await insertToken(connect(), {
         uid: data.id,
         jwt: refreshToken,
         expires: refreshTokenExpire,

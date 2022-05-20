@@ -1,7 +1,7 @@
 import { Global, css } from "@emotion/react";
 
 export const defaultStyle = css`
-  @import url(//fonts.googleapis.com/earlyaccess/notosanskr.css);
+  @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap");
   html {
     font-family: "Noto Sans KR", sans-serif;
     color: #454545;
@@ -10,6 +10,7 @@ export const defaultStyle = css`
     letter-spacing: -0.3px;
   }
   body {
+    overflow-y: scroll;
     -webkit-font-smoothing: antialiased;
   }
   html,

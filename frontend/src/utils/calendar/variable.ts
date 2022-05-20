@@ -5,7 +5,7 @@ export const yearListFcn = () =>
     (v, i) => 2017 + i
   );
 // const yearList = [2017, 2018, 2019, 2020, 2021, 2022];
-export const dayList = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+export const dayList = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 export const trKeyList = ["0", "1", "2", "3", "4", "5"];
 export const tdKeyList = [
   ["0-0", "0-1", "0-2", "0-3", "0-4", "0-5", "0-6"],

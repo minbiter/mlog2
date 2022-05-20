@@ -51,12 +51,12 @@ async function insertUser(connection, data) {
 
 async function isSamePassword(connection, data) {
   const [rows] = await connection.execute(
-    "SELECT id, email, password FROM mlog.user WHERE email = ?;",
+    "SELECT id, email, password, isSurvey FROM mlog.user WHERE email = ?;",
     [data.email]
   );
   const result = await bcrypt.compare(data.password, rows[0].password);
   if (result) {
-    return [result, { id: rows[0].id, email: rows[0].email }];
+    return [result, { id: rows[0].id, email: rows[0].email, isSurvey: rows[0].isSurvey }];
   } else {
     return [result];
   }

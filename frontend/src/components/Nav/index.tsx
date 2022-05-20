@@ -1,9 +1,10 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState, useContext, useCallback } from "react";
+import { useHistory } from "react-router-dom";
 import SignIn from "components/modal/SignIn";
 import SignUp from "components/modal/SignUp";
 import { AuthContext } from "context/AuthProvider";
-import { Link } from "react-router-dom";
+import { signOutUser } from "api/userApi";
 import logoImg from "assets/logo.png";
 import {
   headerTag,
@@ -17,7 +18,8 @@ import {
 const Nav = () => {
   const [isClickedSignIn, setIsClickedSignIn] = useState(false);
   const [isClickedSignUp, setIsClickedSignUp] = useState(false);
-  const { auth } = useContext(AuthContext);
+  const { auth, setAuth } = useContext(AuthContext);
+  const history = useHistory();
 
   const openSignInModal = useCallback(() => {
     setIsClickedSignIn((prev) => !prev);
@@ -27,6 +29,18 @@ const Nav = () => {
     setIsClickedSignUp((prev) => !prev);
   }, []);
 
+  const signOut = async () => {
+    try {
+      const { data } = await signOutUser();
+      if (data.result) {
+        setAuth({});
+        history.push("/");
+      }
+    } catch (err) {
+      alert("로그아웃에 실패했습니다.");
+    }
+  };
+
   return (
     <header css={headerTag}>
       <nav css={navBar}>
@@ -34,10 +48,11 @@ const Nav = () => {
           <img src={logoImg} alt="logo-modal" />
           <span>Mlog</span>
         </div>
-        {/* <Link to="/">Home</Link>
-  <Link to="/main">Main</Link> */}
         {auth.accessToken ? (
-          auth.email
+          <>
+            <p>{auth.email}</p>
+            <button onClick={signOut}>로그아웃</button>
+          </>
         ) : (
           <div css={signContainer}>
             <button onClick={openSignInModal} css={signInBtn}>

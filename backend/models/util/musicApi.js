@@ -84,7 +84,7 @@ async function fetchMusic() {
           "\\'"
         ),
         genre: genreId[key],
-        img: musicListByGenre[i].data.data.trackList[j].album.imgList[0].url.replaceAll(
+        img: musicListByGenre[i].data.data.trackList[j].album.imgList[5].url.replaceAll(
           "'",
           "\\'"
         ),

@@ -10,7 +10,7 @@ const Delete = async (req, res) => {
       uid: dataAuth.id,
       diaryDate: parseInt(diaryDate),
     };
-    const [resultDeleteDiary, dataDeleteDiary] = await deleteDiary(await connect(), data);
+    const [resultDeleteDiary, dataDeleteDiary] = await deleteDiary(connect(), data);
     res.setHeader("Content-Type", "application/json; charset=utf-8");
     if (resultDeleteDiary) {
       res.end(JSON.stringify({ result: true, data: dataDeleteDiary }));
