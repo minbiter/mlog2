@@ -14,13 +14,13 @@ const Update = async (req, res) => {
       const parsePayload = JSON.parse(payload);
       const [resultValidSurvey] = isValidSurvey(parsePayload);
       const [resultDeleteUserEmotion, dataDeleteUserEmotion] = await deleteUserEmotion(
-        await connect(),
+        connect(),
         { uid: dataAuth.id }
       );
       if (resultValidSurvey && resultDeleteUserEmotion) {
         const querySurveyList = createQuerySurveyList(dataAuth.id, parsePayload);
         const [resultInsertUserEmotion, dataInsertUserEmotion] = await insertUserEmotion(
-          await connect(),
+          connect(),
           querySurveyList
         );
         res.setHeader("Content-Type", "application/json; charset=utf-8");

@@ -17,10 +17,10 @@ const Create = async (req, res) => {
       if (resultValidSurvey) {
         const querySurveyList = createQuerySurveyList(dataAuth.id, parsePayload);
         const [resultInsertUserEmotion, dataInsertUserEmotion] = await insertUserEmotion(
-          await connect(),
+          connect(),
           querySurveyList
         );
-        await surveyComplete(await connect(), { id: dataAuth.id });
+        await surveyComplete(connect(), { id: dataAuth.id });
         res.setHeader("Content-Type", "application/json; charset=utf-8");
         if (resultInsertUserEmotion) {
           res.end(JSON.stringify({ result: true, data: dataInsertUserEmotion }));

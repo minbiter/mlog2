@@ -2,7 +2,7 @@ const { connect } = require("../../models");
 const { selectSurveyMusic } = require("../../models/surveyMusic");
 
 const Fetch = async (req, res) => {
-  const [resultSelectSurvey, dataSelectSurvey] = await selectSurveyMusic(await connect());
+  const [resultSelectSurvey, dataSelectSurvey] = await selectSurveyMusic(connect());
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   if (resultSelectSurvey) {
     res.end(JSON.stringify({ result: true, data: dataSelectSurvey }));

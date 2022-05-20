@@ -59,7 +59,7 @@ async function InsertSurveyMusic(connection) {
 async function selectSurveyMusic(connection) {
   const [rows] = await connection.execute(
     "\
-    SELECT M.title, M.artist, M.img, M.videoId, M.genreId, G.name\
+    SELECT M.title, M.artist, M.img, M.videoId, SM.genreId, G.name\
     FROM mlog.music M\
     JOIN mlog.surveyMusic SM\
 	  ON SM.musicId = M.id\

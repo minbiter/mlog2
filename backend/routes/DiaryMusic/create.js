@@ -1,5 +1,5 @@
 const { authentication } = require("../middleware/token");
-const { isValidDiary } = require("../Diary/util");
+const { isValidDate } = require("../Diary/util");
 const { connect } = require("../../models");
 const { selectDiary } = require("../../models/diary");
 const { selectDiaryEmotion } = require("../../models/diaryEmotion");
@@ -8,9 +8,9 @@ const { insertDiaryMusic } = require("../../models/diaryMusic");
 
 const Create = async (req, res) => {
   const [resultAuth, dataAuth] = authentication(req, res);
-  const [resultValidDiary] = isValidDiary(req, res);
+  const [resultValidDiary] = isValidDate(req, res);
   if (resultAuth && resultValidDiary) {
-    const [resultSelectDiary, dataSelectDiary] = await selectDiary(await connect(), {
+    const [resultSelectDiary, dataSelectDiary] = await selectDiary(connect(), {
       uid: dataAuth.id,
       diaryDate: parseInt(req.url.match(/\d{8}$/)[0]),
     });
@@ -32,8 +32,8 @@ const Create = async (req, res) => {
           [resultDiaryEmotion, dataDiaryEmotion],
           [resultUserEmotion, dataUserEmotion],
         ] = await Promise.all([
-          selectDiaryEmotion(await connect(), { diaryId: dataSelectDiary.diary.id }),
-          selectUserEmotion(await connect(), {
+          selectDiaryEmotion(connect(), { diaryId: dataSelectDiary.diary.id }),
+          selectUserEmotion(connect(), {
             uid: dataAuth.id,
             genreId: parsePayload.genreId,
           }),
@@ -63,7 +63,7 @@ const Create = async (req, res) => {
             diaryDate: parseInt(req.url.match(/\d{8}$/)[0]),
           };
           const [resultInsertDiaryMusic, dataInsertDiaryMusic] = await insertDiaryMusic(
-            await connect(),
+            connect(),
             diaryMusicData
           );
           if (resultInsertDiaryMusic) {

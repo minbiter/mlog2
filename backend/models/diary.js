@@ -32,25 +32,40 @@ async function insertDiary(connection, data) {
 }
 
 async function selectDiary(connection, data) {
-  const [rows] = await connection.execute(
-    "SELECT id, uid, diaryDate, title, content, isMusic FROM mlog.diary WHERE uid = ? AND diaryDate = ?;",
+  const [diaryRows] = await connection.execute(
+    "SELECT D.id, D.uid, D.diaryDate, D.title, D.content, D.isMusic, DE.topEmotion, DE.positive, DE.negative, DE.neutral\
+    FROM mlog.diary D\
+    JOIN mlog.diaryEmotion DE\
+      ON DE.diaryId = D.id\
+    WHERE uid = ? AND diaryDate = ?;",
     [data.uid, data.diaryDate]
   );
-  if (rows.length) {
-    return [true, { diary: rows[0] }];
+  let musicRows = null;
+
+  if (diaryRows.length) {
+    if (diaryRows[0].isMusic) {
+      [musicRows] = await connection.execute(
+        "SELECT title, artist, img, genreId, videoId FROM mlog.music WHERE id = (SELECT musicId FROM mlog.diaryMusic WHERE diaryId = ?);",
+        [diaryRows[0].id]
+      );
+    }
+    if (musicRows) {
+      return [true, { diary: { ...diaryRows[0], music: musicRows[0] } }];
+    } else {
+      return [true, { diary: { ...diaryRows[0], music: {} } }];
+    }
   }
   return [false, { diary: "해당 날짜의 일기가 존재하지 않습니다." }];
 }
 
 async function updateDiaryTitleContent(connection, data) {
   let query = "UPDATE mlog.diary SET ";
-  const values = ["title", "content", "updatedAt"];
-
-  for (var i = 0; i < values.length; i++) {
-    if (data.hasOwnProperty(values[i])) {
-      query += `${values[i]} = ?, `;
-    } else {
-      values.splice(i, 1);
+  const keyList = ["title", "content", "updatedAt"];
+  const values = [];
+  for (var i = 0; i < keyList.length; i++) {
+    if (data.hasOwnProperty(keyList[i])) {
+      query += `${keyList[i]} = ?, `;
+      values.push(keyList[i]);
     }
   }
   query = query.replace(/..$/, " WHERE uid = ? AND diaryDate = ?;");
@@ -87,15 +102,25 @@ async function selectCanlendar(connection, data) {
     [data.uid, data.startDate, data.endDate]
   );
   const customRows = {};
+  let positiveCnt = 0;
+  let negativeCnt = 0;
+  let neutralCnt = 0;
   if (rows.length) {
     rows.forEach((row) => {
       customRows[`${row.diaryDate}`] = {};
       customRows[`${row.diaryDate}`]["title"] = row.title;
       customRows[`${row.diaryDate}`]["topEmotion"] = row.topEmotion;
+      if (row.topEmotion === "positive") positiveCnt++;
+      else if (row.topEmotion === "negative") negativeCnt++;
+      else neutralCnt++;
     });
+    customRows["positiveCnt"] = positiveCnt;
+    customRows["negativeCnt"] = negativeCnt;
+    customRows["neutralCnt"] = neutralCnt;
     return [true, { diary: customRows }];
   }
   return [false, { diary: "해당 날짜 범위의 일기가 존재하지 않습니다." }];
+  // return [false, { diary: { positiveCnt, negativeCnt, neutralCnt } }];
 }
 
 module.exports = {

@@ -17,7 +17,7 @@ const SignUp = async (req, res) => {
 
     res.writeHead(200, { "Content-Type": "application/json; charset=utf-8" });
     if (result) {
-      await insertUser(await connect(), {
+      await insertUser(connect(), {
         email: parsePayload.email,
         password: parsePayload.password,
       });

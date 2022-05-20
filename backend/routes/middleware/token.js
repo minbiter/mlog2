@@ -74,7 +74,7 @@ const verifyRefreshToken = async (req, res) => {
   if (refreshToken) {
     try {
       const decoded = jwt.verify(refreshToken, `${process.env.TOKEN_KEY}`);
-      const { jwt: db_token } = await selectToken(await connect(), decoded.id);
+      const { jwt: db_token } = await selectToken(connect(), decoded.id);
       if (db_token === refreshToken) {
         return [true, { ...decoded }];
       } else {

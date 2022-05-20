@@ -7,7 +7,7 @@ const Read = async (req, res) => {
   const diaryDate = req.url.match(/\d{8}$/)[0];
 
   if (resultAuth) {
-    const [resultSelectDiary, dataSelectDiary] = await selectDiary(await connect(), {
+    const [resultSelectDiary, dataSelectDiary] = await selectDiary(connect(), {
       uid: dataAuth.id,
       diaryDate: parseInt(diaryDate),
     });

@@ -1,5 +1,5 @@
 const { authentication } = require("../middleware/token");
-const { isValidDiary } = require("../Diary/util");
+const { isValidDate } = require("../Diary/util");
 const { connect } = require("../../models");
 const { selectDiary } = require("../../models/diary");
 const { selectDiaryEmotion } = require("../../models/diaryEmotion");
@@ -8,9 +8,9 @@ const { selectRecommendMusic } = require("../../models/music");
 
 const Recommend = async (req, res) => {
   const [resultAuth, dataAuth] = authentication(req, res);
-  const [resultValidDiary] = isValidDiary(req, res);
+  const [resultValidDiary] = isValidDate(req, res);
   if (resultAuth && resultValidDiary) {
-    const [resultSelectDiary, dataSelectDiary] = await selectDiary(await connect(), {
+    const [resultSelectDiary, dataSelectDiary] = await selectDiary(connect(), {
       uid: dataAuth.id,
       diaryDate: parseInt(req.url.match(/\d{8}$/)[0]),
     });
@@ -22,8 +22,8 @@ const Recommend = async (req, res) => {
         [resultDiaryEmotion, dataDiaryEmotion],
         [resultUserEmotion, dataUserEmotion],
       ] = await Promise.all([
-        selectDiaryEmotion(await connect(), { diaryId: dataSelectDiary.diary.id }),
-        selectAllUserEmotion(await connect(), {
+        selectDiaryEmotion(connect(), { diaryId: dataSelectDiary.diary.id }),
+        selectAllUserEmotion(connect(), {
           uid: dataAuth.id,
         }),
       ]);
@@ -62,11 +62,11 @@ const Recommend = async (req, res) => {
       similarityListA.sort((a, b) => a[1] - b[1]);
       similarityListB.sort((a, b) => b[1] - a[1]);
       const musicDataList = await Promise.all([
-        selectRecommendMusic(await connect(), similarityListA[0][0]),
-        selectRecommendMusic(await connect(), similarityListA[1][0]),
-        selectRecommendMusic(await connect(), similarityListA[2][0]),
-        selectRecommendMusic(await connect(), similarityListB[0][0]),
-        selectRecommendMusic(await connect(), similarityListB[1][0]),
+        selectRecommendMusic(connect(), similarityListA[0][0]),
+        selectRecommendMusic(connect(), similarityListA[1][0]),
+        selectRecommendMusic(connect(), similarityListA[2][0]),
+        selectRecommendMusic(connect(), similarityListB[0][0]),
+        selectRecommendMusic(connect(), similarityListB[1][0]),
       ]);
       res.end(
         JSON.stringify({
