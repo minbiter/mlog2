@@ -36,6 +36,9 @@ async function insertDiaryMusic(connection, data) {
       "UPDATE mlog.diary SET isMusic = true WHERE uid = ? AND diaryDate = ?;",
       [data.uid, data.diaryDate]
     ),
+    connection.execute("SELECT topEmotion FROM mlog.diaryEmotion WHERE diaryId = ?", [
+      data.diaryId,
+    ]),
   ]);
   if (
     !rowList[0][0].affectedRows ||
@@ -44,7 +47,13 @@ async function insertDiaryMusic(connection, data) {
   ) {
     return [false, { diaryMusic: "음악 선택에 실패했습니다." }];
   }
-  return [true, { diaryMusic: "음악 선택이 완료되었습니다." }];
+  return [
+    true,
+    {
+      diaryMusic: "음악 선택이 완료되었습니다.",
+      topEmotion: rowList[3][0][0].topEmotion,
+    },
+  ];
 }
 
 module.exports = {
