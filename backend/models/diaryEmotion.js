@@ -44,7 +44,7 @@ async function updateDiaryEmotion(connection, data) {
   await connection.execute(
     "\
     DELETE FROM mlog.diaryMusic WHERE diaryId IN (SELECT id FROM mlog.diary WHERE uid = ? AND diaryDate = ?);\
-  ",
+    ",
     [data.uid, data.diaryDate]
   );
   await connection.execute(
