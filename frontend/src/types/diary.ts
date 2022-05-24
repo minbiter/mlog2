@@ -73,6 +73,6 @@ export interface IFetchRcdMusic {
 
 export interface IPostDiaryMusic {
   (date: string, data: { genreId: number; musicId: number }): Promise<{
-    data: { result: boolean; data: { diaryMusic: string } };
+    data: { result: boolean; data: { diaryMusic: string; topEmotion: string } };
   }>;
 }

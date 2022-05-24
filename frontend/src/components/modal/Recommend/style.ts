@@ -11,7 +11,7 @@ export const modal = css`
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10;
+  z-index: 20;
 `;
 
 export const dimmed = css`

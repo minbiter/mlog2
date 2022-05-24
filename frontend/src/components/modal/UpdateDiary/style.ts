@@ -12,6 +12,7 @@ export const modal = css`
   &: focus {
     background-color: red;
   }
+  z-index: 20;
 `;
 
 export const dimmed = css`

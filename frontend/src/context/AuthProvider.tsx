@@ -1,8 +1,10 @@
 import React, { createContext, useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import { refreshUser } from "api/userApi";
 import { instanceAuth } from "api";
 
 interface IAuth {
+  loading?: boolean;
   accessToken?: string;
   email?: string;
   isSurvey?: number;
@@ -17,12 +19,16 @@ export const AuthContext = createContext<IAuthContext>({} as IAuthContext);
 
 export const AuthProvider = ({ children }: React.PropsWithChildren<{}>) => {
   const [auth, setAuth] = useState<IAuth>({});
+  const [loading, setLoading] = useState(true);
+  const history = useHistory();
 
   useEffect(() => {
     const fetchAccessToken = async () => {
       const { data } = await refreshUser();
+      setLoading(false);
       if (data.result) {
         setAuth({
+          loading: false,
           email: data.data.email,
           accessToken: data.data.accessToken,
           isSurvey: data.data.isSurvey,
@@ -30,6 +36,11 @@ export const AuthProvider = ({ children }: React.PropsWithChildren<{}>) => {
         instanceAuth.defaults.headers.common[
           "Authorization"
         ] = `Bearer ${data.data.accessToken}`;
+      } else {
+        setAuth((prev) => {
+          return { ...prev, loading: false };
+        });
+        history.replace("/");
       }
     };
     fetchAccessToken();
@@ -47,7 +58,7 @@ export const AuthProvider = ({ children }: React.PropsWithChildren<{}>) => {
 
   return (
     <AuthContext.Provider value={{ auth, setAuth }}>
-      {children}
+      {!loading ? children : null}
     </AuthContext.Provider>
   );
 };

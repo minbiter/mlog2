@@ -5,12 +5,14 @@ export const headerTag = css`
   top: 0;
   left: 0;
   right: 0;
+  z-index: 10;
   background-color: #fff;
 `;
 
 export const navBar = css`
+  min-width: 576px;
   height: 60px;
-  padding: 0 20px;
+  padding: 0 30px;
   border-bottom: 1px solid #eff1f6;
   display: flex;
   align-items: center;
@@ -32,6 +34,31 @@ export const logoModal = css`
     font-size: 30px;
     font-weight: 700;
     color: #4cdbce;
+  }
+`;
+
+export const info = css`
+  position: relative;
+  & > button {
+    font-size: 16px;
+  }
+`;
+
+export const infoModal = css`
+  position: absolute;
+  background-color: #fff;
+  border-radius: 5px;
+  border: 1px solid #e4e2e2;
+  top: 35px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  width: 100px;
+  padding: 8px 16px;
+  text-align: center;
+  cursor: pointer;
+  &: hover {
+    border: 1px solid #2962ff;
   }
 `;
 

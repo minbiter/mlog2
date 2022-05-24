@@ -9,6 +9,7 @@ import {
 import Recommend from "components/modal/Recommend";
 import LoadingSpinner from "components/LoadingSpinner";
 import { calendarRangeState, diaryState, getDiary } from "atoms/diary";
+import { updateMusicList } from "atoms/music";
 import { updateDiaryApi } from "api/diaryApi";
 import {
   modal,
@@ -26,6 +27,7 @@ const UpdateDiary = ({ queryParameter }: IUpdateDiaryParams) => {
   const setCalendarRange = useSetRecoilState(calendarRangeState);
   const [diaryDate, setDiaryDate] = useRecoilState(diaryState);
   const diary = useRecoilValueLoadable(getDiary);
+  const setUpdateMusicList = useSetRecoilState(updateMusicList);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [isCompleted, setIsCompleted] = useState(false);
@@ -71,6 +73,7 @@ const UpdateDiary = ({ queryParameter }: IUpdateDiaryParams) => {
             endDate: `${queryParameter.date.slice(0, 6)}32`,
           });
           setDiaryDate({ date: queryParameter.date });
+          setUpdateMusicList({ topEmotion: diary.contents.topEmotion });
           setIsCompleted(true);
         } else {
           alert(data.data.diary);
