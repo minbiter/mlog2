@@ -3,6 +3,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { useRecoilValueLoadable, useSetRecoilState } from "recoil";
 import { calendarRangeState, diaryState, getDiary } from "atoms/diary";
+import { musicPlayState, updateMusicList } from "atoms/music";
 import { AuthContext } from "context/AuthProvider";
 import { deleteDiaryApi } from "api/diaryApi";
 import WarningModal from "components/modal/WarningModal";
@@ -36,6 +37,8 @@ const ReadDiary = ({ queryParameter }: IReadDiaryParams) => {
   const diary = useRecoilValueLoadable(getDiary);
   const setDiary = useSetRecoilState(diaryState);
   const setCalendarDiary = useSetRecoilState(calendarRangeState);
+  const setMusicPlayState = useSetRecoilState(musicPlayState);
+  const setUpdateMusicList = useSetRecoilState(updateMusicList);
   const [isClickedDelete, setIsClickedDelete] = useState(false);
   const [isOpenRecommend, setIsOpenRecommend] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
@@ -68,6 +71,7 @@ const ReadDiary = ({ queryParameter }: IReadDiaryParams) => {
             startDate: `${queryParameter.date.slice(0, 6)}01`,
             endDate: `${queryParameter.date.slice(0, 6)}32`,
           });
+          setUpdateMusicList({ topEmotion: diary.contents.topEmotion });
           openWarningModal();
           history.push(`/main?date=${queryParameter.date}`);
         } else {
@@ -86,6 +90,10 @@ const ReadDiary = ({ queryParameter }: IReadDiaryParams) => {
 
   const openRecommend = () => {
     setIsOpenRecommend((prev) => !prev);
+  };
+
+  const changeMusicPlayState = () => {
+    setMusicPlayState({ isMusic: true, music: diary.contents.music });
   };
 
   return (
@@ -107,7 +115,7 @@ const ReadDiary = ({ queryParameter }: IReadDiaryParams) => {
                   {queryParameter.date?.slice(6, 8)}일
                 </p>
                 {diary.contents.isMusic ? (
-                  <div css={headerMusic}>
+                  <div css={headerMusic} onClick={changeMusicPlayState}>
                     <img
                       src={diary.contents.music.img}
                       alt={diary.contents.music.title}

@@ -174,7 +174,6 @@ const Survey = () => {
   };
 
   const handlePlayPause = (videoId: string) => {
-    console.log(`${videoId}`);
     if (targetVideoId === videoId && playing) {
       setPlaying(false);
     } else if (targetVideoId === videoId && !playing) {

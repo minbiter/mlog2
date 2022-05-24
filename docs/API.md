@@ -297,32 +297,6 @@ Diary 관련 API
 
 
 
-### /diary/chart?startDate=yyyymmdd&endDate=yyyymmdd
-
-범위 내의 작성된 diary의 긍정&부정&중립의 비율, 일기작성 수, 일기작성 비율을 불러온다.
-
-**(참고) default값은 현재까지 작성된 모든 diary 기준으로 불러온다.**
-
-> ENDPOINT
-
-| Method | function   | Request Url    | Authentication |
-| ------ | ---------- | -------------- | -------------- |
-| `GET`  | fetchChart | `/diary/chart` | true           |
-
-> QUERY-STRING
-
-| startDate | start 날짜 | string, Length: 8, Optional |
-| --------- | ---------- | --------------------------- |
-| endDate   | end 날짜   | string, Length: 8, Optional |
-
-> Example Response(`GET`)
-
-```json
-
-```
-
-
-
 ### /diary/{yyyymmdd}
 
 일기 CRUD API
@@ -473,7 +447,8 @@ Diary 관련 API
 {
   "result": true,
   "data": {
-    "diaryMusic": "음악 선택이 완료되었습니다."
+    "diaryMusic": "음악 선택이 완료되었습니다.",
+    "topEmotion": "positive"
   }
 }
 ```
@@ -484,26 +459,84 @@ Diary 관련 API
 
 Music 관련 API
 
-### /music/{userId}/playlist?listId=xxx
+### /music/{musicList}
 
 해당 playlist의 음악정보를 불러옵니다.
+
+일기날자 내림차순
 
 **(참고) default는 선택한 음악 리스트와 유저가 커스텀한 playlist들을 불러옵니다.**
 
 > ENDPOINT
 
-| Method | function       | Request Url               | Authentication |
-| ------ | -------------- | ------------------------- | -------------- |
-| `GET`  | fetchPlayList  | `music/{userId}/playlist` | true           |
-| `POST` | creatPlayList  | `music/{userId}/playlist` | true           |
-| `PUT`  | updatePlayList | `music/{userId}/playlist` | true           |
+| Method | function              | Request Url       | Authentication |
+| ------ | --------------------- | ----------------- | -------------- |
+| `GET`  | fetchAllPlayList      | `/music`          | true           |
+| `GET`  | fetchPositivePlayList | `/music/positive` | true           |
+| `GET`  | fetchNegativePlayList | `/music/negative` | true           |
+| `GET`  | fetchNeutralPlayList  | `/music/neutral`  | true           |
 
-> QUERY-STRING
+> Example Request(`fetchAllPlayList`)
 
-| listId | playlist 아이디 | string, Optional |
-| ------ | --------------- | ---------------- |
+```
+/music
+```
 
-> PARAMETER(`POST`, `PUT`)
+> Example Response(`fetchAllPlayList`)
 
-| playList | playlist 아이디 | object[], Required |
-| -------- | --------------- | ------------------ |
+모든 playlist
+
+```json
+{
+  "result": true,
+  "data": {
+    "popular": [{
+      "id": 443774139,
+      "title": "추억은 만남보다 이별에 남아",
+      "artist": "정동하",
+      "genreId": 3550,
+      "img": "https://cdn.music-flo.com/image/v2/album/773/792/05/04/405792773_6013c0d2_s.jpg?1611907284136/dims/resize/75x75/quality/90",
+      "videoId": "_iP6_RAd9zY"
+    },],
+    "positive": [{
+      "diaryDate": 20220521,
+      "updateAt": {},
+      "id": 443774139,
+      "title": "추억은 만남보다 이별에 남아",
+      "artist": "정동하",
+      "genreId": 3550,
+      "img": "https://cdn.music-flo.com/image/v2/album/773/792/05/04/405792773_6013c0d2_s.jpg?1611907284136/dims/resize/75x75/quality/90",
+      "videoId": "_iP6_RAd9zY"
+    },],
+    "negative": [],
+    "neutral": []
+  }
+}
+```
+
+> Example Request(`fetchPositivePlayList`)
+
+```
+/music/positive
+```
+
+> Example Response(`fetchPositivePlayList`)
+
+```json
+{
+  "result": true,
+  "data": {
+    "positive": [{
+      "diaryDate": 20220521,
+      "updateAt": {},
+      "id": 443774139,
+      "title": "추억은 만남보다 이별에 남아",
+      "artist": "정동하",
+      "genreId": 3550,
+      "img": "https://cdn.music-flo.com/image/v2/album/773/792/05/04/405792773_6013c0d2_s.jpg?1611907284136/dims/resize/75x75/quality/90",
+      "videoId": "_iP6_RAd9zY"
+    },]
+  }
+}
+```
+

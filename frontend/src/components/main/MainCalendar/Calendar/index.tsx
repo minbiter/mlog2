@@ -84,7 +84,7 @@ const Calendar = ({ queryParameter }: ICalendarProps) => {
       setCalYear(today.getFullYear());
       setCalMonth(today.getMonth());
     }
-  }, []);
+  }, [queryParameter]);
 
   useEffect(() => {
     if (calYear !== -1 && calMonth !== -1 && auth.accessToken) {

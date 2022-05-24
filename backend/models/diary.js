@@ -123,6 +123,79 @@ async function selectCanlendar(connection, data) {
   // return [false, { diary: { positiveCnt, negativeCnt, neutralCnt } }];
 }
 
+async function selectMusic(connection, data) {
+  if (!data.topEmotion) {
+    const result = {
+      popular: null,
+      positive: [],
+      negative: [],
+      neutral: [],
+    };
+
+    const [rowsOne] = await connection.execute(
+      `
+        SELECT DDE.topEmotion, DDE.diaryDate, DDE.updatedAt, M.id, M.title, M.artist, M.genreId, M.img, M.videoId
+        FROM mlog.music M
+          JOIN mlog.diaryMusic DM
+          ON DM.musicId = M.id
+          JOIN (
+            SELECT TDDE.* FROM (
+              (
+                SELECT D.id, D.diaryDate, D.updatedAt, DE.topEmotion FROM mlog.diary D, mlog.diaryEmotion DE
+                WHERE D.uid = ? AND D.isMusic = 1 AND D.id = DE.diaryId AND DE.topEmotion = "positive"
+              )
+              UNION
+              (
+                SELECT D.id, D.diaryDate, D.updatedAt, DE.topEmotion FROM mlog.diary D, mlog.diaryEmotion DE
+                WHERE D.uid = ? AND D.isMusic = 1 AND D.id = DE.diaryId AND DE.topEmotion = "negative"
+              )
+              UNION
+              (
+                SELECT D.id, D.diaryDate, D.updatedAt, DE.topEmotion FROM mlog.diary D, mlog.diaryEmotion DE
+                WHERE D.uid = ? AND D.isMusic = 1 AND D.id = DE.diaryId AND DE.topEmotion = "neutral"
+              )
+            ) TDDE
+          ) DDE
+          ON DDE.id = DM.diaryId 
+        ORDER BY DDE.diaryDate DESC;
+        `,
+      [data.uid, data.uid, data.uid]
+    );
+    const [rowsTwo] = await connection.query(
+      "SELECT M.id, M.title, M.artist, M.genreId, M.img, M.videoId FROM mlog.music M JOIN mlog.surveyMusic SM ON SM.musicId = M.id"
+    );
+
+    rowsOne.forEach((row) => {
+      if (row.topEmotion === "positive") result.positive.push(row);
+      else if (row.topEmotion === "negative") result.negative.push(row);
+      else result.neutral.push(row);
+    });
+    result.popular = rowsTwo;
+
+    return result;
+  } else {
+    const result = {};
+    const [rows] = await connection.execute(
+      `
+      SELECT DDE.diaryDate, DDE.updatedAt, M.title, M.artist, M.genreId, M.img, M.videoId
+      FROM mlog.music M
+        JOIN mlog.diaryMusic DM
+        ON DM.musicId = M.id
+        JOIN (
+          SELECT D.id, D.diaryDate, D.updatedAt FROM mlog.diary D, mlog.diaryEmotion DE
+          WHERE D.uid = ? AND D.isMusic = 1 AND D.id = DE.diaryId AND DE.topEmotion = ?
+          ) DDE
+          ON DDE.id = DM.diaryId
+      ORDER BY DDE.diaryDate DESC
+        `,
+      [data.uid, data.topEmotion]
+    );
+    result[data.topEmotion] = rows;
+
+    return result;
+  }
+}
+
 module.exports = {
   init,
   insertDiary,
@@ -130,4 +203,5 @@ module.exports = {
   updateDiaryTitleContent,
   deleteDiary,
   selectCanlendar,
+  selectMusic,
 };

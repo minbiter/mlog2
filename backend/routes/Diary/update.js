@@ -34,14 +34,14 @@ const Update = async (req, res) => {
           // Compare prev title & content
           let resultDiaryAnalysis = null;
           let dataDiaryAnalysis = null;
-          if (parsePayload.title !== dataSelectDiary.diary.title)
-            data["title"] = parsePayload.title;
-          if (parsePayload.content !== dataSelectDiary.diary.content) {
-            data["content"] = parsePayload.content;
-            [resultDiaryAnalysis, dataDiaryAnalysis] = await diaryAnalysis(
-              parsePayload.content
-            );
-          }
+          // if (parsePayload.title !== dataSelectDiary.diary.title)
+          data["title"] = parsePayload.title;
+          // if (parsePayload.content !== dataSelectDiary.diary.content) {
+          data["content"] = parsePayload.content;
+          [resultDiaryAnalysis, dataDiaryAnalysis] = await diaryAnalysis(
+            parsePayload.content
+          );
+          // }
           let resultUpdateEmotion = true;
           if (resultDiaryAnalysis) {
             [resultUpdateEmotion] = await updateDiaryEmotion(connect(), {

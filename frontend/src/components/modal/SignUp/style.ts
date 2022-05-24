@@ -28,7 +28,7 @@ export const signUpLink = css`
 `;
 
 export const container = css`
-  z-index: 20;
+  z-index: 200;
   width: 360px;
   height: auto;
   padding: 24px;

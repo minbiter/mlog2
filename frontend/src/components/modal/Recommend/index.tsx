@@ -5,6 +5,7 @@ import { useSetRecoilState } from "recoil";
 import ReactPlayer from "react-player/youtube";
 import Duration from "utils/music/Duration";
 import { diaryState, calendarRangeState } from "atoms/diary";
+import { updateMusicList, musicPlayerOff } from "atoms/music";
 import { fetchRcdMusic, postDiaryMusic } from "api/diaryApi";
 import {
   modal,
@@ -48,8 +49,11 @@ const Recommend = ({ date, closeRecommend }: IRecommendParams) => {
     {} as { genreId: number; musicId: number }
   );
   const [loading, setLoading] = useState(true);
+  const [isMusicPlayerOff, setIsMusicPlayerOff] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const setCalendarRange = useSetRecoilState(calendarRangeState);
+  const setUpdateMusicList = useSetRecoilState(updateMusicList);
+  const setMusicPlayerOff = useSetRecoilState(musicPlayerOff);
   const setDiaryDate = useSetRecoilState(diaryState);
   const history = useHistory();
   // ReactPlayer
@@ -64,6 +68,14 @@ const Recommend = ({ date, closeRecommend }: IRecommendParams) => {
   const [played, setPlayed] = useState<number>(0);
   // Music isSeeking
   const [seeking, setSeeking] = useState(false);
+
+  useEffect(() => {
+    if (isMusicPlayerOff) {
+      setMusicPlayerOff({ off: true });
+    } else {
+      setMusicPlayerOff({ off: false });
+    }
+  }, [isMusicPlayerOff]);
 
   useEffect(() => {
     const fetch = async () => {
@@ -96,7 +108,7 @@ const Recommend = ({ date, closeRecommend }: IRecommendParams) => {
             endDate: `${date.slice(0, 6)}32`,
           });
           setDiaryDate({ date: date });
-          // alert(data.data.diaryMusic);
+          setUpdateMusicList({ topEmotion: data.data.topEmotion });
           if (closeRecommend) {
             closeRecommend();
           } else {
@@ -155,6 +167,7 @@ const Recommend = ({ date, closeRecommend }: IRecommendParams) => {
       setPlayed(0);
       setTargetVideoId(videoId);
       setPlaying(true);
+      if (!isMusicPlayerOff) setIsMusicPlayerOff(true);
     }
   };
 
