@@ -108,7 +108,11 @@ const Recommend = ({ date, closeRecommend }: IRecommendParams) => {
             endDate: `${date.slice(0, 6)}32`,
           });
           setDiaryDate({ date: date });
-          setUpdateMusicList({ topEmotion: data.data.topEmotion });
+          setUpdateMusicList({
+            topEmotion: data.data.topEmotion,
+            musicCreate: true,
+            musicDelete: false,
+          });
           if (closeRecommend) {
             closeRecommend();
           } else {

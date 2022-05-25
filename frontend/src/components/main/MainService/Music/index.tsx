@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-import { musicPlayState, updateMusicList, musicPlayerOff } from "atoms/music";
+import { diaryMusicDate, updateMusicList, musicPlayerOff } from "atoms/music";
 import ReactPlayer from "react-player";
 import { fetchAllPlayList, fetchNamePlayList } from "api/musicApi";
 import Duration from "utils/music/Duration";
@@ -29,7 +29,6 @@ import {
   controlMusicArtist,
   playedController,
   playListController,
-  emptyControlLeft,
   controlLeft,
   controlPause,
   controlRun,
@@ -48,21 +47,30 @@ interface IMusicList {
 const Music = () => {
   const { auth } = useContext(AuthContext);
   const history = useHistory();
-  const musicPlayValue = useRecoilValue(musicPlayState);
+  const diaryMusicDateValue = useRecoilValue(diaryMusicDate);
+  const [loadingDMDV, setLoadingDMDV] = useState(false);
+  // MusicList update해야함
   const updateMusicListValue = useRecoilValue(updateMusicList);
+  // Recommend music이 실행되면 음악을 off
   const musicPlayerOffValue = useRecoilValue(musicPlayerOff);
   const [loading, setLoading] = useState(true);
-  const [isPlayingDM, setIsPlayingDM] = useState(false);
+  // 인기, 긍정, 부정, 중립의 모든 musicList
   const [musicList, setMusicList] = useState<IMusicList>({} as IMusicList);
+  // 선택된 카테고리
   const [selectedPlayList, setSelectedPlayList] = useState("popular");
-  // running PlayList
-  const [curPlayList, setCurPlayList] = useState("");
-  // PlayList Order
-  const [playOrder, setPlayOrder] = useState(-10);
+  // playing PlayListName
+  const [playingPlayList, setPlayingPlayList] = useState("");
+  // playing Music
+  const [playingMusic, setPlayingMusic] = useState<IEmotionMusic>(
+    {} as IEmotionMusic
+  );
+  // playing Music Order
+  const [playOrder, setPlayOrder] = useState(-1);
+  const ulRef = useRef<HTMLUListElement>(null);
   // ReactPlayer
   const player = useRef<ReactPlayer>(null);
   // targetted Music
-  const [targetVideoId, setTargetVideoId] = useState<string>("");
+  const [targetVideoId, setTargetVideoId] = useState({ target: "" });
   // Music Play or Pause
   const [playing, setPlaying] = useState(false);
   // Music Max Time
@@ -82,26 +90,89 @@ const Music = () => {
     const fetch = async (topEmotion: string) => {
       const { data } = await fetchNamePlayList({ name: topEmotion });
       if (data.result) {
+        if (
+          topEmotion === playingPlayList &&
+          updateMusicListValue.musicCreate
+        ) {
+          data.data[topEmotion].forEach(
+            (music: IEmotionMusic, index: number) => {
+              if (music.diaryDate === playingMusic.diaryDate) {
+                setPlayOrder(index);
+                return false;
+              }
+              return true;
+            }
+          );
+        } else if (
+          topEmotion === playingPlayList &&
+          updateMusicListValue.musicDelete &&
+          data.data[topEmotion].length !== 0
+        ) {
+          let checkMusic = false;
+          data.data[topEmotion].forEach(
+            (music: IEmotionMusic, index: number) => {
+              if (music.diaryDate === playingMusic.diaryDate) {
+                setPlayOrder(index);
+                checkMusic = true;
+                return false;
+              }
+              return true;
+            }
+          );
+          if (!checkMusic) {
+            if (playOrder > musicList[topEmotion].length - 1) {
+              setPlayOrder(data.data[topEmotion].length - 1);
+            } else if (playOrder === 0) {
+              setPlayOrder(data.data[topEmotion].length - 1);
+            } else {
+              setPlayOrder((prev) => prev - 1);
+            }
+          }
+        } else {
+          setPlayOrder(-1);
+        }
         setMusicList((prev) => {
           prev[topEmotion] = data.data[topEmotion];
           return { ...prev };
         });
       }
     };
+
     if (updateMusicListValue.topEmotion) {
       fetch(updateMusicListValue.topEmotion);
     }
   }, [updateMusicListValue]);
 
   useEffect(() => {
-    if (musicPlayValue.isMusic) {
+    if (diaryMusicDateValue.topEmotion) {
       setPlayed(0);
       setDuration(0);
-      setTargetVideoId(musicPlayValue.music.videoId);
-      setPlaying(true);
-      setIsPlayingDM(true);
+      setPlaying(false);
+      musicList[diaryMusicDateValue.topEmotion].forEach(
+        (music: IEmotionMusic, index: number) => {
+          if (music.diaryDate === diaryMusicDateValue.diaryDate) {
+            setPlayingPlayList(diaryMusicDateValue.topEmotion);
+            setPlayOrder(index);
+            setLoadingDMDV(true);
+            setTargetVideoId({ target: "" });
+            if (selectedPlayList !== diaryMusicDateValue.topEmotion) {
+              setSelectedPlayList(diaryMusicDateValue.topEmotion);
+            }
+            return false;
+          }
+          return true;
+        }
+      );
     }
-  }, [musicPlayValue]);
+  }, [diaryMusicDateValue]);
+
+  useEffect(() => {
+    if (loadingDMDV) {
+      ulRef?.current?.children[playOrder].scrollIntoView({
+        behavior: "smooth",
+      });
+    }
+  }, [loadingDMDV]);
 
   useEffect(() => {
     const fetch = async () => {
@@ -118,6 +189,44 @@ const Music = () => {
     }
   }, [auth]);
 
+  useEffect(() => {
+    if (loadingDMDV) {
+      setPlayingMusic(musicList[playingPlayList][playOrder]);
+      setTargetVideoId({
+        target: musicList[diaryMusicDateValue.topEmotion][playOrder].videoId,
+      });
+      setLoadingDMDV(false);
+      setPlaying(true);
+    } else if (
+      !targetVideoId.target &&
+      musicList[playingPlayList]?.length - 1 >= playOrder + 1
+    ) {
+      // 다음 음악 실행
+      setTargetVideoId((prev) => {
+        prev.target = musicList[playingPlayList][playOrder + 1].videoId;
+        return prev;
+      });
+      setPlayingMusic(musicList[playingPlayList][playOrder + 1]);
+      setPlayOrder((prev) => prev + 1);
+      setPlaying(true);
+    } else if (
+      !targetVideoId.target &&
+      playOrder !== -1 &&
+      musicList[playingPlayList]?.length - 1 === playOrder
+    ) {
+      setTargetVideoId((prev) => {
+        prev.target = musicList[playingPlayList][0].videoId;
+        return prev;
+      });
+      setPlayingMusic(musicList[playingPlayList][0]);
+      setPlayOrder(0);
+      setPlaying(true);
+    } else if (!targetVideoId.target && playOrder === -1 && playingPlayList) {
+      setPlayingPlayList("");
+      setPlayingMusic({} as IEmotionMusic);
+    }
+  }, [targetVideoId]);
+
   const changePlayList = (e: any) => {
     setSelectedPlayList(e.target.value);
   };
@@ -128,8 +237,7 @@ const Music = () => {
         onClick={() => handlePlayPause(playListName, index)}
         css={
           playing &&
-          !isPlayingDM &&
-          musicList[playListName][index].videoId === targetVideoId
+          musicList[playListName][index].videoId === targetVideoId.target
             ? pauseBtn
             : runBtn
         }
@@ -138,18 +246,25 @@ const Music = () => {
   };
 
   const handlePlayPause = (playListName: string, index: number) => {
-    if (targetVideoId === musicList[playListName][index].videoId && playing) {
+    if (
+      targetVideoId.target === musicList[playListName][index].videoId &&
+      playing
+    ) {
       setPlaying(false);
     } else if (
-      targetVideoId === musicList[playListName][index].videoId &&
+      targetVideoId.target === musicList[playListName][index].videoId &&
       !playing
     ) {
       setPlaying(true);
     } else {
       setPlayed(0);
-      setTargetVideoId(musicList[playListName][index].videoId);
+      setTargetVideoId((prev) => {
+        prev.target = musicList[playListName][index].videoId;
+        return prev;
+      });
+      setPlayingMusic(musicList[playListName][index]);
       setPlaying(true);
-      setCurPlayList(playListName);
+      setPlayingPlayList(playListName);
       setPlayOrder(index);
     }
   };
@@ -186,58 +301,35 @@ const Music = () => {
   const handleEnded = () => {
     setPlayed(0);
     setDuration(0);
-    setTargetVideoId("");
+    setTargetVideoId({ target: "" });
     setPlaying(false);
   };
-
-  useEffect(() => {
-    if (!targetVideoId && isPlayingDM) {
-      setIsPlayingDM(false);
-      if (curPlayList) {
-        setTargetVideoId(musicList[curPlayList][playOrder].videoId);
-        setPlaying(true);
-      }
-    } else if (
-      !targetVideoId &&
-      musicList[curPlayList]?.length - 1 >= playOrder + 1
-    ) {
-      // 다음 음악 실행
-      setTargetVideoId(musicList[curPlayList][playOrder + 1].videoId);
-      setPlayOrder((prev) => prev + 1);
-      setPlaying(true);
-    } else if (
-      !targetVideoId &&
-      musicList[curPlayList]?.length - 1 === playOrder
-    ) {
-      setTargetVideoId(musicList[curPlayList][0].videoId);
-      setPlayOrder(0);
-      setPlaying(true);
-    }
-  }, [targetVideoId]);
 
   const nextMusic = () => {
     setPlayed(0);
     setDuration(0);
-    setTargetVideoId("");
+    setTargetVideoId({ target: "" });
     setPlaying(false);
   };
+
   const prevMusic = () => {
     setPlayed(0);
     setDuration(0);
-    setTargetVideoId("");
+    setTargetVideoId({ target: "" });
     setPlaying(false);
-    if (playOrder !== -10) {
-      if (playOrder - 2 >= 0) {
-        setPlayOrder((prev) => prev - 2);
-      } else if (playOrder === 1) {
-        setPlayOrder(musicList[curPlayList]?.length - 1);
+    if (playOrder !== -1) {
+      if (playOrder === 1) {
+        setPlayOrder(musicList[playingPlayList]?.length - 1);
       } else if (playOrder === 0) {
-        setPlayOrder(musicList[curPlayList]?.length - 2);
+        setPlayOrder(musicList[playingPlayList]?.length - 2);
+      } else {
+        setPlayOrder((prev) => prev - 2);
       }
     }
   };
+
   const playingPlayPause = () => {
-    if (targetVideoId) {
+    if (targetVideoId.target) {
       setPlaying((prev) => !prev);
     }
   };
@@ -252,7 +344,7 @@ const Music = () => {
     <article css={articleTag}>
       <section css={sectionContainer}>
         <div css={controlMusicInfo}>
-          {!targetVideoId ? (
+          {!targetVideoId.target ? (
             <>
               <div css={defaultMusic}>
                 <div></div>
@@ -260,27 +352,11 @@ const Music = () => {
               <p css={controlMusicTitle}>재생 목록이</p>
               <p css={controlMusicArtist}>비어있습니다.</p>
             </>
-          ) : isPlayingDM ? (
-            <>
-              <img
-                src={musicPlayValue.music.img}
-                alt={musicPlayValue.music.title}
-              />
-              <p css={controlMusicTitle}>{musicPlayValue.music.title}</p>
-              <p css={controlMusicArtist}>{musicPlayValue.music.artist}</p>
-            </>
           ) : (
             <>
-              <img
-                src={musicList[curPlayList][playOrder].img}
-                alt={musicList[curPlayList][playOrder].title}
-              />
-              <p css={controlMusicTitle}>
-                {musicList[curPlayList][playOrder].title}
-              </p>
-              <p css={controlMusicArtist}>
-                {musicList[curPlayList][playOrder].artist}
-              </p>
+              <img src={playingMusic.img} alt={playingMusic.title} />
+              <p css={controlMusicTitle}>{playingMusic.title}</p>
+              <p css={controlMusicArtist}>{playingMusic.artist}</p>
             </>
           )}
         </div>
@@ -289,7 +365,7 @@ const Music = () => {
             ref={player}
             width="0%"
             height="0%"
-            url={`https://www.youtube.com/watch?v=${targetVideoId}`}
+            url={`https://www.youtube.com/watch?v=${targetVideoId.target}`}
             playing={playing}
             onDuration={handleDuration}
             onProgress={handleProgress}
@@ -311,11 +387,7 @@ const Music = () => {
           </div>
         </div>
         <div css={playListController}>
-          {isPlayingDM ? (
-            <div css={emptyControlLeft}></div>
-          ) : (
-            <button css={controlLeft} onClick={prevMusic} />
-          )}
+          <button css={controlLeft} onClick={prevMusic} />
           <button
             css={playing ? controlPause : controlRun}
             onClick={playingPlayPause}
@@ -371,7 +443,7 @@ const Music = () => {
             <LoadingSpinner />
           </div>
         ) : (
-          <ul css={musicContainer}>
+          <ul css={musicContainer} ref={ulRef}>
             {musicList.hasOwnProperty(selectedPlayList) &&
             musicList[selectedPlayList].length ? (
               musicList[selectedPlayList].map(

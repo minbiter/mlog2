@@ -244,10 +244,7 @@ export const controlLeft = css`
     filter: brightness(0.5);
   }
 `;
-export const emptyControlLeft = css`
-  width: 40px;
-  height: 40px;
-`;
+
 export const controlRun = css`
   background-image: url(${buttonFile});
   background-size: 714px 706px;
