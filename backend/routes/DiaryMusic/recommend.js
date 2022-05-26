@@ -29,44 +29,34 @@ const Recommend = async (req, res) => {
       ]);
       // 코사인 유사도 검사해서 topEmotion에서 유사도 높은거 3개 추천: recommend
       // 그리고 topEmotion이 아닌 다른 장르에서 유사도 낮은거 2개 추천: addRecommend
-      const topEmotion = dataDiaryEmotion.diaryEmotion.topEmotion;
+      // const topEmotion = dataDiaryEmotion.diaryEmotion.topEmotion;
       const vectorA = [
         dataDiaryEmotion.diaryEmotion.positive,
         dataDiaryEmotion.diaryEmotion.negative,
         dataDiaryEmotion.diaryEmotion.neutral,
       ];
+
       const similarityListA = [];
-      const similarityListB = [];
+      // const similarityListB = [];
       for (const userEmotion of dataUserEmotion.userEmotion) {
-        if (userEmotion.topEmotion === topEmotion) {
-          similarityListA.push([
-            userEmotion.genreId,
-            calculateSimilar(vectorA, [
-              userEmotion.positive,
-              userEmotion.negative,
-              userEmotion.neutral,
-            ]),
-          ]);
-        } else {
-          similarityListB.push([
-            userEmotion.genreId,
-            calculateSimilar(vectorA, [
-              userEmotion.positive,
-              userEmotion.negative,
-              userEmotion.neutral,
-            ]),
-          ]);
-        }
+        similarityListA.push([
+          userEmotion.genreId,
+          calculateSimilar(vectorA, [
+            userEmotion.positive,
+            userEmotion.negative,
+            userEmotion.neutral,
+          ]),
+        ]);
       }
       // similarity 정렬
-      similarityListA.sort((a, b) => a[1] - b[1]);
-      similarityListB.sort((a, b) => b[1] - a[1]);
+      similarityListA.sort((a, b) => b[1] - a[1]);
+
       const musicDataList = await Promise.all([
         selectRecommendMusic(connect(), similarityListA[0][0]),
         selectRecommendMusic(connect(), similarityListA[1][0]),
         selectRecommendMusic(connect(), similarityListA[2][0]),
-        selectRecommendMusic(connect(), similarityListB[0][0]),
-        selectRecommendMusic(connect(), similarityListB[1][0]),
+        selectRecommendMusic(connect(), similarityListA[similarityListA.length - 2][0]),
+        selectRecommendMusic(connect(), similarityListA[similarityListA.length - 1][0]),
       ]);
       res.end(
         JSON.stringify({
@@ -98,11 +88,17 @@ function calculateSimilar(vectorA, vectorB) {
   for (let i = 0; i < 3; i++) {
     denominator += vectorA[i] * vectorB[i];
   }
+
   for (let i = 0; i < 3; i++) {
     numeratorA += Math.pow(vectorA[i], 2);
     numeratorB += Math.pow(vectorB[i], 2);
   }
-  return denominator / (Math.sqrt(numeratorA) * Math.sqrt(numeratorB));
+
+  if (numeratorA === 0 || numeratorB === 0) {
+    return 0;
+  } else {
+    return denominator / (Math.sqrt(numeratorA) * Math.sqrt(numeratorB));
+  }
 }
 
 module.exports = {
