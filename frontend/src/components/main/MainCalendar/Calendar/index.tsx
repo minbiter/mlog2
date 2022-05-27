@@ -22,7 +22,9 @@ import {
   prevButton,
   nextButton,
   gridTag,
+  headerRowGroupTag,
   rowGroupTag,
+  headerRowTag,
   rowTag,
   columnheaderTag,
   gridCellTag,
@@ -240,8 +242,8 @@ const Calendar = ({ queryParameter }: ICalendarProps) => {
       </article>
       <article css={articleTag}>
         <div role="grid" css={gridTag}>
-          <div role="rowgroup" css={rowGroupTag}>
-            <div role="row" css={rowTag}>
+          <div role="rowgroup" css={headerRowGroupTag}>
+            <div role="row" css={headerRowTag}>
               {dayList.map((dayValue) => (
                 <div
                   role="columnheader"

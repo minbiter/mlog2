@@ -10,7 +10,8 @@ import { IPopular, IEmotionMusic } from "types/music";
 import { AuthContext } from "context/AuthProvider";
 import {
   articleTag,
-  sectionContainer,
+  sectionContainerHeader,
+  sectionContainerBody,
   headerContainer,
   headerMenu,
   bottomBorder,
@@ -33,6 +34,7 @@ import {
   controlPause,
   controlRun,
   controlRight,
+  controlMusicList,
 } from "./style";
 import LoadingSpinner from "components/LoadingSpinner";
 
@@ -79,6 +81,17 @@ const Music = () => {
   const [played, setPlayed] = useState<number>(0);
   // Music isSeeking
   const [seeking, setSeeking] = useState(false);
+  const [isMobile, setIsMobile] = useState(
+    window.innerWidth <= 575 ? true : false
+  );
+  const [isOpenMusic, setIsOpenMusic] = useState(false);
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     if (musicPlayerOffValue.off) {
@@ -280,9 +293,16 @@ const Music = () => {
   const handleSeekMouseDown = (e: React.MouseEvent<HTMLInputElement>) => {
     setSeeking(true);
   };
+  const handleSeekTouchDown = (e: React.TouchEvent<HTMLInputElement>) => {
+    setSeeking(true);
+  };
 
   // ReactPlayer에 적용.
   const handleSeekMouseUp = (e: React.MouseEvent<HTMLInputElement>) => {
+    setSeeking(false);
+    player?.current?.seekTo(parseFloat(e.currentTarget.value));
+  };
+  const handleSeekTouchUp = (e: React.TouchEvent<HTMLInputElement>) => {
     setSeeking(false);
     player?.current?.seekTo(parseFloat(e.currentTarget.value));
   };
@@ -336,31 +356,58 @@ const Music = () => {
 
   const moveDiary = (diaryDate: number) => {
     if (selectedPlayList !== "popular") {
+      if (isMobile && isOpenMusic) {
+        setIsOpenMusic(false);
+      }
       history.replace(`/main?date=${diaryDate}`);
     }
   };
 
+  const handleResize = () => {
+    if (window.innerWidth <= 575) {
+      setIsMobile(true);
+      setIsOpenMusic(false);
+    } else {
+      setIsMobile(false);
+      setIsOpenMusic(false);
+    }
+  };
+
+  const openMusic = () => {
+    setIsOpenMusic((prev) => !prev);
+  };
+
   return (
     <article css={articleTag}>
-      <section css={sectionContainer}>
+      <section css={sectionContainerHeader}>
         <div css={controlMusicInfo}>
           {!targetVideoId.target ? (
             <>
               <div css={defaultMusic}>
                 <div></div>
               </div>
-              <p css={controlMusicTitle}>재생 목록이</p>
-              <p css={controlMusicArtist}>비어있습니다.</p>
+              <div>
+                <p css={controlMusicTitle}>재생 목록이</p>
+                <p css={controlMusicArtist}>비어있습니다.</p>
+              </div>
             </>
           ) : (
             <>
               <img src={playingMusic.img} alt={playingMusic.title} />
-              <p css={controlMusicTitle}>{playingMusic.title}</p>
-              <p css={controlMusicArtist}>{playingMusic.artist}</p>
+              <div>
+                <p css={controlMusicTitle}>
+                  {isMobile
+                    ? playingMusic.title.length > 30
+                      ? `${playingMusic.title.slice(0, 30)}...`
+                      : playingMusic.title
+                    : playingMusic.title}
+                </p>
+                <p css={controlMusicArtist}>{playingMusic.artist}</p>
+              </div>
             </>
           )}
         </div>
-        <div css={playedController}>
+        <div css={playedController(isOpenMusic)}>
           <ReactPlayer
             ref={player}
             width="0%"
@@ -380,11 +427,26 @@ const Music = () => {
             onMouseDown={handleSeekMouseDown}
             onChange={handleSeekChange}
             onMouseUp={handleSeekMouseUp}
+            onTouchStart={handleSeekTouchDown}
+            onTouchEnd={handleSeekTouchUp}
           />
-          <div>
-            <Duration seconds={duration * played} />
-            <Duration seconds={duration} />
-          </div>
+          {isMobile ? (
+            isOpenMusic ? (
+              <>
+                <div>
+                  <Duration seconds={duration * played} />
+                  <Duration seconds={duration} />
+                </div>
+              </>
+            ) : null
+          ) : (
+            <>
+              <div>
+                <Duration seconds={duration * played} />
+                <Duration seconds={duration} />
+              </div>
+            </>
+          )}
         </div>
         <div css={playListController}>
           <button css={controlLeft} onClick={prevMusic} />
@@ -393,9 +455,15 @@ const Music = () => {
             onClick={playingPlayPause}
           />
           <button css={controlRight} onClick={nextMusic} />
+          {isMobile ? (
+            <button
+              css={controlMusicList(isOpenMusic)}
+              onClick={openMusic}
+            ></button>
+          ) : null}
         </div>
       </section>
-      <section css={sectionContainer}>
+      <section css={sectionContainerBody(isOpenMusic)}>
         <div css={headerContainer}>
           <button
             onClick={changePlayList}

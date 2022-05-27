@@ -1,6 +1,8 @@
 import { css } from "@emotion/react";
+import buttonFile from "assets/buttonFile.png";
+import media from "styles/media";
 
-const articleWidth = 380;
+const articleWidth = 370;
 
 export const articleTag = css`
   width: ${articleWidth}px;
@@ -12,6 +14,10 @@ export const articleTag = css`
   display: flex;
   justify-content: center;
   align-items: center;
+  ${media.xsmall} {
+    width: 100%;
+    min-width: 320px;
+  }
 `;
 
 export const articleContainer = css`
@@ -25,6 +31,7 @@ export const articleContainer = css`
 export const selectTag = css`
   padding: 10px 12px;
   border: 1px solid #eff1f6;
+  background-color: #ffffff;
   border-radius: 8px;
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -55,7 +62,7 @@ export const prevButton = (x: number, y: number) => css`
   height: 25px;
   margin-right: 4px;
   padding: 0;
-  background-image: url(https://www.music-flo.com/img/sp_button@2x.97bb1f02.png);
+  background-image: url(${buttonFile});
   background-size: 714px 706px;
   background-position: ${x}px ${y}px;
   &: hover {
@@ -67,7 +74,7 @@ export const nextButton = (x: number, y: number) => css`
   width: 25px;
   height: 25px;
   padding: 0;
-  background-image: url(https://www.music-flo.com/img/sp_button@2x.97bb1f02.png);
+  background-image: url(${buttonFile});
   background-size: 714px 706px;
   background-position: ${x}px ${y}px;
   &: hover {
@@ -79,10 +86,13 @@ export const nextButton = (x: number, y: number) => css`
 export const gridTag = css`
   width: 100%;
 `;
-export const rowGroupTag = css``;
-export const rowTag = css`
+
+export const headerRowGroupTag = css`
   display: grid;
-  grid-template-columns: repeat(7, 50px);
+`;
+export const headerRowTag = css`
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
 `;
 export const columnheaderTag = css`
   text-align: center;
@@ -90,20 +100,41 @@ export const columnheaderTag = css`
   color: #808080;
   margin-bottom: 5px;
 `;
+
+export const rowGroupTag = css`
+  display: grid;
+  row-gap: 5px;
+`;
+export const rowTag = css`
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  column-gap: 5px;
+`;
 export const gridCellTag = (date: string) => css`
+  width: 100%;
   position: relative;
   display: flex;
   padding: 10px;
-  margin: 5px;
   justify-content: center;
   align-items: center;
   cursor: pointer;
   background-color: ${date === "today" ? "#d2e3fc" : null};
   border-radius: ${date === "today" ? "50%" : null};
   font-weight: 500;
+  &::after {
+    display: block;
+    content: "";
+    padding-bottom: 100%;
+  }
   &: hover {
     background-color: #bdc1c6;
     border-radius: 50%;
+  }
+  @media (hover: none) {
+    &: hover {
+      background-color: #94f0e8;
+      border-radius: 50%;
+    }
   }
 `;
 
@@ -118,6 +149,9 @@ export const emotionSpan = (topEmotion: string) => css`
     : topEmotion === "negative"
     ? "#F44336"
     : "#00c471"};
+  ${media.xsmall} {
+    top: 5px;
+  }
 `;
 
 export const selectedGridCellTag = css`

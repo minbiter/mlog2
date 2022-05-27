@@ -159,7 +159,6 @@ const Recommend = ({ date, closeRecommend }: IRecommendParams) => {
   };
 
   const handlePlayPause = (videoId: string) => {
-    console.log(`${videoId}`);
     if (targetVideoId === videoId && playing) {
       // console.log("똑같은 음악 일시중지");
       setPlaying(false);
@@ -196,6 +195,14 @@ const Recommend = ({ date, closeRecommend }: IRecommendParams) => {
   // 변화를 감지하여 <Duration />에 적용.
   const handleSeekChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPlayed(parseFloat(e.target.value));
+  };
+
+  const handleSeekTouchDown = (e: React.TouchEvent<HTMLInputElement>) => {
+    setSeeking(true);
+  };
+  const handleSeekTouchUp = (e: React.TouchEvent<HTMLInputElement>) => {
+    setSeeking(false);
+    player?.current?.seekTo(parseFloat(e.currentTarget.value));
   };
 
   // Duration의 time rerendering을 위한 것임.
@@ -310,6 +317,8 @@ const Recommend = ({ date, closeRecommend }: IRecommendParams) => {
                 onMouseDown={handleSeekMouseDown}
                 onChange={handleSeekChange}
                 onMouseUp={handleSeekMouseUp}
+                onTouchStart={handleSeekTouchDown}
+                onTouchEnd={handleSeekTouchUp}
                 css={playedControl}
               />
               <Duration seconds={duration} />

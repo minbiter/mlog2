@@ -203,6 +203,14 @@ const Survey = () => {
     player?.current?.seekTo(parseFloat(e.currentTarget.value));
   };
 
+  const handleSeekTouchDown = (e: React.TouchEvent<HTMLInputElement>) => {
+    setSeeking(true);
+  };
+  const handleSeekTouchUp = (e: React.TouchEvent<HTMLInputElement>) => {
+    setSeeking(false);
+    player?.current?.seekTo(parseFloat(e.currentTarget.value));
+  };
+
   // 변화를 감지하여 <Duration />에 적용.
   const handleSeekChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPlayed(parseFloat(e.target.value));
@@ -274,6 +282,8 @@ const Survey = () => {
               onMouseDown={handleSeekMouseDown}
               onChange={handleSeekChange}
               onMouseUp={handleSeekMouseUp}
+              onTouchStart={handleSeekTouchDown}
+              onTouchEnd={handleSeekTouchUp}
               css={playedControl}
             />
             <Duration seconds={duration} />

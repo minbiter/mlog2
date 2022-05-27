@@ -1,4 +1,5 @@
 import { css } from "@emotion/react";
+import media from "styles/media";
 
 export const headerTag = css`
   position: fixed;
@@ -17,6 +18,9 @@ export const navBar = css`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  ${media.xsmall} {
+    min-width: 200px;
+  }
 `;
 
 export const logoModal = css`
@@ -34,6 +38,9 @@ export const logoModal = css`
     font-size: 30px;
     font-weight: 700;
     color: #4cdbce;
+    ${media.xsmall} {
+      display: none;
+    }
   }
 `;
 

@@ -2,13 +2,30 @@ import { css } from "@emotion/react";
 import buttonFile from "assets/buttonFile.png";
 import pausePng from "assets/pauseBtn.png";
 import defaultMusicPng from "assets/defaultMusic.png";
+import media from "styles/media";
 
 export const articleTag = css`
   width: 100%;
   padding: 15px;
+  ${media.xsmall} {
+    border-top: 1px solid #eff1f6;
+    min-width: 360px;
+    position: fixed !important;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    bord
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 0 !important;
+  }
 `;
 
-export const sectionContainer = css`
+export const sectionContainerHeader = css`
   align-self: flex-start;
   display: flex;
   flex-direction: column;
@@ -17,6 +34,31 @@ export const sectionContainer = css`
   height: 100%;
   padding-left: 20px;
   padding-right: 20px;
+  ${media.xsmall} {
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    // margin-bottom: 15px;
+    padding: 0;
+  }
+`;
+export const sectionContainerBody = (isOpenMusic: boolean) => css`
+  align-self: flex-start;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: 50%;
+  height: 100%;
+  padding-left: 20px;
+  padding-right: 20px;
+  ${media.xsmall} {
+    ${isOpenMusic ? null : `display: none;`}
+    width: 100%;
+    height: 60vh;
+    margin-top: 35px;
+    margin-bottom: 15px;
+    padding: 0 10px 0 10px;
+  }
 `;
 
 export const headerContainer = css`
@@ -35,6 +77,9 @@ export const headerMenu = css`
   &:hover {
     opacity: 0.6;
     filter: alpha(opacity=60); /* For IE8 and earlier */
+  }
+  ${media.xsmall} {
+    font-size: 15px;
   }
 `;
 
@@ -129,6 +174,11 @@ export const runBtn = css`
   &: hover {
     filter: brightness(2);
   }
+  ${media.xsmall} {
+    &: hover {
+      filter: brightness(0);
+    }
+  }
 `;
 
 export const pauseBtn = css`
@@ -140,6 +190,11 @@ export const pauseBtn = css`
   height: 30px;
   &: hover {
     filter: brightness(2);
+  }
+  ${media.xsmall} {
+    &: hover {
+      filter: brightness(0);
+    }
   }
 `;
 
@@ -161,6 +216,18 @@ export const defaultMusic = css`
     opacity: 0.1;
     filter: alpha(opacity=10); /* For IE8 and earlier */
   }
+  ${media.xsmall} {
+    width: 50px;
+    height: 50px;
+    margin: 0;
+    margin-right: 10px;
+    & > div {
+      width: 50px;
+      height: 60px;
+      margin: 0;
+      margin-bottom: 10px;
+    }
+  }
 `;
 
 export const controlMusicInfo = css`
@@ -175,17 +242,34 @@ export const controlMusicInfo = css`
     border-radius: 10px;
     margin-bottom: 10px;
   }
+  ${media.xsmall} {
+    flex-direction: row;
+    margin: 10px;
+    & > img {
+      width: 50px;
+      height: 50px;
+      margin-right: 10px;
+      margin-bottom: 0;
+    }
+  }
 `;
 export const controlMusicTitle = css`
   font-size: 15px;
   font-weight: 500;
   margin-bottom: 6px;
+  ${media.xsmall} {
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
 `;
 export const controlMusicArtist = css`
   font-size: 14px;
+  ${media.xsmall} {
+    font-size: 12px;
+  }
 `;
 
-export const playedController = css`
+export const playedController = (isOpenMusic: boolean) => css`
   align-self: center;
   width: 75%;
   height: 30px;
@@ -225,6 +309,16 @@ export const playedController = css`
     display: flex;
     justify-content: space-between;
   }
+  ${media.xsmall} {
+    ${isOpenMusic ? null : `display: none;`}
+    width: 100%;
+    padding: 0 10px 0 10px;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    right: 0;
+    margin: auto;
+  }
 `;
 
 export const playedControl = css``;
@@ -232,6 +326,9 @@ export const playedControl = css``;
 export const playListController = css`
   align-self: center;
   display: flex;
+  ${media.xsmall} {
+    margin: 10px;
+  }
 `;
 export const controlLeft = css`
   background-image: url(${buttonFile});
@@ -242,6 +339,14 @@ export const controlLeft = css`
   filter: brightness(0);
   &:hover {
     filter: brightness(0.5);
+  }
+  ${media.xsmall} {
+    width: 30px;
+    transform: scale(0.7);
+    margin-right: 3px;
+    &: hover {
+      filter: brightness(0);
+    }
   }
 `;
 
@@ -256,6 +361,14 @@ export const controlRun = css`
   &:hover {
     filter: brightness(0.5);
   }
+  ${media.xsmall} {
+    transform: scale(0.7);
+    width: 34px;
+    margin: 0px;
+    &: hover {
+      filter: brightness(0);
+    }
+  }
 `;
 
 export const controlPause = css`
@@ -269,6 +382,14 @@ export const controlPause = css`
   &:hover {
     filter: brightness(0.5);
   }
+  ${media.xsmall} {
+    transform: scale(0.7);
+    width: 34px;
+    margin: 0px;
+    &: hover {
+      filter: brightness(0);
+    }
+  }
 `;
 export const controlRight = css`
   background-image: url(${buttonFile});
@@ -280,4 +401,22 @@ export const controlRight = css`
   &:hover {
     filter: brightness(0.5);
   }
+  ${media.xsmall} {
+    width: 30px;
+    transform: scale(0.7);
+    &: hover {
+      filter: brightness(0);
+    }
+  }
+`;
+
+export const controlMusicList = (isOpenMusic: boolean) => css`
+  background-image: url(${buttonFile});
+  background-size: 714px 706px;
+  background-position: ${isOpenMusic ? `-137px -475px` : `-405px -555px`};
+  width: 35px;
+  height: 40px;
+  transform: ${isOpenMusic ? `scale(0.6)` : `scale(0.7)`};
+  margin-left: 25px;
+  filter: ${isOpenMusic ? `brightness(0.3)` : `brightness(0)`};
 `;
