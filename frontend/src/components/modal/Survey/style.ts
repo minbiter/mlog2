@@ -37,6 +37,9 @@ export const container = css`
   align-items: center;
   ${media.xsmall} {
     width: 100%;
+    max-width: 360px;
+    min-width: 320px;
+    // width: 100%;
   }
 `;
 

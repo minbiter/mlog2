@@ -45,7 +45,7 @@ const Nav = () => {
       if (data.result) {
         setAuth({});
         setIsClickedInfo(false);
-        history.push("/");
+        history.replace("/");
       }
     } catch (err) {
       alert("로그아웃에 실패했습니다.");

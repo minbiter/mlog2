@@ -19,7 +19,7 @@ export const navBar = css`
   align-items: center;
   justify-content: space-between;
   ${media.xsmall} {
-    min-width: 200px;
+    min-width: 320px;
   }
 `;
 

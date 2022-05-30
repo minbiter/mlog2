@@ -394,16 +394,21 @@ const Music = () => {
           ) : (
             <>
               <img src={playingMusic.img} alt={playingMusic.title} />
-              <div>
-                <p css={controlMusicTitle}>
-                  {isMobile
-                    ? playingMusic.title.length > 30
+              {isMobile ? (
+                <div>
+                  <p css={controlMusicTitle}>
+                    {playingMusic.title.length > 30
                       ? `${playingMusic.title.slice(0, 30)}...`
-                      : playingMusic.title
-                    : playingMusic.title}
-                </p>
-                <p css={controlMusicArtist}>{playingMusic.artist}</p>
-              </div>
+                      : playingMusic.title}
+                  </p>
+                  <p css={controlMusicArtist}>{playingMusic.artist}</p>
+                </div>
+              ) : (
+                <>
+                  <p css={controlMusicTitle}>{playingMusic.title}</p>
+                  <p css={controlMusicArtist}>{playingMusic.artist}</p>
+                </>
+              )}
             </>
           )}
         </div>
