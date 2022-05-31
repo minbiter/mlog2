@@ -13,7 +13,7 @@ const HomePage = () => {
       <footer css={footerTag}>
         <div css={footerItem}>Mlog</div>
         <div css={division}>|</div>
-        <div css={footerItem}>개발자 : 민찬우</div>
+        <div css={footerItem}>Developer : 민찬우</div>
         <div css={division}>|</div>
         <div css={footerItem}>Email : cksdn135@kookmin.ac.kr</div>
         <div css={division}>|</div>

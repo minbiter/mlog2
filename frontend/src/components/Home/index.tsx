@@ -12,6 +12,7 @@ import {
   guestButton,
   headerImg,
   headerImgContainer,
+  phoneImg,
   bodyMsg,
   bodyImg,
   bodyMsgTitle,
@@ -22,7 +23,6 @@ import {
   imgSurvey,
   imgPlayList,
 } from "./style";
-
 import homeCalendarFile from "assets/homeCalendar.png";
 import homeGoogleFile from "assets/homeGoogle.png";
 import homeRecommendFile from "assets/homeRecommend.png";
@@ -71,8 +71,9 @@ const Home = () => {
         </div>
         <div css={headerImg}>
           <div css={headerImgContainer}>
-            <img src={homeCalendarFile} alt="mlog calendar" />
-            <img src={homeRecommendFile} alt="mlog recommend" />
+            <div css={phoneImg}>
+              <img src={homeCalendarFile} alt="mlog calendar" />
+            </div>
           </div>
         </div>
       </article>

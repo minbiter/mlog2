@@ -1,23 +1,26 @@
 import { css } from "@emotion/react";
 import media from "styles/media";
+import defaultPhoneFile from "assets/defaultPhone.png";
 export const homeHeaderArticle = css`
-  height: 470px;
-  padding-left: 82px;
-  padding-right: 82px;
+  height: 520px;
+  padding-left: 72px;
+  padding-right: 72px;
   background: #fff;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  overflow: hidden;
   ${media.xsmall} {
     padding-left: 15px;
     padding-right: 15px;
     flex-wrap: wrap;
-    height: auto;
+    // height: auto;
+    height: 700px;
   }
 `;
 
 export const headerMsg = css`
-  width: 40%;
+  width: 50%;
   display: flex;
   justify-content: center;
   ${media.xsmall} {
@@ -32,7 +35,7 @@ export const headerMsg = css`
   }
 `;
 export const headerImg = css`
-  width: 60%;
+  width: 50%;
   height: 100%;
   ${media.xsmall} {
     width: 100%;
@@ -50,7 +53,7 @@ export const headerMsgTitle = css`
     rgba(52, 168, 83, 1) 0%,
     rgba(66, 133, 244, 1) 100%
   );
-  font-size: min(4vw, 55px);
+  font-size: min(4vw, 60px);
   font-weight: 600;
   line-height: 1.3;
   ${media.xsmall} {
@@ -70,7 +73,7 @@ export const headerMsgContent = css`
 `;
 export const guestButton = css`
   background-color: #1a73e8;
-  padding: 10px;
+  padding: 10px 20px 10px 20px;
   border-radius: 5px;
   font-weight: 500;
   font-size: min(2vw, 22px);
@@ -87,21 +90,29 @@ export const headerImgContainer = css`
   height: 100%;
   display: flex;
   justify-content: center;
-  align-items: center;
-  & > img {
-    width: 45%;
-    max-width: 235px;
-    border: 1px solid #e4e2e2;
-    border-radius: 10px;
-    margin-left: 20px;
-  }
   ${media.xsmall} {
-    justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 15px;
-    & > img {
-      margin-left: 0;
-    }
+  }
+`;
+export const phoneImg = css`
+  position: relative;
+  margin-top: 20px;
+  background-image: url(${defaultPhoneFile});
+  background-size: 1855px 1755px;
+  background-position: -675px 0;
+  width: 336px;
+  height: 656px;
+  overflow: hidden;
+  & > img {
+    min-width: 336px;
+    min-height: 561px;
+    position: absolute;
+    top: -10px;
+    left: 0;
+    border: 1px solid #e4e2e2;
+    border-radius: 10px;
+    transform: scale(0.82);
   }
 `;
 
