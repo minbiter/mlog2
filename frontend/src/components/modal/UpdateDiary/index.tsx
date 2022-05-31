@@ -73,7 +73,11 @@ const UpdateDiary = ({ queryParameter }: IUpdateDiaryParams) => {
             endDate: `${queryParameter.date.slice(0, 6)}32`,
           });
           setDiaryDate({ date: queryParameter.date });
-          setUpdateMusicList({ topEmotion: diary.contents.topEmotion });
+          setUpdateMusicList({
+            topEmotion: diary.contents.topEmotion,
+            musicCreate: false,
+            musicDelete: true,
+          });
           setIsCompleted(true);
         } else {
           alert(data.data.diary);

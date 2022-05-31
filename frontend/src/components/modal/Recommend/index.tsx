@@ -108,7 +108,11 @@ const Recommend = ({ date, closeRecommend }: IRecommendParams) => {
             endDate: `${date.slice(0, 6)}32`,
           });
           setDiaryDate({ date: date });
-          setUpdateMusicList({ topEmotion: data.data.topEmotion });
+          setUpdateMusicList({
+            topEmotion: data.data.topEmotion,
+            musicCreate: true,
+            musicDelete: false,
+          });
           if (closeRecommend) {
             closeRecommend();
           } else {
@@ -155,7 +159,6 @@ const Recommend = ({ date, closeRecommend }: IRecommendParams) => {
   };
 
   const handlePlayPause = (videoId: string) => {
-    console.log(`${videoId}`);
     if (targetVideoId === videoId && playing) {
       // console.log("똑같은 음악 일시중지");
       setPlaying(false);
@@ -192,6 +195,14 @@ const Recommend = ({ date, closeRecommend }: IRecommendParams) => {
   // 변화를 감지하여 <Duration />에 적용.
   const handleSeekChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPlayed(parseFloat(e.target.value));
+  };
+
+  const handleSeekTouchDown = (e: React.TouchEvent<HTMLInputElement>) => {
+    setSeeking(true);
+  };
+  const handleSeekTouchUp = (e: React.TouchEvent<HTMLInputElement>) => {
+    setSeeking(false);
+    player?.current?.seekTo(parseFloat(e.currentTarget.value));
   };
 
   // Duration의 time rerendering을 위한 것임.
@@ -306,6 +317,8 @@ const Recommend = ({ date, closeRecommend }: IRecommendParams) => {
                 onMouseDown={handleSeekMouseDown}
                 onChange={handleSeekChange}
                 onMouseUp={handleSeekMouseUp}
+                onTouchStart={handleSeekTouchDown}
+                onTouchEnd={handleSeekTouchUp}
                 css={playedControl}
               />
               <Duration seconds={duration} />

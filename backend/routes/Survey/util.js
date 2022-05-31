@@ -28,7 +28,7 @@ const createQuerySurveyList = (id, data) => {
     querySurveyList[genreId[key]] = {
       uid: id,
       genreId: genreId[key],
-      topEmotion: "",
+      // topEmotion: "",
       neutral: 0,
       positive: 0,
       negative: 0,
@@ -36,7 +36,7 @@ const createQuerySurveyList = (id, data) => {
   }
   for (const sentiment in data) {
     for (const genre of data[sentiment]) {
-      querySurveyList[`${genre}`].topEmotion = sentiment;
+      // querySurveyList[`${genre}`].topEmotion = sentiment;
       querySurveyList[`${genre}`][`${sentiment}`] = 10;
     }
   }

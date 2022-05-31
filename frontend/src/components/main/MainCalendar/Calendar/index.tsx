@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import Chart from "react-apexcharts";
 import {
@@ -22,7 +22,9 @@ import {
   prevButton,
   nextButton,
   gridTag,
+  headerRowGroupTag,
   rowGroupTag,
+  headerRowTag,
   rowTag,
   columnheaderTag,
   gridCellTag,
@@ -105,36 +107,39 @@ const Calendar = ({ queryParameter }: ICalendarProps) => {
     setCalYear(parseInt(e.target.value));
   };
 
-  const changeMonth = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const changeMonth = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
     setCalMonth(parseInt(e.target.value) - 1);
-  };
+  }, []);
 
-  const prevMonth = () => {
+  const prevMonth = useCallback(() => {
     if (calMonth === 0) {
       setCalYear((prev) => prev - 1);
       setCalMonth(11);
     } else {
       setCalMonth((prev) => prev - 1);
     }
-  };
+  }, [calMonth]);
 
-  const nextMonth = () => {
+  const nextMonth = useCallback(() => {
     if (calMonth === 11) {
       setCalYear((prev) => prev + 1);
       setCalMonth(0);
     } else {
       setCalMonth((prev) => prev + 1);
     }
-  };
+  }, [calMonth]);
 
-  const clickDate = (e: any) => {
-    setYear(calYear);
-    setMonth(calMonth);
-    setDate(parseInt(e.target.innerText));
-    history.replace(
-      `/main?date=${toStringDateFcn(calYear, calMonth, e.target.innerText)}`
-    );
-  };
+  const clickDate = useCallback(
+    (e: any) => {
+      setYear(calYear);
+      setMonth(calMonth);
+      setDate(parseInt(e.target.innerText));
+      history.replace(
+        `/main?date=${toStringDateFcn(calYear, calMonth, e.target.innerText)}`
+      );
+    },
+    [calYear, calMonth]
+  );
 
   const createTrTag = (trKey: string) => {
     return (
@@ -240,8 +245,8 @@ const Calendar = ({ queryParameter }: ICalendarProps) => {
       </article>
       <article css={articleTag}>
         <div role="grid" css={gridTag}>
-          <div role="rowgroup" css={rowGroupTag}>
-            <div role="row" css={rowTag}>
+          <div role="rowgroup" css={headerRowGroupTag}>
+            <div role="row" css={headerRowTag}>
               {dayList.map((dayValue) => (
                 <div
                   role="columnheader"

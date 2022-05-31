@@ -3,18 +3,11 @@ import { atom, selector } from "recoil";
 // useRecoilState: 구독 o
 // useRecoilValue: 구독 o
 // useSetRecoilState: 구독 x
-export const musicPlayState = atom({
-  key: "MusicPlay",
+export const diaryMusicDate = atom({
+  key: "DiaryMusicDate",
   default: {
-    isMusic: false,
-    music: {
-      title: "",
-      artist: "",
-      img: "",
-      videoId: "",
-      genreId: 0,
-      name: "",
-    },
+    topEmotion: "",
+    diaryDate: 0,
   },
 });
 
@@ -22,6 +15,8 @@ export const updateMusicList = atom({
   key: "UpdateMusicList",
   default: {
     topEmotion: "",
+    musicCreate: false,
+    musicDelete: false,
   },
 });
 

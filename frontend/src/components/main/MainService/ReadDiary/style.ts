@@ -1,11 +1,19 @@
 import { css } from "@emotion/react";
-// padding: 15px
+import buttonFile from "assets/buttonFile.png";
+import media from "styles/media";
+
+export const articleTag = css``;
+
 export const headerContainer = css`
   width: 100%;
   display: flex;
   justify-content: space-between;
   height: 67px;
   border-bottom: 1px solid #ededed;
+  ${media.xsmall} {
+    height: auto;
+    padding: 15px;
+  }
 `;
 export const headerDateMusic = css`
   display: flex;
@@ -13,11 +21,16 @@ export const headerDateMusic = css`
     width: 230px;
     display: flex;
     align-items: center;
-    // padding: 15px 15px 15px 17px;
     padding: 15px 15px 15px 35px;
-    // font-size: 22px;
     font-size: 18px;
     font-weight: 600;
+  }
+  ${media.xsmall} {
+    flex-direction: column;
+    & > p {
+      padding: 0;
+      margin-bottom: 15px;
+    }
   }
 `;
 export const headerMusic = css`
@@ -36,7 +49,6 @@ export const headerMusic = css`
   }
 `;
 export const musicInfo = css`
-  // max-width: 180px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -52,7 +64,6 @@ export const musicTitle = css`
 export const musicArtist = css``;
 
 export const headerNoMusic = css`
-  // margin-left: 30px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -72,16 +83,26 @@ export const headerNoMusic = css`
       border: 1px solid #2962ff;
     }
   }
+  ${media.xsmall} {
+    flex-direction: row;
+    & > p {
+      margin: 0 10px 0 0;
+    }
+  }
 `;
 export const headerContainerTool = css`
   padding: 15px 25px 15px 15px;
   display: flex;
   justify-content: center;
   align-items: center;
+  ${media.xsmall} {
+    padding: 0;
+    align-self: flex-start;
+  }
 `;
 
 export const headerToolEdit = css`
-  background-image: url(https://www.music-flo.com/img/sp_button@2x.97bb1f02.png);
+  background-image: url(${buttonFile});
   background-size: 714px 706px;
   background-position: -597px -315px;
   width: 30px;
@@ -93,7 +114,7 @@ export const headerToolEdit = css`
   }
 `;
 export const headerToolDelete = css`
-  background-image: url(https://www.music-flo.com/img/sp_button@2x.97bb1f02.png);
+  background-image: url(${buttonFile});
   background-size: 714px 706px;
   background-position: -450px -630px;
   width: 30px;
@@ -108,6 +129,11 @@ export const bodyContainer = css`
   height: 309px;
   padding: 15px;
   display: flex;
+  ${media.xsmall} {
+    height: auto;
+    flex-wrap: wrap;
+    padding: 0;
+  }
 `;
 export const bodyDiary = css`
   width: 50%;
@@ -116,6 +142,12 @@ export const bodyDiary = css`
   display: flex;
   flex-direction: column;
   align-items: center;
+  ${media.xsmall} {
+    width: 100%;
+    padding: 0;
+    padding: 15px;
+    border-bottom: 1px solid #ededed;
+  }
 `;
 export const diaryTitle = css`
   align-self: flex-start;
@@ -143,6 +175,9 @@ export const diaryContent = css`
     border-radius: 4px;
     background-color: #c4c4c4;
   }
+  ${media.xsmall} {
+    border-radius: 5px;
+  }
 `;
 export const bodyAnalysis = css`
   width: 50%;
@@ -151,7 +186,10 @@ export const bodyAnalysis = css`
   display: flex;
   flex-direction: column;
   align-items: center;
-  // justify-content: center;
+  ${media.xsmall} {
+    width: 100%;
+    padding: 20px;
+  }
 `;
 
 export const bodyNoDiary = css`
@@ -173,5 +211,8 @@ export const bodyNoDiary = css`
     &: hover {
       border: 1px solid #2962ff;
     }
+  }
+  ${media.xsmall} {
+    margin: 15px 0 15px 0;
   }
 `;

@@ -1,13 +1,15 @@
 /** @jsxImportSource @emotion/react */
 import React, { useState, useEffect } from "react";
 import Chart from "react-apexcharts";
-import { title, analysisTitle, emotionTitle } from "./style";
+import { title, analysisTitle, emotionTitle, analysisChart } from "./style";
 const options = {
   charts: {
     id: "basic-bar",
   },
   chart: {
     toolbar: { show: false },
+    // width: "460px",
+    width: "100%",
   },
   xaxis: {
     categories: ["긍정", "부정", "중립"],
@@ -45,13 +47,9 @@ const DiaryAnalysis = ({ topEmotion, emotionData }: IDIaryAnalysisParams) => {
             : "중립"}
         </span>
       </div>
-      <Chart
-        options={options}
-        series={series}
-        type="bar"
-        width="460"
-        height="250"
-      />
+      <div css={analysisChart}>
+        <Chart options={options} series={series} type="bar" height="250" />
+      </div>
     </>
   );
 };

@@ -1,4 +1,5 @@
 import { Global, css } from "@emotion/react";
+import media from "./media";
 
 export const defaultStyle = css`
   @import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&display=swap");
@@ -10,6 +11,7 @@ export const defaultStyle = css`
     letter-spacing: -0.3px;
   }
   body {
+    background-color: #eef2f7;
     overflow-y: scroll;
     -webkit-font-smoothing: antialiased;
   }
@@ -155,7 +157,9 @@ export const defaultStyle = css`
   }
   main {
     margin-top: 60px;
-    // max-width: 1440px;
+    ${media.xsmall} {
+      margin-bottom: 60px;
+    }
   }
 `;
 

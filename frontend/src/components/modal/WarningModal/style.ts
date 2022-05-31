@@ -2,7 +2,7 @@ import { css } from "@emotion/react";
 
 export const modal = css`
   position: fixed;
-  z-index: 10;
+  z-index: 30;
   top: 0;
   left: 0;
   right: 0;

@@ -1,8 +1,12 @@
 import { css } from "@emotion/react";
+import media from "styles/media";
 
 export const title = css`
   align-self: flex-start;
   margin-bottom: 5px;
+  ${media.xsmall} {
+    margin: 0;
+  }
 `;
 
 export const analysisTitle = css`
@@ -18,4 +22,8 @@ export const emotionTitle = (topEmotion: string) => css`
     : topEmotion === "negative"
     ? "#F44336"
     : "#00C471"};
+`;
+
+export const analysisChart = css`
+  width: 100%;
 `;

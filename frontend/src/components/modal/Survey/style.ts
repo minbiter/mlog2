@@ -2,6 +2,7 @@ import { css } from "@emotion/react";
 import buttonFile from "assets/buttonFile.png";
 import runWhitePng from "assets/runWhiteBtn.png";
 import pauseWhitePng from "assets/pauseWhiteBtn.png";
+import media from "styles/media";
 
 export const modal = css`
   position: fixed;
@@ -12,6 +13,7 @@ export const modal = css`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 20;
 `;
 
 export const dimmed = css`
@@ -33,6 +35,12 @@ export const container = css`
   display: flex;
   flex-direction: column;
   align-items: center;
+  ${media.xsmall} {
+    width: 100%;
+    max-width: 360px;
+    min-width: 320px;
+    // width: 100%;
+  }
 `;
 
 export const hearderMsgContainer = css`

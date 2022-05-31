@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { useHistory } from "react-router-dom";
 import { useRecoilValueLoadable, useSetRecoilState } from "recoil";
 import { calendarRangeState, diaryState, getDiary } from "atoms/diary";
-import { musicPlayState, updateMusicList } from "atoms/music";
+import { diaryMusicDate, updateMusicList } from "atoms/music";
 import { AuthContext } from "context/AuthProvider";
 import { deleteDiaryApi } from "api/diaryApi";
 import WarningModal from "components/modal/WarningModal";
@@ -11,6 +11,7 @@ import Recommend from "components/modal/Recommend";
 import LoadingSpinner from "components/LoadingSpinner";
 import DiaryAnalysis from "./DiaryAnalysis";
 import {
+  articleTag,
   headerContainer,
   headerDateMusic,
   headerMusic,
@@ -35,21 +36,50 @@ interface IReadDiaryParams {
 
 const ReadDiary = ({ queryParameter }: IReadDiaryParams) => {
   const diary = useRecoilValueLoadable(getDiary);
+  const [isMobile, setIsMobile] = useState(
+    window.innerWidth <= 575 ? true : false
+  );
+  const articleRef = useRef<HTMLElement>(null);
   const setDiary = useSetRecoilState(diaryState);
   const setCalendarDiary = useSetRecoilState(calendarRangeState);
-  const setMusicPlayState = useSetRecoilState(musicPlayState);
+  const setDiaryMusicDate = useSetRecoilState(diaryMusicDate);
   const setUpdateMusicList = useSetRecoilState(updateMusicList);
   const [isClickedDelete, setIsClickedDelete] = useState(false);
   const [isOpenRecommend, setIsOpenRecommend] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   const { auth } = useContext(AuthContext);
   const history = useHistory();
-
   useEffect(() => {
     if (queryParameter.date && auth.accessToken) {
       setDiary({ date: queryParameter.date });
     }
   }, [auth, queryParameter.date]);
+
+  useEffect(() => {
+    if (
+      diary.state === "hasValue" &&
+      diary.contents &&
+      isMobile &&
+      history.location.search.match(/date/)
+    ) {
+      articleRef?.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [diary.contents]);
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
+  const handleResize = () => {
+    if (window.innerWidth <= 575) {
+      setIsMobile(true);
+    } else {
+      setIsMobile(false);
+    }
+  };
 
   const openUpdateModal = () => {
     history.push(`/main?date=${queryParameter.date}&compose=update`);
@@ -71,7 +101,11 @@ const ReadDiary = ({ queryParameter }: IReadDiaryParams) => {
             startDate: `${queryParameter.date.slice(0, 6)}01`,
             endDate: `${queryParameter.date.slice(0, 6)}32`,
           });
-          setUpdateMusicList({ topEmotion: diary.contents.topEmotion });
+          setUpdateMusicList({
+            topEmotion: diary.contents.topEmotion,
+            musicCreate: false,
+            musicDelete: true,
+          });
           openWarningModal();
           history.push(`/main?date=${queryParameter.date}`);
         } else {
@@ -93,11 +127,14 @@ const ReadDiary = ({ queryParameter }: IReadDiaryParams) => {
   };
 
   const changeMusicPlayState = () => {
-    setMusicPlayState({ isMusic: true, music: diary.contents.music });
+    setDiaryMusicDate({
+      topEmotion: diary.contents.topEmotion,
+      diaryDate: parseInt(queryParameter.date as string),
+    });
   };
 
   return (
-    <article>
+    <article css={articleTag} ref={articleRef}>
       {isOpenRecommend ? (
         <Recommend
           date={queryParameter.date as string}
