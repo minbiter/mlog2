@@ -8,7 +8,7 @@ async function init(connection) {
       positive INT NOT NULL DEFAULT 0,\
       negative INT NOT NULL DEFAULT 0, \
       PRIMARY KEY (id),\
-      INDEX diaryId_idx (diaryId ASC) VISIBLE,\
+      INDEX diaryId_idx (diaryId ASC),\
       CONSTRAINT fk_diaryEmotion_diary_diaryId\
         FOREIGN KEY (diaryId)\
         REFERENCES mlog.diary (id)\

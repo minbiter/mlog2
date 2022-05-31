@@ -9,13 +9,13 @@ async function init(connection) {
       positive INT NOT NULL DEFAULT 0,\
       negative INT NOT NULL DEFAULT 0, \
       PRIMARY KEY (id),\
-      INDEX uid_idx (uid ASC) VISIBLE,\
+      INDEX uid_idx (uid ASC),\
       CONSTRAINT fk_userEmotion_user_uid\
         FOREIGN KEY (uid)\
         REFERENCES mlog.user (id)\
         ON UPDATE CASCADE\
         ON DELETE SET NULL,\
-      INDEX genreId_idx (genreId ASC) VISIBLE,\
+      INDEX genreId_idx (genreId ASC),\
       CONSTRAINT fk_userEmotion_genre_genreId\
         FOREIGN KEY (genreId)\
         REFERENCES mlog.genre (id)\

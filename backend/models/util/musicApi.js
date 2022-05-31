@@ -76,6 +76,7 @@ async function fetchMusic() {
 
     // INSERT를 위한 데이터 정리.
     for (let j = 0; j < videoIdList.length; j++) {
+      console.log(videoIdList[j].data.items);
       result.push({
         id: musicListByGenre[i].data.data.trackList[j].id,
         title: musicListByGenre[i].data.data.trackList[j].name.replaceAll("'", "\\'"),

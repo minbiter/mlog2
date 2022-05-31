@@ -19,7 +19,7 @@ async function init(connection) {
       img VARCHAR(255),\
       videoId VARCHAR(255),\
       PRIMARY KEY (id),\
-      INDEX genreId_idx (genreId ASC) VISIBLE,\
+      INDEX genreId_idx (genreId ASC),\
       CONSTRAINT fk_music_genre_genreId\
         FOREIGN KEY (genreId)\
         REFERENCES mlog.genre (id)\

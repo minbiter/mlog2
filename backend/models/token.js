@@ -7,7 +7,7 @@ async function init(connection) {
       jwt VARCHAR(255) NOT NULL,\
       expires DATETIME NOT NULL,\
       PRIMARY KEY (id),\
-      INDEX uid_idx (uid ASC) VISIBLE,\
+      INDEX uid_idx (uid ASC),\
       CONSTRAINT fk_token_user_uid\
         FOREIGN KEY (uid)\
         REFERENCES mlog.user (id)\
