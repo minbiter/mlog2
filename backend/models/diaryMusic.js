@@ -6,8 +6,8 @@ async function init(connection) {
       diaryId INT,\
       musicId BIGINT,\
       PRIMARY KEY (id),\
-      INDEX diaryId_idx (diaryId ASC) VISIBLE,\
-      INDEX musicId_idx (musicId ASC) VISIBLE,\
+      INDEX diaryId_idx (diaryId ASC),\
+      INDEX musicId_idx (musicId ASC),\
       CONSTRAINT fk_diaryMusic_diary_diaryId\
         FOREIGN KEY (diaryId)\
         REFERENCES mlog.diary(id)\

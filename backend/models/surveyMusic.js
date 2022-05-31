@@ -14,8 +14,8 @@ async function init(connection) {
       musicId BIGINT,\
       genreId INT,\
       PRIMARY KEY (id),\
-      INDEX musicId_idx (musicId ASC) VISIBLE,\
-      INDEX genreId_idx (genreId ASC) VISIBLE,\
+      INDEX musicId_idx (musicId ASC),\
+      INDEX genreId_idx (genreId ASC),\
       CONSTRAINT fk_surveyMusic_music_musicId\
         FOREIGN KEY (musicId)\
         REFERENCES mlog.music (id)\

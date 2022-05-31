@@ -10,7 +10,7 @@ async function init(connection) {
       createdAt DATETIME NOT NULL,\
       updatedAt DATETIME NOT NULL,\
       PRIMARY KEY (id),\
-      INDEX uid_idx (uid ASC) VISIBLE, \
+      INDEX uid_idx (uid ASC), \
       CONSTRAINT fk_diary_user_uid\
         FOREIGN KEY (uid)\
         REFERENCES mlog.user (id)\
