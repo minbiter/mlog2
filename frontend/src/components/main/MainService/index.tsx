@@ -40,7 +40,7 @@ const MainService = () => {
   return (
     <>
       <Route
-        path="/main"
+        path={process.env.PUBLIC_URL + "/main"}
         render={() =>
           queryParameter.hasOwnProperty("date") ? (
             <ReadDiary queryParameter={queryParameter} />
@@ -49,7 +49,7 @@ const MainService = () => {
       />
       <Music />
       <Route
-        path="/main"
+        path={process.env.PUBLIC_URL + "/main"}
         render={() =>
           queryParameter.compose === "new" ? (
             <WriteDiary queryParameter={queryParameter} />
@@ -57,7 +57,7 @@ const MainService = () => {
         }
       />
       <Route
-        path="/main"
+        path={process.env.PUBLIC_URL + "/main"}
         render={() =>
           queryParameter.compose === "update" ? (
             <UpdateDiary queryParameter={queryParameter} />
