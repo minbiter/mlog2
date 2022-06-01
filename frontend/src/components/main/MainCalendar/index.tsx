@@ -12,7 +12,7 @@ const MainCalendar = () => {
   return (
     <>
       <Route
-        path={process.env.PUBLIC_URL + "/main"}
+        path="/main"
         render={() => <Calendar queryParameter={queryParameter} />}
       />
     </>

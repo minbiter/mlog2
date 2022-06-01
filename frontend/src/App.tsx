@@ -13,10 +13,10 @@ function App() {
         <AuthProvider>
           <Nav />
           <Switch>
-            <Route path={process.env.PUBLIC_URL + "/main"}>
+            <Route path="/main">
               <MainPage />
             </Route>
-            <Route exact path={process.env.PUBLIC_URL + "/"}>
+            <Route exact path="/">
               <HomePage />
             </Route>
           </Switch>
