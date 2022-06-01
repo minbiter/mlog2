@@ -76,21 +76,22 @@ async function fetchMusic() {
 
     // INSERT를 위한 데이터 정리.
     for (let j = 0; j < videoIdList.length; j++) {
-      console.log(videoIdList[j].data.items);
-      result.push({
-        id: musicListByGenre[i].data.data.trackList[j].id,
-        title: musicListByGenre[i].data.data.trackList[j].name.replaceAll("'", "\\'"),
-        artist: musicListByGenre[i].data.data.trackList[j].artistList[0].name.replaceAll(
-          "'",
-          "\\'"
-        ),
-        genre: genreId[key],
-        img: musicListByGenre[i].data.data.trackList[j].album.imgList[5].url.replaceAll(
-          "'",
-          "\\'"
-        ),
-        videoId: videoIdList[j].data.items[0].id.videoId,
-      });
+      if (videoIdList[j].data.items.length) {
+        result.push({
+          id: musicListByGenre[i].data.data.trackList[j].id,
+          title: musicListByGenre[i].data.data.trackList[j].name.replaceAll("'", "\\'"),
+          artist: musicListByGenre[i].data.data.trackList[j].artistList[0].name.replaceAll(
+            "'",
+            "\\'"
+          ),
+          genre: genreId[key],
+          img: musicListByGenre[i].data.data.trackList[j].album.imgList[5].url.replaceAll(
+            "'",
+            "\\'"
+          ),
+          videoId: videoIdList[j].data.items[0].id.videoId,
+        });
+      }
     }
     i++;
   }

@@ -4,7 +4,6 @@
   <img src="https://user-images.githubusercontent.com/77476340/161494223-7ca881de-df2a-4f64-89c0-fc8b60cdd04f.png" alt="Mlog2-5542556" style="zoom: 33%; height: 150px; width: 150px" />
 </p>
 
-
 This is a **Mlog2 application** that recommends music through the sentiment analysis of the user's diary.
 
 I expect it to be a good project to check and show my development knowledge.
@@ -56,6 +55,27 @@ src
 
 - Install [Node.js](https://nodejs.org/en/).
 
+- Install MySQL.
+
+  - ```
+    brew install mysql
+    brew services start mysql
+    mysql_secure_installation
+    ```
+
+- You must prepare Third-Party API's key(**YouTube Data API v3**, **Google Cloud Natural Language API**). 
+
+  Create an `.env` file in your backend file and enter your private key.
+
+  - ```
+    DEVELOPMENT_DB_PASSWORD={DB_PASSWORD}
+    DEVELOPMENT_URL=http://localhost
+    DEVELOPMENT_ACCESS_ORIGIN=http://localhost
+    YOUTUBE_KEY={Youtube_API_KEY}
+    NATURAL_LANGUAGE_API_KEY={CNL_API_KEY}
+    TOKEN_KEY={JWT_KEY}
+    ```
+
 ### Run
 
 - Frontend
@@ -71,7 +91,7 @@ src
   ```
   cd backend
   npm install
-  npm run start
+  npm run dev
   ```
 
 ## License
