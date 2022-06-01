@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.js": "/static/js/main.246613df.js",
+    "static/media/defaultPhone.png": "/static/media/defaultPhone.ef781320ca8ce46f0cea.png",
+    "static/media/homeSurvey.png": "/static/media/homeSurvey.5d1d60df5bc465ed3f23.png",
+    "static/media/homeMusicListOne.png": "/static/media/homeMusicListOne.9c290d6ce496ffc1a961.png",
+    "static/media/buttonFile.png": "/static/media/buttonFile.30d0ae4daab22ecb8aeb.png",
+    "static/media/homeCalendar.png": "/static/media/homeCalendar.56d8eef446e45ed523dc.png",
+    "static/media/homeRecommend.png": "/static/media/homeRecommend.c06af3e6f63c2102d003.png",
+    "static/media/logo.png": "/static/media/logo.fec0e45500d7b9af7e88.png",
+    "static/media/homeGoogle.png": "/static/media/homeGoogle.b2725af292b8bdba8509.png",
+    "index.html": "/index.html",
+    "main.246613df.js.map": "/static/js/main.246613df.js.map"
+  },
+  "entrypoints": [
+    "static/js/main.246613df.js"
+  ]
+}
