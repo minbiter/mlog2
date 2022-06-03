@@ -1,6 +1,13 @@
 const bcrypt = require("bcrypt");
 
 async function init(connection) {
+  const [rows] = await connection.query(
+    "\
+    SELECT 1 FROM Information_schema.tables\
+    WHERE table_schema = 'mlog'\
+    AND table_name = 'user'\
+    "
+  );
   await connection.execute(
     "CREATE TABLE IF NOT EXISTS mlog.user (\
       id INT NOT NULL AUTO_INCREMENT,\
@@ -15,7 +22,20 @@ async function init(connection) {
       PRIMARY KEY (id)\
     ) ENGINE=InnoDB;"
   );
+  if (!rows.length) await insertGuestUser(connection);
 }
+
+async function insertGuestUser(connection) {
+  const hashPassword = await bcrypt.hash("mlog1234", 12);
+  await connection.execute(
+    `
+  INSERT INTO mlog.user (email, password) VALUES (?, ?);
+  `,
+    ["guest@mlog.com", hashPassword]
+  );
+  console.log("guest@mlog.com 생성");
+}
+
 async function selectUser(connection, data) {
   const [rows] = await connection.execute("SELECT * from mlog.user WHERE id = ?", [
     data.id,

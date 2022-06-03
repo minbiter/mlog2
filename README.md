@@ -8,6 +8,12 @@ This is a **Mlog2 application** that recommends music through the sentiment anal
 
 I expect it to be a good project to check and show my development knowledge.
 
+## Demo
+
+<img alt="demoImg" src="https://user-images.githubusercontent.com/77476340/171853497-7886f96d-6dcf-4cf4-ab96-217c8adf39b4.png" style="max-width: 100%;">
+
+Try out the [www.mlog2.com](http://www.mlog2.com).
+
 ## Tech Stack
 
 ### Frontend
@@ -69,8 +75,8 @@ src
 
   - ```
     DEVELOPMENT_DB_PASSWORD={DB_PASSWORD}
-    DEVELOPMENT_URL=http://localhost
-    DEVELOPMENT_ACCESS_ORIGIN=http://localhost
+    DEVELOPMENT_URL=http://localhost:8082/
+    DEVELOPMENT_ACCESS_ORIGIN=http://localhost:3000
     YOUTUBE_KEY={Youtube_API_KEY}
     NATURAL_LANGUAGE_API_KEY={CNL_API_KEY}
     TOKEN_KEY={JWT_KEY}

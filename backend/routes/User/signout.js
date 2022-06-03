@@ -1,6 +1,6 @@
 const { authentication } = require("../middleware/token");
 const { connect } = require("../../models");
-const { deleteToken } = require("../../models/token");
+const { deleteToken, selectToken } = require("../../models/token");
 const { parseCookies } = require("../middleware/token");
 
 const SignOut = async (req, res) => {
@@ -13,7 +13,9 @@ const SignOut = async (req, res) => {
     res.setHeader("Set-Cookie", [
       `refreshToken=${refreshToken}; Expires=${refreshTokenExpire.toGMTString()}; HttpOnly; SameSite=Lax; Path=/`,
     ]);
-    await deleteToken(connect(), dataAuth.id);
+    if (refreshToken !== (await selectToken(connect(), 1)).jwt) {
+      await deleteToken(connect(), dataAuth.id);
+    }
     res.end(JSON.stringify({ result: resultAuth }));
   }
 };
