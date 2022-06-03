@@ -73,6 +73,7 @@ const Music = () => {
   const player = useRef<ReactPlayer>(null);
   // targetted Music
   const [targetVideoId, setTargetVideoId] = useState({ target: "" });
+  const [targetURL, setTargetURL] = useState({ target: "" });
   // Music Play or Pause
   const [playing, setPlaying] = useState(false);
   // Music Max Time
@@ -168,6 +169,7 @@ const Music = () => {
             setPlayOrder(index);
             setLoadingDMDV(true);
             setTargetVideoId({ target: "" });
+            setTargetURL({ target: "" });
             if (selectedPlayList !== diaryMusicDateValue.topEmotion) {
               setSelectedPlayList(diaryMusicDateValue.topEmotion);
             }
@@ -208,6 +210,11 @@ const Music = () => {
       setTargetVideoId({
         target: musicList[diaryMusicDateValue.topEmotion][playOrder].videoId,
       });
+      setTargetURL({
+        target: `https://www.youtube.com/watch?v=${
+          musicList[diaryMusicDateValue.topEmotion][playOrder].videoId
+        }`,
+      });
       setLoadingDMDV(false);
       setPlaying(true);
     } else if (
@@ -217,7 +224,13 @@ const Music = () => {
       // 다음 음악 실행
       setTargetVideoId((prev) => {
         prev.target = musicList[playingPlayList][playOrder + 1].videoId;
-        return prev;
+        return { ...prev };
+      });
+      setTargetURL((prev) => {
+        prev.target = `https://www.youtube.com/watch?v=${
+          musicList[playingPlayList][playOrder + 1].videoId
+        }`;
+        return { ...prev };
       });
       setPlayingMusic(musicList[playingPlayList][playOrder + 1]);
       setPlayOrder((prev) => prev + 1);
@@ -229,7 +242,11 @@ const Music = () => {
     ) {
       setTargetVideoId((prev) => {
         prev.target = musicList[playingPlayList][0].videoId;
-        return prev;
+        return { ...prev };
+      });
+      setTargetURL((prev) => {
+        prev.target = `https://www.youtube.com/watch?v=${musicList[playingPlayList][0].videoId}`;
+        return { ...prev };
       });
       setPlayingMusic(musicList[playingPlayList][0]);
       setPlayOrder(0);
@@ -273,7 +290,11 @@ const Music = () => {
       setPlayed(0);
       setTargetVideoId((prev) => {
         prev.target = musicList[playListName][index].videoId;
-        return prev;
+        return { ...prev };
+      });
+      setTargetURL((prev) => {
+        prev.target = `https://www.youtube.com/watch?v=${musicList[playListName][index].videoId}`;
+        return { ...prev };
       });
       setPlayingMusic(musicList[playListName][index]);
       setPlaying(true);
@@ -322,6 +343,7 @@ const Music = () => {
     setPlayed(0);
     setDuration(0);
     setTargetVideoId({ target: "" });
+    setTargetURL({ target: "" });
     setPlaying(false);
   };
 
@@ -329,6 +351,7 @@ const Music = () => {
     setPlayed(0);
     setDuration(0);
     setTargetVideoId({ target: "" });
+    setTargetURL({ target: "" });
     setPlaying(false);
   };
 
@@ -336,6 +359,7 @@ const Music = () => {
     setPlayed(0);
     setDuration(0);
     setTargetVideoId({ target: "" });
+    setTargetURL({ target: "" });
     setPlaying(false);
     if (playOrder !== -1) {
       if (playOrder === 1) {
@@ -417,7 +441,7 @@ const Music = () => {
             ref={player}
             width="0%"
             height="0%"
-            url={`https://www.youtube.com/watch?v=${targetVideoId.target}`}
+            url={targetURL.target}
             playing={playing}
             onDuration={handleDuration}
             onProgress={handleProgress}
