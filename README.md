@@ -9,9 +9,9 @@ This is a **Mlog2 application** that recommends music through the sentiment anal
 I expect it to be a good project to check and show my development knowledge.
 
 ## Demo
-
-<img alt="demoImg" src="https://user-images.githubusercontent.com/77476340/171853497-7886f96d-6dcf-4cf4-ab96-217c8adf39b4.png" style="max-width: 100%;">
-
+<a href="http://www.mlog2.com" target="_blank" rel="noopener noreferrer">
+  <img alt="demoImg" src="https://user-images.githubusercontent.com/77476340/171853497-7886f96d-6dcf-4cf4-ab96-217c8adf39b4.png" style="max-width: 100%;">
+</a>
 Try out the [www.mlog2.com](http://www.mlog2.com).
 
 ## Tech Stack
