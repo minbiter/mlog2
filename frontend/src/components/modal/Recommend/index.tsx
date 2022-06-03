@@ -60,7 +60,6 @@ const Recommend = ({ date, closeRecommend }: IRecommendParams) => {
   const player = useRef<ReactPlayer>(null);
   // targetted Music
   const [targetVideoId, setTargetVideoId] = useState<string>("");
-  const [targetURL, setTargetURL] = useState<string>("");
   // Music Play or Pause
   const [playing, setPlaying] = useState(false);
   // Music Max Time
@@ -170,7 +169,6 @@ const Recommend = ({ date, closeRecommend }: IRecommendParams) => {
       // console.log("다른 음악 재생");
       setPlayed(0);
       setTargetVideoId(videoId);
-      setTargetURL(`https://www.youtube.com/watch?v=${videoId}`);
       setPlaying(true);
       if (!isMusicPlayerOff) setIsMusicPlayerOff(true);
     }
@@ -217,7 +215,6 @@ const Recommend = ({ date, closeRecommend }: IRecommendParams) => {
     setPlayed(0);
     setDuration(0);
     setTargetVideoId("");
-    setTargetURL("");
     setPlaying(false);
   };
 
@@ -303,7 +300,7 @@ const Recommend = ({ date, closeRecommend }: IRecommendParams) => {
                 ref={player}
                 width="0%"
                 height="0%"
-                url={targetURL}
+                url={`https://www.youtube.com/watch?v=${targetVideoId}`}
                 playing={playing}
                 onDuration={handleDuration}
                 onProgress={handleProgress}
